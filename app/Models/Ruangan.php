@@ -2,23 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Ruangan extends Model
 {
-    use HasFactory;
-
     protected $table = 'ruangan';
-    
     public $timestamps = false;
-
-    protected $fillable = [
-        'nama_ruangan',
-        'lantai_id',
-        'kapasitas',
-        'deskripsi',
-    ];
+    protected $fillable = ['lantai_id', 'nama_ruangan', 'kapasitas', 'deskripsi'];
 
     public function lantai()
     {
@@ -33,10 +23,5 @@ class Ruangan extends Model
     public function foto()
     {
         return $this->hasMany(RuanganFoto::class, 'ruangan_id');
-    }
-
-    public function peminjaman()
-    {
-        return $this->hasMany(Peminjaman::class, 'ruangan_id');
     }
 }

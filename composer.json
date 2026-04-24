@@ -12,7 +12,7 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
-        "kitloong/laravel-migrations-generator": "^7.3",
+        "laravel/breeze": "^2.4",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
         "laravel/sail": "^1.41",
@@ -74,11 +74,6 @@
         }
     },
     "config": {
-        "audit": {
-            "ignore": {
-                "PKSA-5jz8-6tcw-pbk4": "*"
-            }
-        },
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
