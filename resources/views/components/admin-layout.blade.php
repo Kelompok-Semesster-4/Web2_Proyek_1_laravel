@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="id">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -11,111 +12,130 @@
   <link rel="shortcut icon" href="{{ asset('assets/icons/favicon.ico') }}" type="image/x-icon">
   @stack('styles')
 </head>
+
 <body class="admin-body">
 
-<aside class="asb" id="adminSidebar" aria-label="Admin sidebar">
-  <div class="asb-head">
-    <a class="asb-brand" href="{{ url('/admin/dashboard') }}">
-      <img class="asb-logo" src="{{ asset('assets/icons/admin_logo.svg') }}" alt="NF">
-    </a>
+  <aside class="asb" id="adminSidebar" aria-label="Admin sidebar">
+    <div class="asb-head">
+      <a class="asb-brand" href="{{ route('admin.dashboard') }}">
+        <img class="asb-logo" src="{{ asset('assets/icons/admin_logo.svg') }}" alt="NF">
+      </a>
 
-    <button class="asb-burger" id="asbBurger" aria-label="Toggle sidebar" aria-expanded="false">
-      <span class="asb-lines" aria-hidden="true">
-        <span class="asb-line"></span>
-        <span class="asb-line"></span>
-        <span class="asb-line"></span>
-      </span>
-    </button>
-  </div>
+      <button class="asb-burger" id="asbBurger" aria-label="Toggle sidebar" aria-expanded="false">
+        <span class="asb-lines" aria-hidden="true">
+          <span class="asb-line"></span>
+          <span class="asb-line"></span>
+          <span class="asb-line"></span>
+        </span>
+      </button>
+    </div>
 
-  <nav class="asb-nav">
-    <a class="asb-link {{ request()->is('admin/dashboard') ? 'active' : '' }}" href="{{ url('/admin/dashboard') }}">
-      <span class="dot"></span> Dashboard
-    </a>
-    <a class="asb-link {{ request()->is('admin/ruangan*') ? 'active' : '' }}" href="{{ url('/admin/ruangan') }}">
-      <span class="dot"></span> Kelola Ruangan
-    </a>
-    <a class="asb-link {{ request()->is('admin/gedung*') ? 'active' : '' }}" href="{{ url('/admin/gedung') }}">
-      <span class="dot"></span> Kelola Gedung
-    </a>
-    <a class="asb-link {{ request()->is('admin/lantai*') ? 'active' : '' }}" href="{{ url('/admin/lantai') }}">
-      <span class="dot"></span> Kelola Lantai
-    </a>
-    <a class="asb-link {{ request()->is('admin/persetujuan*') ? 'active' : '' }}" href="{{ url('/admin/persetujuan') }}">
-      <span class="dot"></span> Approve Peminjaman
-    </a>
-    <a class="asb-link {{ request()->is('admin/user*') ? 'active' : '' }}" href="{{ url('/admin/user') }}">
-      <span class="dot"></span> Kelola User
-    </a>
-    <a class="asb-link {{ request()->is('admin/laporan*') ? 'active' : '' }}" href="{{ url('/admin/laporan') }}">
-      <span class="dot"></span> Laporan
-    </a>
-  </nav>
+    <nav class="asb-nav">
+      <a class="asb-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+        href="{{ route('admin.dashboard') }}">
+        <span class="dot"></span> Dashboard
+      </a>
 
-  <div class="asb-foot">
-    <form method="POST" action="{{ route('logout') }}" style="width: 100%;">
+      <a class="asb-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
+        <span class="dot"></span> Preview Mahasiswa
+      </a>
+
+      <a class="asb-link {{ request()->routeIs('admin.ruangan.*') ? 'active' : '' }}"
+        href="{{ route('admin.ruangan.index') }}">
+        <span class="dot"></span> Kelola Ruangan
+      </a>
+
+      <a class="asb-link {{ request()->routeIs('admin.gedung.*') ? 'active' : '' }}"
+        href="{{ route('admin.gedung.index') }}">
+        <span class="dot"></span> Kelola Gedung
+      </a>
+
+      <a class="asb-link {{ request()->routeIs('admin.lantai.*') ? 'active' : '' }}"
+        href="{{ route('admin.lantai.index') }}">
+        <span class="dot"></span> Kelola Lantai
+      </a>
+
+      <a class="asb-link {{ request()->routeIs('admin.persetujuan') ? 'active' : '' }}"
+        href="{{ route('admin.persetujuan') }}">
+        <span class="dot"></span> Approve Peminjaman
+      </a>
+
+      <a class="asb-link {{ request()->routeIs('admin.user.*') ? 'active' : '' }}"
+        href="{{ route('admin.user.index') }}">
+        <span class="dot"></span> Kelola User
+      </a>
+
+      <a class="asb-link {{ request()->routeIs('admin.laporan') ? 'active' : '' }}" href="{{ route('admin.laporan') }}">
+        <span class="dot"></span> Laporan
+      </a>
+    </nav>
+
+    <div class="asb-foot">
+      <form method="POST" action="{{ route('logout') }}" style="width: 100%;">
         @csrf
-        <a class="asb-logout" href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">
+        <a class="asb-logout" href="{{ route('logout') }}"
+          onclick="event.preventDefault(); this.closest('form').submit();">
           <span class="dot"></span> Logout
         </a>
-    </form>
-  </div>
-</aside>
+      </form>
+    </div>
+  </aside>
 
-<div class="asb-overlay" id="asbOverlay" aria-hidden="true"></div>
-<button class="asb-fab" id="asbMobileToggle" aria-label="Buka menu admin" aria-expanded="false">
-  <span class="asb-lines" aria-hidden="true">
-    <span class="asb-line"></span>
-    <span class="asb-line"></span>
-    <span class="asb-line"></span>
-  </span>
-</button>
+  <div class="asb-overlay" id="asbOverlay" aria-hidden="true"></div>
+  <button class="asb-fab" id="asbMobileToggle" aria-label="Buka menu admin" aria-expanded="false">
+    <span class="asb-lines" aria-hidden="true">
+      <span class="asb-line"></span>
+      <span class="asb-line"></span>
+      <span class="asb-line"></span>
+    </span>
+  </button>
 
-<script>
-  (function() {
-    const sidebar = document.getElementById('adminSidebar');
-    const overlay = document.getElementById('asbOverlay');
-    const sidebarBtn = document.getElementById('asbBurger');
-    const mobileBtn = document.getElementById('asbMobileToggle');
+  <script>
+    (function () {
+      const sidebar = document.getElementById('adminSidebar');
+      const overlay = document.getElementById('asbOverlay');
+      const sidebarBtn = document.getElementById('asbBurger');
+      const mobileBtn = document.getElementById('asbMobileToggle');
 
-    if (!sidebar) return;
+      if (!sidebar) return;
 
-    const syncState = (open) => {
-      sidebar.classList.toggle('open', open);
-      document.body.classList.toggle('asb-open', open);
-      if (overlay) overlay.classList.toggle('show', open);
-      if (sidebarBtn) sidebarBtn.setAttribute('aria-expanded', String(open));
-      if (mobileBtn) mobileBtn.setAttribute('aria-expanded', String(open));
-      if (sidebarBtn) sidebarBtn.classList.toggle('is-open', open);
-      if (mobileBtn) mobileBtn.classList.toggle('is-open', open);
-    };
+      const syncState = (open) => {
+        sidebar.classList.toggle('open', open);
+        document.body.classList.toggle('asb-open', open);
+        if (overlay) overlay.classList.toggle('show', open);
+        if (sidebarBtn) sidebarBtn.setAttribute('aria-expanded', String(open));
+        if (mobileBtn) mobileBtn.setAttribute('aria-expanded', String(open));
+        if (sidebarBtn) sidebarBtn.classList.toggle('is-open', open);
+        if (mobileBtn) mobileBtn.classList.toggle('is-open', open);
+      };
 
-    const toggle = () => syncState(!sidebar.classList.contains('open'));
-    const close = () => syncState(false);
+      const toggle = () => syncState(!sidebar.classList.contains('open'));
+      const close = () => syncState(false);
 
-    if (sidebarBtn) sidebarBtn.addEventListener('click', toggle);
-    if (mobileBtn) mobileBtn.addEventListener('click', toggle);
-    if (overlay) overlay.addEventListener('click', close);
+      if (sidebarBtn) sidebarBtn.addEventListener('click', toggle);
+      if (mobileBtn) mobileBtn.addEventListener('click', toggle);
+      if (overlay) overlay.addEventListener('click', close);
 
-    sidebar.querySelectorAll('.asb-link, .asb-logout').forEach((el) => {
-      el.addEventListener('click', () => {
-        if (window.matchMedia('(max-width: 992px)').matches) close();
+      sidebar.querySelectorAll('.asb-link, .asb-logout').forEach((el) => {
+        el.addEventListener('click', () => {
+          if (window.matchMedia('(max-width: 992px)').matches) close();
+        });
       });
-    });
 
-    window.addEventListener('resize', () => {
-      if (window.innerWidth > 992) syncState(false);
-    });
-  })();
-</script>
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 992) syncState(false);
+      });
+    })();
+  </script>
 
-<div class="wrap" style="background: transparent; max-width: none; padding: 0;">
-  <main class="admin-main">
-    {{ $slot }}
-  </main>
-</div>
+  <div class="wrap" style="background: transparent; max-width: none; padding: 0;">
+    <main class="admin-main">
+      {{ $slot }}
+    </main>
+  </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-@stack('scripts')
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  @stack('scripts')
 </body>
+
 </html>
