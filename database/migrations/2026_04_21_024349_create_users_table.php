@@ -19,10 +19,6 @@ return new class extends Migration
             $table->enum('role', ['admin', 'mahasiswa']);
             $table->string('prodi', 100)->nullable();
             $table->timestamp('created_at')->nullable()->useCurrent();
-            $table->timestamp('updated_at')->nullable()->useCurrent();
-            $table->string('email', 255);
-            $table->string('google_id', 255);
-            $table->string('remember_token', 255);
         });
     }
 
