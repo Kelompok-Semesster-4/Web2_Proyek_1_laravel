@@ -130,7 +130,7 @@
                                             </button>
                                             <button type="button" class="btn btn-warning aksi-btn" style="min-width: 60px; font-size: 0.8rem;" data-bs-toggle="modal"
                                                 data-bs-target="#modalEditGedung"
-                                                onclick="editGedung({{ $gedung->id }}, '{{ addslashes($gedung->nama_gedung) }}')">
+                                                onclick="editGedung({{ $gedung->id }}, '{{ addslashes($gedung->nama_gedung) }}', {{ $gedung->jumlah_lantai }})">
                                                 <i class="bi bi-pencil-fill me-1"></i>Edit
                                             </button>
                                             <form action="{{ route('admin.gedung.destroy', $gedung->id) }}" method="POST" class="d-inline" id="formDelete{{ $gedung->id }}">
@@ -186,6 +186,14 @@
                         <input type="text" class="form-control" id="addNamaGedung" name="nama_gedung" maxlength="100" required placeholder="Contoh: Gedung A">
                         <small class="text-muted">Nama gedung harus unik</small>
                     </div>
+                    <div class="mb-3">
+                        <label for="addJumlahLantai" class="form-label fw-semibold">
+                            <i class="bi bi-layers me-1" style="color: #22c55e;"></i>Jumlah Lantai
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input type="number" class="form-control" id="addJumlahLantai" name="jumlah_lantai" min="1" required placeholder="Contoh: 3">
+                        <small class="text-muted">Lantai akan dibuat otomatis (contoh: isi 3 = dibuatkan lantai 1, 2, 3)</small>
+                    </div>
                 </div>
                 <div class="modal-footer border-0 pt-0">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -220,6 +228,14 @@
                         </label>
                         <input type="text" class="form-control" id="editNamaGedung" name="nama_gedung" maxlength="100" required placeholder="Contoh: Gedung A">
                         <small class="text-muted">Nama gedung harus unik</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editJumlahLantai" class="form-label fw-semibold">
+                            <i class="bi bi-layers me-1" style="color: #22c55e;"></i>Jumlah Lantai
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input type="number" class="form-control" id="editJumlahLantai" name="jumlah_lantai" min="1" required placeholder="Contoh: 3">
+                        <small class="text-muted text-warning"><i class="bi bi-exclamation-triangle-fill"></i> Mengurangi jumlah lantai akan menghapus lantai atas jika belum ada ruangan.</small>
                     </div>
                 </div>
                 <div class="modal-footer border-0 pt-0">
@@ -295,9 +311,10 @@
     }
 
     // Edit gedung function
-    function editGedung(id, namaGedung) {
+    function editGedung(id, namaGedung, jumlahLantai) {
         document.getElementById('editGedungId').value = id;
         document.getElementById('editNamaGedung').value = namaGedung;
+        document.getElementById('editJumlahLantai').value = jumlahLantai;
     }
 
     // Delete gedung with confirmation
@@ -321,6 +338,7 @@
     // Reset add form when modal is closed
     document.getElementById('modalAddGedung').addEventListener('hidden.bs.modal', function() {
         document.getElementById('addNamaGedung').value = '';
+        document.getElementById('addJumlahLantai').value = '';
     });
 
     // Auto-dismiss alerts after 5 seconds

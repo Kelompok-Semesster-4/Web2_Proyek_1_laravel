@@ -773,6 +773,12 @@ label {
   min-height: 100vh;
 }
 
+.admin-wrap {
+  background: transparent;
+  max-width: none;
+  padding: 0;
+}
+
 .admin-main {
   margin-left: 280px;
   padding: 26px 22px 90px;
@@ -940,6 +946,49 @@ label {
   left: 14px;
   right: 14px;
   bottom: 14px;
+}
+
+.asb-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px;
+}
+
+.asb-actions > * {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.asb-actions > .asb-action-form {
+  display: block;
+  align-self: stretch;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.asb-actions > .asb-action-btn,
+.asb-actions > .asb-action-form > .asb-action-btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  align-self: stretch;
+  width: 100% !important;
+  min-width: 100%;
+  max-width: none;
+  min-height: 34px;
+  box-sizing: border-box;
+  margin: 0 !important;
+  padding: 8px 15px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .asb-pill {

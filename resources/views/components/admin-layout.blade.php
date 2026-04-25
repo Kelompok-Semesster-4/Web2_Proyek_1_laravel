@@ -8,7 +8,7 @@
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}?v=5">
+  <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}?v=8">
   <link rel="shortcut icon" href="{{ asset('assets/icons/favicon.ico') }}" type="image/x-icon">
   @stack('styles')
 </head>
@@ -36,9 +36,7 @@
         <span class="dot"></span> Dashboard
       </a>
 
-      <a class="asb-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
-        <span class="dot"></span> Preview Mahasiswa
-      </a>
+
 
       <a class="asb-link {{ request()->routeIs('admin.ruangan.*') ? 'active' : '' }}"
         href="{{ route('admin.ruangan.index') }}">
@@ -48,11 +46,6 @@
       <a class="asb-link {{ request()->routeIs('admin.gedung.*') ? 'active' : '' }}"
         href="{{ route('admin.gedung.index') }}">
         <span class="dot"></span> Kelola Gedung
-      </a>
-
-      <a class="asb-link {{ request()->routeIs('admin.lantai.*') ? 'active' : '' }}"
-        href="{{ route('admin.lantai.index') }}">
-        <span class="dot"></span> Kelola Lantai
       </a>
 
       <a class="asb-link {{ request()->routeIs('admin.persetujuan') ? 'active' : '' }}"
@@ -70,13 +63,15 @@
       </a>
     </nav>
 
-    <div class="asb-foot">
-      <form method="POST" action="{{ route('logout') }}" style="width: 100%;">
+    <div class="asb-foot asb-actions">
+      <a class="btn btn-success btn-sm asb-action-btn" href="{{ route('home') }}">
+        <i class="bi bi-eye me-2"></i> Preview Mahasiswa
+      </a>
+      <form method="POST" action="{{ route('logout') }}" class="asb-action-form">
         @csrf
-        <a class="asb-logout" href="{{ route('logout') }}"
-          onclick="event.preventDefault(); this.closest('form').submit();">
-          <span class="dot"></span> Logout
-        </a>
+        <button type="submit" class="btn btn-success btn-sm asb-action-btn">
+          <i class="bi bi-box-arrow-right me-2"></i> Logout
+        </button>
       </form>
     </div>
   </aside>
@@ -128,7 +123,7 @@
     })();
   </script>
 
-  <div class="wrap" style="background: transparent; max-width: none; padding: 0;">
+  <div class="wrap admin-wrap">
     <main class="admin-main">
       {{ $slot }}
     </main>
