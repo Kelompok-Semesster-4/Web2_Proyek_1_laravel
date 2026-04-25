@@ -67,6 +67,9 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasi
     Route::post('/peminjaman/cancel', [App\Http\Controllers\MahasiswaController::class, 'cancelPeminjaman'])->name('peminjaman.cancel');
 });
 
+// Route to dashboard for guests
+Route::get('/dashboard', [App\Http\Controllers\MahasiswaController::class, 'dashboard'])->name('dashboard');
+
 Route::get('/', function () {
     return redirect('/dashboard');
 });
