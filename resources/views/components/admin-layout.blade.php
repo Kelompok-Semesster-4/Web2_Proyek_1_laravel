@@ -50,11 +50,6 @@
         <span class="dot"></span> Kelola Gedung
       </a>
 
-      <a class="asb-link {{ request()->routeIs('admin.lantai.*') ? 'active' : '' }}"
-        href="{{ route('admin.lantai.index') }}">
-        <span class="dot"></span> Kelola Lantai
-      </a>
-
       <a class="asb-link {{ request()->routeIs('admin.persetujuan') ? 'active' : '' }}"
         href="{{ route('admin.persetujuan') }}">
         <span class="dot"></span> Approve Peminjaman

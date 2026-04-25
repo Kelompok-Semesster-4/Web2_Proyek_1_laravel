@@ -113,11 +113,6 @@ Route::middleware(['auth', 'role:admin'])
         Route::put('/gedung', [AdminGedungController::class, 'update'])->name('gedung.update');
         Route::delete('/gedung/{id}', [AdminGedungController::class, 'destroy'])->name('gedung.destroy');
 
-        Route::get('/lantai', [AdminLantaiController::class, 'index'])->name('lantai.index');
-        Route::post('/lantai', [AdminLantaiController::class, 'store'])->name('lantai.store');
-        Route::put('/lantai', [AdminLantaiController::class, 'update'])->name('lantai.update');
-        Route::delete('/lantai/{id}', [AdminLantaiController::class, 'destroy'])->name('lantai.destroy');
-
         Route::get('/user', [AdminUserController::class, 'index'])->name('user.index');
         Route::post('/user', [AdminUserController::class, 'store'])->name('user.store');
         Route::put('/user', [AdminUserController::class, 'update'])->name('user.update');
