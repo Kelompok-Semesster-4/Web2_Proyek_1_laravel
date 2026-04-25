@@ -17,7 +17,7 @@ use App\Http\Controllers\AdminLaporanController;
 */
 
 // Home boleh diakses siapa pun tanpa login
-Route::get('/', [MahasiswaController::class, 'dashboard'])->name('home');
+Route::get('/', [MahasiswaController::class, 'dashboard'])->name('mahasiswa.dashboard');
 
 // Route lama tetap disediakan agar link lama tidak error
 Route::get('/mahasiswa/dashboard', [MahasiswaController::class, 'dashboard'])
