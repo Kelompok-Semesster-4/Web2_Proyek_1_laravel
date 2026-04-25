@@ -16,7 +16,7 @@ class CheckRole
     public function handle(Request $request, Closure $next, string $role): Response
     {
         if (!\Illuminate\Support\Facades\Auth::check()) {
-            return redirect('/dashboard');
+            return redirect('/login');
         }
 
         if (\Illuminate\Support\Facades\Auth::user()->role !== $role) {
