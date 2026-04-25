@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -88,6 +90,92 @@ class AuthController extends Controller
         }
 
         return redirect()->intended('/dashboard');
+    }
+
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function handleGoogleCallback(Request $request)
+    {
+        try {
+            $googleUser = Socialite::driver('google')->user();
+
+            $googleId = $googleUser->getId();
+            $email = $googleUser->getEmail();
+            $nama = $googleUser->getName();
+
+            // 1. Cek apakah akun dengan google_id ini sudah pernah login
+            $user = User::where('google_id', $googleId)->first();
+
+            // 2. Kalau belum ada, cek apakah email Google ini sudah ada di akun lama
+            if (!$user && $email) {
+                $user = User::where('email', $email)->first();
+            }
+
+            // 3. Kalau user sudah ada, hubungkan akun lama dengan Google
+            if ($user) {
+                $user->google_id = $googleId;
+
+                if (!$user->email && $email) {
+                    $user->email = $email;
+                }
+
+                if (!$user->nama && $nama) {
+                    $user->nama = $nama;
+                }
+
+                $user->save();
+            }
+
+            // 4. Kalau user belum ada, buat akun baru otomatis
+            else {
+                $baseUsername = $email
+                    ? Str::slug(explode('@', $email)[0], '')
+                    : Str::slug($nama ?: 'user', '');
+
+                if (!$baseUsername) {
+                    $baseUsername = 'user';
+                }
+
+                $username = $baseUsername;
+                $counter = 1;
+
+                while (User::where('username', $username)->exists()) {
+                    $username = $baseUsername . $counter;
+                    $counter++;
+                }
+
+                $user = User::create([
+                    'nama' => $nama ?: $username,
+                    'username' => $username,
+                    'email' => $email,
+                    'google_id' => $googleId,
+                    'password' => Hash::make(Str::random(32)),
+                    'role' => 'mahasiswa',
+                    'prodi' => null,
+                ]);
+            }
+
+            // 5. Login user ke aplikasi
+            Auth::login($user);
+            $request->session()->regenerate();
+
+            // 6. Redirect sesuai role
+            if ($user->role === 'admin') {
+                return redirect()->intended('/admin/dashboard');
+            }
+
+            return redirect()->intended('/dashboard');
+
+        } catch (\Throwable $e) {
+            return redirect()
+                ->route('login')
+                ->withErrors([
+                    'google' => 'Login Google gagal: ' . $e->getMessage(),
+                ]);
+        }
     }
 
     public function logout(Request $request)

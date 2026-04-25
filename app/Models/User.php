@@ -13,6 +13,8 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    const UPDATED_AT = null;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -25,6 +27,7 @@ class User extends Authenticatable
         'password',
         'role',
         'prodi',
+        'google_id',
     ];
 
     /**

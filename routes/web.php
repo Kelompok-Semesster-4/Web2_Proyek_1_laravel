@@ -43,6 +43,13 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Google Login
+Route::get('/auth/google/redirect', [AuthController::class, 'redirectToGoogle'])
+    ->name('google.redirect');
+
+Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])
+    ->name('google.callback');
+
 /*
 |--------------------------------------------------------------------------
 | Redirect Dashboard
