@@ -81,3 +81,7 @@ Route::get('/test-url-generation', function () {
         'peminjaman' => route('mahasiswa.peminjaman')
     ]);
 });
+
+Route::fallback(function() {
+    return redirect('/dashboard');
+});
