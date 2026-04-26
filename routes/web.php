@@ -86,6 +86,9 @@ Route::middleware(['auth', 'role:mahasiswa,admin'])
         Route::get('/peminjaman', [MahasiswaController::class, 'peminjaman'])->name('peminjaman');
         Route::post('/peminjaman/store', [MahasiswaController::class, 'storePeminjaman'])->name('peminjaman.store');
         Route::post('/peminjaman/cancel', [MahasiswaController::class, 'cancelPeminjaman'])->name('peminjaman.cancel');
+
+        Route::get('/profil', [MahasiswaController::class, 'profil'])->name('profil');
+        Route::patch('/profil', [MahasiswaController::class, 'ubahProfil'])->name('ubahProfil');
     });
 
 /*
