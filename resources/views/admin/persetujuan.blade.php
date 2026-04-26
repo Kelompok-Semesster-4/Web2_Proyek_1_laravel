@@ -7,21 +7,7 @@
     </div>
 
     <!-- Alert Messages -->
-    @if (session('flash_error'))
-        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            <strong>Error!</strong> {{ session('flash_error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
-    @if (session('flash_success'))
-        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
-            <i class="bi bi-check-circle-fill me-2"></i>
-            <strong>Berhasil!</strong> {{ session('flash_success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
+    <x-alert-admin />
 
     <!-- Card Tabel Persetujuan -->
     <div class="card shadow border-0" style="border-radius: 15px; overflow: hidden;">
