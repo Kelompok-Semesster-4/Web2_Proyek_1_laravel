@@ -2,13 +2,10 @@
 
 <div class="admin-container" style="max-width: 100%;">
     <!-- Page Header -->
-    <div class="kelola-header mb-4">
-        <h1>Kelola Gedung</h1>
-        <button class="btn-tambah" data-bs-toggle="modal" data-bs-target="#modalAddGedung">
-            <i class="bi bi-plus-circle-fill me-2"></i>Tambah Gedung
-        </button>
-    </div>
-
+    <x-head-title-admin
+        title="Kelola Gedung"
+        icon="bi bi-building"
+    />
     <!-- Alert Messages -->
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">

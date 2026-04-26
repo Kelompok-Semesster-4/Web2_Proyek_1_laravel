@@ -6,7 +6,6 @@ use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminRuanganController;
 use App\Http\Controllers\AdminGedungController;
-use App\Http\Controllers\AdminLantaiController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminLaporanController;
 

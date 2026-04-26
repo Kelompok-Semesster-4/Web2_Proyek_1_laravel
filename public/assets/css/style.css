@@ -2234,3 +2234,17 @@ form.d-inline {
     height: 240px;
   }
 }
+.kelola-header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.kelola-header-title i {
+  color: #ffffff;
+  font-size: 28px;
+}
+
+.kelola-header-title h1 {
+  margin: 0;
+}
