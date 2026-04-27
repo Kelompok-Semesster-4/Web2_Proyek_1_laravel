@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('peminjaman', function (Blueprint $table) {
-            $table->foreign(['user_id'], 'peminjaman_ibfk_1')->references(['id'])->on('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign(['ruangan_id'], 'peminjaman_ibfk_2')->references(['id'])->on('ruangan')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign(['status_id'], 'peminjaman_ibfk_3')->references(['id'])->on('status_peminjaman')->onUpdate('cascade')->onDelete('restrict');
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreign('ruangan_id')->references('id')->on('ruangan')->cascadeOnDelete();
+            $table->foreign('status_id')->references('id')->on('status_peminjaman')->restrictOnDelete();
         });
     }
 
@@ -24,9 +24,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('peminjaman', function (Blueprint $table) {
-            $table->dropForeign('peminjaman_ibfk_1');
-            $table->dropForeign('peminjaman_ibfk_2');
-            $table->dropForeign('peminjaman_ibfk_3');
+            $table->dropForeign('peminjaman_user_id_foreign');
+            $table->dropForeign('peminjaman_ruangan_id_foreign');
+            $table->dropForeign('peminjaman_status_id_foreign');
         });
     }
 };

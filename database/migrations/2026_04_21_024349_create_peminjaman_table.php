@@ -12,18 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('peminjaman', function (Blueprint $table) {
-            $table->integer('id', true);
-            $table->integer('user_id')->index('user_id');
-            $table->integer('ruangan_id')->index('ruangan_id');
+            $table->id();
+            $table->foreignId('user_id');
+            $table->foreignId('ruangan_id');
             $table->string('nama_kegiatan', 150);
             $table->date('tanggal');
             $table->time('jam_mulai');
             $table->time('jam_selesai');
             $table->integer('jumlah_peserta')->nullable();
             $table->string('surat')->nullable();
-            $table->integer('status_id')->nullable()->default(1)->index('status_id');
+            $table->foreignId('status_id')->default(1);
             $table->text('catatan_admin')->nullable();
-            $table->timestamp('created_at')->nullable()->useCurrent();
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 
