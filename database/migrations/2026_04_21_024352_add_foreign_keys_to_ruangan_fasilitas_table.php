@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('ruangan_fasilitas', function (Blueprint $table) {
-            $table->foreign(['ruangan_id'], 'ruangan_fasilitas_ibfk_1')->references(['id'])->on('ruangan')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign(['fasilitas_id'], 'ruangan_fasilitas_ibfk_2')->references(['id'])->on('fasilitas')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('ruangan_id')->references('id')->on('ruangan')->cascadeOnDelete();
+            $table->foreign('fasilitas_id')->references('id')->on('fasilitas')->cascadeOnDelete();
         });
     }
 
@@ -23,8 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('ruangan_fasilitas', function (Blueprint $table) {
-            $table->dropForeign('ruangan_fasilitas_ibfk_1');
-            $table->dropForeign('ruangan_fasilitas_ibfk_2');
+            $table->dropForeign('ruangan_fasilitas_ruangan_id_foreign');
+            $table->dropForeign('ruangan_fasilitas_fasilitas_id_foreign');
         });
     }
 };

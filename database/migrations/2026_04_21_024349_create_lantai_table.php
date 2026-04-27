@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('lantai', function (Blueprint $table) {
-            $table->integer('id', true);
-            $table->integer('gedung_id');
+            $table->id();
+            $table->foreignId('gedung_id');
             $table->integer('nomor');
 
-            $table->unique(['gedung_id', 'nomor'], 'gedung_id');
+            $table->unique(['gedung_id', 'nomor']);
         });
     }
 

@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('ruangan_foto', function (Blueprint $table) {
-            $table->integer('id', true);
-            $table->integer('ruangan_id')->index('ruangan_id');
+            $table->id();
+            $table->foreignId('ruangan_id');
             $table->string('nama_file');
-            $table->timestamp('created_at')->nullable()->useCurrent();
             $table->enum('tipe', ['detail', 'cover'])->default('detail');
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 

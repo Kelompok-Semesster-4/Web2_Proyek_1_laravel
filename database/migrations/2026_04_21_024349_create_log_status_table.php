@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('log_status', function (Blueprint $table) {
-            $table->integer('id', true);
-            $table->integer('peminjaman_id')->index('peminjaman_id');
-            $table->integer('status_id')->index('status_id');
-            $table->integer('diubah_oleh')->nullable()->index('diubah_oleh');
-            $table->timestamp('waktu')->nullable()->useCurrent();
+            $table->id();
+            $table->foreignId('peminjaman_id');
+            $table->foreignId('status_id');
+            $table->foreignId('diubah_oleh')->nullable();
             $table->text('catatan')->nullable();
+            $table->timestamp('waktu')->useCurrent();
         });
     }
 
