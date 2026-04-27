@@ -172,10 +172,11 @@
 @endpush
 
 <div class="admin-container" style="max-width:100%;">
-    <div class="kelola-header mb-4">
-        <h1>Dashboard Real-Time</h1>
-        <p class="text-muted mb-0">Fokus data hari ini, status ruangan saat ini, dan tindakan cepat.</p>
-    </div>
+    <x-head-title-admin
+        title="Dashboard Real-Time"
+        icon="bi bi-calendar4-week"
+        :showButton="false"
+    />
 
     @if (session('flash_error'))
         <div class="alert alert-danger">{{ session('flash_error') }}</div>
