@@ -782,7 +782,8 @@
         }
         gallery.innerHTML = html;
 
-        const modal = new bootstrap.Modal(document.getElementById('modalViewDetail'));
+        const modalEl = document.getElementById('modalViewDetail')
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
         modal.show();
     }
 
