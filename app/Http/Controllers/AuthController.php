@@ -185,4 +185,37 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
         return redirect('/login');
     }
+
+    public function registerForm()
+    {   if (Auth::check())
+        {   $role = Auth::user()->role;
+            return redirect($role === 'admin' ? '/admin/dashboard' : '/dashboard');
+        }
+
+        return view('auth.register');
+    }
+
+    public function register(Request $request)
+    {   $validated_request = $request->validate([
+            'nama' => ['required', 'string', 'max:100'],
+            'username' => ['required', 'string', 'max:50', 'unique:users,username'],
+            'email' => ['nullable', 'string', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'prodi' => ['required', 'string', 'max:100'],
+        ]);
+
+        $user = User::create([
+            'nama' => $validated_request['nama'],
+            'username' => $validated_request['username'],
+            'email' => $validated_request['email'],
+            'password' => Hash::make($validated_request['password']),
+            'role' => 'mahasiswa',
+            'prodi' => $validated_request['prodi'],
+        ]);
+
+        Auth::login($user, false);
+        $request->session()->regenerate();
+
+        return redirect()->intended('/dashboard');
+    }
 }

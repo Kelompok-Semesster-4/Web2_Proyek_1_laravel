@@ -49,6 +49,10 @@ Route::get('/auth/google/redirect', [AuthController::class, 'redirectToGoogle'])
 Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])
     ->name('google.callback');
 
+// Account Registration
+Route::get('/register', [AuthController::class, 'registerForm'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+
 /*
 |--------------------------------------------------------------------------
 | Redirect Dashboard
