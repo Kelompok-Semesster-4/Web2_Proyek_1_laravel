@@ -5,125 +5,116 @@
     <x-head-title-admin
         title="Kelola Gedung"
         icon="bi bi-building"
+        buttonText="Tambah Gedung"
+        modalTarget="#modalAddGedung"
     />
     <!-- Alert Messages -->
-    <x-alert-admin />
+    <x-alert-admin 
+    title="Daftar Gedung"
+    icon="bi bi-building"
+    table-id="tableGedung"
+    
 
+    />
+    
     <!-- Card Tabel Gedung -->
-    <div class="card shadow border-0" style="border-radius: 15px; overflow: hidden;">
-        <div class="card-header bg-white py-3 border-bottom" style="background: linear-gradient(to right, #f8f9fa, #e9ecef) !important;">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <h5 class="mb-0 fw-bold" style="color: #495057;">
-                        <i class="bi bi-building me-2" style="color: #22c55e;"></i>Daftar Gedung
-                    </h5>
-                </div>
-                <div class="col-md-6">
-                    <div class="input-group shadow-sm" style="border-radius: 8px; overflow: hidden;">
-                        <span class="input-group-text bg-white border-end-0">
-                            <i class="bi bi-search" style="color: #22c55e;"></i>
-                        </span>
-                        <input type="text" class="form-control border-start-0 bg-white" id="searchInput" placeholder="Cari gedung..." style="border-left: 0;">
+    <x-table-card
+    title="Daftar Gedung"
+    icon="bi bi-building"
+    table-id="tableGedung"
+    search-placeholder="Cari gedung..."
+    :total="count($gedungs)"
+    total-label="gedung terdaftar"
+    :empty="empty($gedungs)"
+    empty-title="Belum ada data gedung"
+    empty-subtitle="Tambahkan gedung pertama Anda"
+    :colspan="5"
+>
+    <x-slot name="head">
+        <tr>
+            <th class="text-center" style="width: 50px; padding: 15px 10px;">
+                <i class="bi bi-hash"></i>
+            </th>
+            <th class="text-center" style="width: 35%; padding: 15px;">
+                <i class="bi bi-building me-1"></i>Nama Gedung
+            </th>
+            <th class="text-center" style="width: 15%; padding: 15px;">
+                <i class="bi bi-layers me-1"></i>Lantai
+            </th>
+            <th class="text-center" style="width: 20%; padding: 15px;">
+                <i class="bi bi-door-closed me-1"></i>Ruangan
+            </th>
+            <th class="text-center" style="width: 280px; padding: 15px;">
+                <i class="bi bi-gear me-1"></i>Aksi
+            </th>
+        </tr>
+    </x-slot>
+
+    @foreach ($gedungs as $i => $gedung)
+        <tr>
+            <td class="text-center">
+                <span class="badge-number">{{ $i + 1 }}</span>
+            </td>
+
+            <td class="text-center">
+                <span class="badge px-3 py-2"
+                    style="background: linear-gradient(135deg, #17a2b8, #138496); color: white; font-weight: 600; border-radius: 8px;">
+                    <i class="bi bi-building-fill me-1"></i>
+                    <span class="gedung-name">{{ $gedung->nama_gedung }}</span>
+                </span>
+            </td>
+
+            <td class="text-center">
+                <span class="badge px-3 py-2"
+                    style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; font-weight: 600; border-radius: 8px;">
+                    <i class="bi bi-layers-fill me-1"></i>{{ $gedung->jumlah_lantai }}
+                </span>
+            </td>
+
+            <td class="text-center">
+                <span class="badge px-3 py-2"
+                    style="background: linear-gradient(135deg, #22c55e, #16a34a); color: white; font-weight: 600; border-radius: 8px;">
+                    <i class="bi bi-door-closed-fill me-1"></i>{{ $gedung->jumlah_ruangan }} ruangan
+                </span>
+            </td>
+
+            <td>
+                <div class="d-flex gap-1 justify-content-center">
+                    <button type="button"
+                        class="btn btn-info aksi-btn"
+                        style="min-width: 65px; font-size: 0.8rem;"
+                        onclick="viewDetailGedung('{{ addslashes($gedung->nama_gedung) }}', '{{ $gedung->jumlah_lantai }}', '{{ $gedung->jumlah_ruangan }}')">
+                        <i class="bi bi-eye-fill me-1"></i>Detail
+                    </button>
+
+                    <button type="button"
+                        class="btn btn-warning aksi-btn"
+                        style="min-width: 60px; font-size: 0.8rem;"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalEditGedung"
+                        onclick="editGedung({{ $gedung->id }}, '{{ addslashes($gedung->nama_gedung) }}', {{ $gedung->jumlah_lantai }})">
+                        <i class="bi bi-pencil-fill me-1"></i>Edit
+                    </button>
+
+                    <form action="{{ route('admin.gedung.destroy', $gedung->id) }}"
+                        method="POST"
+                        class="d-inline"
+                        id="formDelete{{ $gedung->id }}">
+                        @csrf
+                        @method('DELETE')
+
+                        <button type="button"
+                            class="btn btn-danger aksi-btn"
+                            style="min-width: 65px; font-size: 0.8rem;"
+                            onclick="deleteGedung({{ $gedung->id }}, '{{ addslashes($gedung->nama_gedung) }}')">
+                            <i class="bi bi-trash-fill me-1"></i>Hapus
+                        </button>
+                    </form>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0" id="tableGedung">
-                    <thead style="background: linear-gradient(to right, #f8f9fa, #e9ecef);">
-                        <tr>
-                            <th class="text-center" style="width: 50px; padding: 15px 10px;">
-                                <i class="bi bi-hash"></i>
-                            </th>
-                            <th class="text-center" style="width: 35%; padding: 15px;">
-                                <i class="bi bi-building me-1"></i>Nama Gedung
-                            </th>
-                            <th class="text-center" style="width: 15%; padding: 15px;">
-                                <i class="bi bi-layers me-1"></i>Lantai
-                            </th>
-                            <th class="text-center" style="width: 20%; padding: 15px;">
-                                <i class="bi bi-door-closed me-1"></i>Ruangan
-                            </th>
-                            <th class="text-center" style="width: 280px; padding: 15px;">
-                                <i class="bi bi-gear me-1"></i>Aksi
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (empty($gedungs))
-                            <tr>
-                                <td colspan="5" class="text-center py-5">
-                                    <div class="text-muted">
-                                        <i class="bi bi-inbox display-4 d-block mb-3"></i>
-                                        <p class="mb-0">Belum ada data gedung</p>
-                                        <small>Tambahkan gedung pertama Anda</small>
-                                    </div>
-                                </td>
-                            </tr>
-                        @else
-                            @foreach ($gedungs as $i => $gedung)
-                                <tr>
-                                    <td class="text-center">
-                                        <span class="badge-number">{{ $i + 1 }}</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge px-3 py-2" style="background: linear-gradient(135deg, #17a2b8, #138496); color: white; font-weight: 600; border-radius: 8px;">
-                                            <i class="bi bi-building-fill me-1"></i><span class="gedung-name">{{ $gedung->nama_gedung }}</span>
-                                        </span>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge px-3 py-2" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; font-weight: 600; border-radius: 8px;">
-                                            <i class="bi bi-layers-fill me-1"></i>{{ $gedung->jumlah_lantai }}
-                                        </span>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge px-3 py-2" style="background: linear-gradient(135deg, #22c55e, #16a34a); color: white; font-weight: 600; border-radius: 8px;">
-                                            <i class="bi bi-door-closed-fill me-1"></i>{{ $gedung->jumlah_ruangan }} ruangan
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex gap-1 justify-content-center">
-                                            <button type="button" class="btn btn-info aksi-btn" style="min-width: 65px; font-size: 0.8rem;"
-                                                onclick="viewDetailGedung('{{ addslashes($gedung->nama_gedung) }}', '{{ $gedung->jumlah_lantai }}', '{{ $gedung->jumlah_ruangan }}')">
-                                                <i class="bi bi-eye-fill me-1"></i>Detail
-                                            </button>
-                                            <button type="button" class="btn btn-warning aksi-btn" style="min-width: 60px; font-size: 0.8rem;" data-bs-toggle="modal"
-                                                data-bs-target="#modalEditGedung"
-                                                onclick="editGedung({{ $gedung->id }}, '{{ addslashes($gedung->nama_gedung) }}', {{ $gedung->jumlah_lantai }})">
-                                                <i class="bi bi-pencil-fill me-1"></i>Edit
-                                            </button>
-                                            <form action="{{ route('admin.gedung.destroy', $gedung->id) }}" method="POST" class="d-inline" id="formDelete{{ $gedung->id }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" class="btn btn-danger aksi-btn" style="min-width: 65px; font-size: 0.8rem;"
-                                                    onclick="deleteGedung({{ $gedung->id }}, '{{ addslashes($gedung->nama_gedung) }}')">
-                                                    <i class="bi bi-trash-fill me-1"></i>Hapus
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endif
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="card-footer bg-white py-3">
-            <div class="d-flex justify-content-between align-items-center">
-                <small class="text-muted fw-semibold">
-                    <i class="bi bi-info-circle-fill me-1" style="color: #22c55e;"></i>Total Data:
-                    <span class="badge ms-1" style="background: linear-gradient(135deg, #22c55e, #16a34a);">{{ count($gedungs) }}</span>
-                    gedung terdaftar
-                </small>
-                <small class="text-muted">
-                    <i class="bi bi-calendar-check me-1"></i>{{ date('d F Y') }}
-                </small>
-            </div>
-        </div>
-    </div>
-</div>
+                </td>
+            </tr>
+        @endforeach
+    </x-table-card>
 
 <!-- Modal Add Gedung -->
 <div class="modal fade" id="modalAddGedung" tabindex="-1">

@@ -2,165 +2,166 @@
 
 <div class="admin-container" style="max-width: 100%;">
     <!-- Page Header -->
-    <div class="kelola-header mb-4">
-        <h1>Kelola Ruangan</h1>
-        <button class="btn-tambah" data-bs-toggle="modal" data-bs-target="#modalAddRuangan">
-            Tambah Ruangan
-        </button>
-    </div>
-
+    <x-head-title-admin
+        title="Kelola Ruangan"
+        icon="bi bi-house-up"
+        buttonText="Tambah Ruangan"
+        modalTarget="#modalAddRuangan"
+    />
     <!-- Alert Messages -->
     <x-alert-admin />
 
     <!-- Card Tabel Ruangan -->
-    <div class="card shadow border-0" style="border-radius: 15px; overflow: hidden;">
-        <div class="card-header bg-white py-3 border-bottom" style="background: linear-gradient(to right, #f8f9fa, #e9ecef) !important;">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <h5 class="mb-0 fw-bold" style="color: #495057;">
-                        <i class="bi bi-door-open me-2" style="color: #22c55e;"></i>Daftar Ruangan
-                    </h5>
+    <x-table-card
+    title="Daftar Ruangan"
+    icon="bi bi-door-open"
+    table-id="tableRuangan"
+    search-placeholder="Cari ruangan, gedung..."
+    :total="count($ruangans)"
+    total-label="ruangan terdaftar"
+    :empty="$ruangans->isEmpty()"
+    empty-title="Belum ada data ruangan"
+    empty-subtitle="Tambahkan ruangan pertama Anda"
+    :colspan="7"
+>
+    <x-slot name="head">
+        <tr>
+            <th class="text-center" style="width: 50px; padding: 15px 10px;">
+                <i class="bi bi-hash"></i>
+            </th>
+            <th class="text-center" style="width: 20%; padding: 15px;">
+                <i class="bi bi-door-closed me-1"></i>Nama Ruangan
+            </th>
+            <th class="text-center" style="width: 12%; padding: 15px;">
+                <i class="bi bi-building me-1"></i>Gedung
+            </th>
+            <th class="text-center" style="width: 10%; padding: 15px;">
+                <i class="bi bi-layers me-1"></i>Lantai
+            </th>
+            <th class="text-center" style="width: 12%; padding: 15px;">
+                <i class="bi bi-people me-1"></i>Kapasitas
+            </th>
+            <th class="text-center" style="width: 10%; padding: 15px;">
+                <i class="bi bi-image me-1"></i>Foto
+            </th>
+            <th class="text-center" style="width: 280px; padding: 15px;">
+                <i class="bi bi-gear me-1"></i>Aksi
+            </th>
+        </tr>
+    </x-slot>
+
+    @foreach ($ruangans as $i => $ruangan)
+        <tr>
+            <td class="text-center">
+                <span class="badge-number">{{ $i + 1 }}</span>
+            </td>
+
+            <td>
+                <div class="fw-bold text-dark" style="font-size: 1rem;">
+                    {{ $ruangan->nama_ruangan }}
                 </div>
-                <div class="col-md-6">
-                    <div class="input-group shadow-sm" style="border-radius: 8px; overflow: hidden;">
-                        <span class="input-group-text bg-white border-end-0">
-                            <i class="bi bi-search" style="color: #22c55e;"></i>
-                        </span>
-                        <input type="text" class="form-control border-start-0 bg-white" id="searchInput" placeholder="Cari ruangan, gedung..." style="border-left: 0;">
-                    </div>
+
+                @if (!empty($ruangan->deskripsi))
+                    <small class="text-muted" style="font-size: 0.85rem;">
+                        <i class="bi bi-info-circle me-1"></i>
+                        {{ Str::limit($ruangan->deskripsi, 50) }}
+                    </small>
+                @endif
+            </td>
+
+            <td>
+                <span class="badge px-3 py-2"
+                    style="background: linear-gradient(135deg, #17a2b8, #138496); color: white; font-weight: 600; border-radius: 8px;">
+                    <i class="bi bi-building-fill me-1"></i>{{ $ruangan->gedung ?? '-' }}
+                </span>
+            </td>
+
+            <td class="text-center">
+                <span class="badge px-3 py-2"
+                    style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; font-weight: 600; border-radius: 8px;">
+                    <i class="bi bi-layers-fill me-1"></i>{{ $ruangan->Lantai ?? '-' }}
+                </span>
+            </td>
+
+            <td class="text-center">
+                <span class="badge px-3 py-2"
+                    style="background: linear-gradient(135deg, #22c55e, #16a34a); color: white; font-weight: 600; border-radius: 8px;">
+                    <i class="bi bi-people-fill me-1"></i>{{ $ruangan->kapasitas ?? '0' }} orang
+                </span>
+            </td>
+
+            <td class="text-center">
+                @if ($ruangan->cover_foto)
+                    <img src="{{ asset('storage/uploads/ruangan/' . $ruangan->cover_foto) }}"
+                        alt="{{ $ruangan->nama_ruangan }}"
+                        class="rounded shadow-sm img-thumbnail"
+                        style="width: 80px; height: 55px; object-fit: cover; cursor: pointer;"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalViewImage"
+                        onclick="viewImage('{{ asset('storage/uploads/ruangan/' . $ruangan->cover_foto) }}', '{{ addslashes($ruangan->nama_ruangan) }}')">
+                @else
+                    <span class="badge bg-secondary bg-opacity-10 text-secondary">
+                        <i class="bi bi-image"></i> No Image
+                    </span>
+                @endif
+
+                <div class="small text-muted mt-1">
+                    Detail: {{ $ruangan->detail_count ?? 0 }} foto
                 </div>
-            </div>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0" id="tableRuangan">
-                    <thead style="background: linear-gradient(to right, #f8f9fa, #e9ecef);">
-                        <tr>
-                            <th class="text-center" style="width: 50px; padding: 15px 10px;">
-                                <i class="bi bi-hash"></i>
-                            </th>
-                            <th class="text-center" style="width: 20%; padding: 15px;">
-                                <i class="bi bi-door-closed me-1"></i>Nama Ruangan
-                            </th>
-                            <th class="text-center" style="width: 12%; padding: 15px;">
-                                <i class="bi bi-building me-1"></i>Gedung
-                            </th>
-                            <th class="text-center" style="width: 10%; padding: 15px;">
-                                <i class="bi bi-layers me-1"></i>Lantai
-                            </th>
-                            <th class="text-center" style="width: 12%; padding: 15px;">
-                                <i class="bi bi-people me-1"></i>Kapasitas
-                            </th>
-                            <th class="text-center" style="width: 10%; padding: 15px;">
-                                <i class="bi bi-image me-1"></i>Foto
-                            </th>
-                            <th class="text-center" style="width: 280px; padding: 15px;">
-                                <i class="bi bi-gear me-1"></i>Aksi
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if ($ruangans->isEmpty())
-                            <tr>
-                                <td colspan="7" class="text-center py-5">
-                                    <div class="text-muted">
-                                        <i class="bi bi-inbox display-4 d-block mb-3"></i>
-                                        <p class="mb-0">Belum ada data ruangan</p>
-                                        <small>Tambahkan ruangan pertama Anda</small>
-                                    </div>
-                                </td>
-                            </tr>
-                        @else
-                            @foreach ($ruangans as $i => $ruangan)
-                                <tr>
-                                    <td class="text-center">
-                                        <span class="badge-number">{{ $i + 1 }}</span>
-                                    </td>
-                                    <td>
-                                        <div class="fw-bold text-dark" style="font-size: 1rem;">
-                                            {{ $ruangan->nama_ruangan }}
-                                        </div>
-                                        @if (!empty($ruangan->deskripsi))
-                                            <small class="text-muted" style="font-size: 0.85rem;">
-                                                <i class="bi bi-info-circle me-1"></i>{{ Str::limit($ruangan->deskripsi, 50) }}
-                                            </small>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <span class="badge px-3 py-2" style="background: linear-gradient(135deg, #17a2b8, #138496); color: white; font-weight: 600; border-radius: 8px;">
-                                            <i class="bi bi-building-fill me-1"></i>{{ $ruangan->gedung ?? '-' }}
-                                        </span>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge px-3 py-2" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; font-weight: 600; border-radius: 8px;">
-                                            <i class="bi bi-layers-fill me-1"></i>{{ $ruangan->Lantai ?? '-' }}
-                                        </span>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge px-3 py-2" style="background: linear-gradient(135deg, #22c55e, #16a34a); color: white; font-weight: 600; border-radius: 8px;">
-                                            <i class="bi bi-people-fill me-1"></i>{{ $ruangan->kapasitas ?? '0' }} orang
-                                        </span>
-                                    </td>
-                                    <td class="text-center">
-                                        @if ($ruangan->cover_foto)
-                                            <img src="{{ asset('storage/uploads/ruangan/' . $ruangan->cover_foto) }}"
-                                                alt="{{ $ruangan->nama_ruangan }}"
-                                                class="rounded shadow-sm img-thumbnail"
-                                                style="width: 80px; height: 55px; object-fit: cover; cursor: pointer;"
-                                                data-bs-toggle="modal" data-bs-target="#modalViewImage"
-                                                onclick="viewImage('{{ asset('storage/uploads/ruangan/' . $ruangan->cover_foto) }}', '{{ addslashes($ruangan->nama_ruangan) }}')">
-                                        @else
-                                            <span class="badge bg-secondary bg-opacity-10 text-secondary">
-                                                <i class="bi bi-image"></i> No Image
-                                            </span>
-                                        @endif
-                                        <div class="small text-muted mt-1">
-                                            Detail: {{ $ruangan->detail_count ?? 0 }} foto
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex gap-1 justify-content-center">
-                                            <button class="btn btn-info aksi-btn" style="min-width: 65px; font-size: 0.8rem;"
-                                                data-bs-toggle="modal" data-bs-target="#modalViewDetail"
-                                                onclick="viewDetail({{ $ruangan->id }}, '{{ addslashes($ruangan->nama_ruangan) }}', '{{ addslashes($ruangan->gedung ?? '') }}', '{{ addslashes($ruangan->Lantai ?? '') }}', {{ $ruangan->kapasitas ?? 0 }}, '{{ addslashes($ruangan->deskripsi ?? '') }}', '{{ $ruangan->cover_foto ?? '' }}')">
-                                                <i class="bi bi-eye-fill me-1"></i>Detail
-                                            </button>
-                                            <button class="btn btn-warning aksi-btn" style="min-width: 60px; font-size: 0.8rem;"
-                                                data-bs-toggle="modal" data-bs-target="#modalEditRuangan"
-                                                onclick="editRuangan({{ $ruangan->id }}, '{{ addslashes($ruangan->nama_ruangan) }}', {{ $ruangan->gedung_id ?? 0 }}, {{ $ruangan->lantai_id ?? 0 }}, {{ $ruangan->kapasitas ?? 0 }}, '{{ addslashes($ruangan->deskripsi ?? '') }}')">
-                                                <i class="bi bi-pencil-fill me-1"></i>Edit
-                                            </button>
-                                            <form action="{{ route('admin.ruangan.destroy', $ruangan->id) }}" method="POST" class="d-inline" id="formDelete{{ $ruangan->id }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" class="btn btn-danger aksi-btn" style="min-width: 65px; font-size: 0.8rem;"
-                                                    onclick="deleteRuangan({{ $ruangan->id }}, '{{ addslashes($ruangan->nama_ruangan) }}')">
-                                                    <i class="bi bi-trash-fill me-1"></i>Hapus
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endif
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="card-footer bg-white py-3">
-            <div class="d-flex justify-content-between align-items-center">
-                <small class="text-muted fw-semibold">
-                    <i class="bi bi-info-circle-fill me-1" style="color: #22c55e;"></i>Total Data:
-                    <span class="badge ms-1" style="background: linear-gradient(135deg, #22c55e, #16a34a);">{{ count($ruangans) }}</span>
-                    ruangan terdaftar
-                </small>
-                <small class="text-muted">
-                    <i class="bi bi-calendar-check me-1"></i>{{ date('d F Y') }}
-                </small>
-            </div>
-        </div>
-    </div>
-</div>
+            </td>
+
+            <td>
+                <div class="d-flex gap-1 justify-content-center">
+                    <button class="btn btn-info aksi-btn"
+                        style="min-width: 65px; font-size: 0.8rem;"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalViewDetail"
+                        onclick="viewDetail(
+                            {{ $ruangan->id }},
+                            '{{ addslashes($ruangan->nama_ruangan) }}',
+                            '{{ addslashes($ruangan->gedung ?? '') }}',
+                            '{{ addslashes($ruangan->Lantai ?? '') }}',
+                            {{ $ruangan->kapasitas ?? 0 }},
+                            '{{ addslashes($ruangan->deskripsi ?? '') }}',
+                            '{{ $ruangan->cover_foto ?? '' }}'
+                        )">
+                        <i class="bi bi-eye-fill me-1"></i>Detail
+                    </button>
+
+                    <button class="btn btn-warning aksi-btn"
+                        style="min-width: 60px; font-size: 0.8rem;"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalEditRuangan"
+                        onclick="editRuangan(
+                            {{ $ruangan->id }},
+                            '{{ addslashes($ruangan->nama_ruangan) }}',
+                            {{ $ruangan->gedung_id ?? 0 }},
+                            {{ $ruangan->lantai_id ?? 0 }},
+                            {{ $ruangan->kapasitas ?? 0 }},
+                            '{{ addslashes($ruangan->deskripsi ?? '') }}'
+                        )">
+                        <i class="bi bi-pencil-fill me-1"></i>Edit
+                    </button>
+
+                    <form action="{{ route('admin.ruangan.destroy', $ruangan->id) }}"
+                        method="POST"
+                        class="d-inline"
+                        id="formDelete{{ $ruangan->id }}">
+                        @csrf
+                        @method('DELETE')
+
+                        <button type="button"
+                            class="btn btn-danger aksi-btn"
+                            style="min-width: 65px; font-size: 0.8rem;"
+                            onclick="deleteRuangan({{ $ruangan->id }}, '{{ addslashes($ruangan->nama_ruangan) }}')">
+                            <i class="bi bi-trash-fill me-1"></i>Hapus
+                        </button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+    @endforeach
+    </x-table-card>
 
 <!-- Modal Tambah Ruangan -->
 <div class="modal fade" id="modalAddRuangan" tabindex="-1">
