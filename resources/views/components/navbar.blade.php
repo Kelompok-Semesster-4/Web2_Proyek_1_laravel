@@ -15,6 +15,9 @@
             @if(Auth::user()->role === 'admin')
                 <a href="{{ route('admin.dashboard') }}">Admin Dashboard</a>
             @endif
+            @if (Auth::user()->role === 'mahasiswa')
+              <a class="{{ request()->routeIs('mahasiswa.profil') ? 'active' : '' }}" href="{{ route('mahasiswa.profil') }}">Profil Pengguna</a>
+            @endif
             <form method="POST" action="{{ route('logout') }}" style="display:inline; padding:0; margin:0;" class="d-inline">
                 @csrf
                 <button type="submit" style="background:none; border:none; color:inherit; font:inherit; cursor:pointer; padding:0; outline:none;" class="nav-link">Logout</button>
