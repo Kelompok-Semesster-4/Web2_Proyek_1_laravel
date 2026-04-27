@@ -8,7 +8,7 @@
     :showButton="false"
     />
     <!-- Alert Messages -->
-    <x-alert-admin />
+    <x-alert-admin entity="Pengajuan" />
 
     <!-- Card Tabel Persetujuan -->
     <x-table-card

@@ -9,7 +9,7 @@
         modalTarget="#modalAddRuangan"
     />
     <!-- Alert Messages -->
-    <x-alert-admin />
+    <x-alert-admin entity="Ruangan" />
 
     <!-- Card Tabel Ruangan -->
     <x-table-card

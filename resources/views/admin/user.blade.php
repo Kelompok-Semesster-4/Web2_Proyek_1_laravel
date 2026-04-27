@@ -9,7 +9,7 @@
     modalTarget="#modalAddUser"
     />
     <!-- Alert Messages -->
-    <x-alert-admin />
+    <x-alert-admin entity="User" />
 
     <!-- Card Tabel User -->
    <x-table-card

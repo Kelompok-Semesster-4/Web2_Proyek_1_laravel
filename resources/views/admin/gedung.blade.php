@@ -9,13 +9,7 @@
         modalTarget="#modalAddGedung"
     />
     <!-- Alert Messages -->
-    <x-alert-admin 
-    title="Daftar Gedung"
-    icon="bi bi-building"
-    table-id="tableGedung"
-    
-
-    />
+    <x-alert-admin entity="Gedung" />
     
     <!-- Card Tabel Gedung -->
     <x-table-card

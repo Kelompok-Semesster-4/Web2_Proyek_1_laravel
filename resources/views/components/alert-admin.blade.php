@@ -1,3 +1,7 @@
+@props([
+    'entity' => 'Data',
+])
+
 @php
     $success = session('success') ?? session('flash_success');
     $error = session('error') ?? session('flash_error');
@@ -10,9 +14,9 @@
             <div>
                 <strong class="d-block">Berhasil!</strong>
                 <span class="text-muted">
-                    @if($success === 'add') Gedung/Data berhasil ditambahkan.
-                    @elseif($success === 'edit') Gedung/Data berhasil diperbarui.
-                    @elseif($success === 'delete') Gedung/Data berhasil dihapus.
+                    @if($success === 'add') {{ $entity }} berhasil ditambahkan.
+                    @elseif($success === 'edit') {{ $entity }} berhasil diperbarui.
+                    @elseif($success === 'delete') {{ $entity }} berhasil dihapus.
                     @else {{ $success }}
                     @endif
                 </span>
