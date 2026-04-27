@@ -208,6 +208,8 @@
         font-size: 36px
       }
     }
+
+    [x-cloak] { display: none !important; }
   </style>
 
   <div class="login-stage">
@@ -237,7 +239,9 @@
         </div>
       </section>
 
-      <section class="login-card">
+      <section class="login-card" x-data="{ view: '{{ $defaultTab ?? 'login' }}' }"
+      @popstate.window="view = window.location.pathname.includes('register') ? 'register' : 'login'">
+      <div x-show="view === 'login'" x-transition>
         <div class="cardhead">
           <div class="title">Form Login</div>
           <div class="sub">Silakan login untuk melanjutkan</div>
@@ -280,9 +284,66 @@
           <button class="btn" type="submit">Masuk</button>
 
           <div class="helper" style="margin-bottom: 15px;">
-            Gunakan akun yang sudah terdaftar. Jika gagal login, pastikan username/password benar.
+            Gunakan akun yang sudah terdaftar. Jika gagal login, pastikan username/password benar. 
+            Jika belum punya akun, maka 
+            <a href="/register" style="color: #18a84d;" @click.prevent="view = 'register'; window.history.pushState({}, '', '/register')">
+              daftar di sini
+            </a>
           </div>
         </form>
+      </div>
+      <div x-show="view === 'register'" x-transition x-cloak>
+        <div class="cardhead">
+          <div class="title">Form Register</div>
+          <div class="sub">Silakan register untuk membuat akun</div>
+        </div>
+
+        <x-auth-session-status class="msg" :status="session('status')" />
+
+        @if ($errors->any())
+          <div class="msg">
+            {{ $errors->first() }}
+          </div>
+        @endif
+
+        <form action="{{ route('register') }}" method="post" autocomplete="off">
+        @csrf
+          <div class="field">
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" class="input" placeholder="Masukkan username" required autofocus>
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" class="input" placeholder="Masukkan email" required>
+          </div>
+          <div class="field">
+            <label for="prodi">Prodi</label>
+            <input type="text" name="prodi" id="prodi" class="input" placeholder="Masukkan prodi" required>
+          </div>
+          <div class="field">
+            <label for="pwre">Password</label>
+            <input type="password" name="password" id="pwre" class="input" placeholder="Masukkan password" required>
+          </div>
+          <div class="field">
+            <label for="pwconf">Konfirmasi Password</label>
+            <input type="password" name="password_confirmation" id="pwconf" class="input" placeholder="Konfirmasi password" required>
+          </div>
+          <div class="row">
+            <div class="showpw" style="display:flex;gap:10px;align-items:center">
+              <input id="showpwre" type="checkbox">
+              <label for="showpwre" style="margin:0;color:#334155;font-size:13px">Show password</label>
+            </div>
+          </div>
+          <button class="btn" type="submit">Daftar</button>
+          <div class="helper" style="margin-bottom: 15px;">
+            Daftarkan akun agar dapat melakukan peminjaman. Jika sudah punya, 
+            <a href="/login" style="color: #18a84d;" @click.prevent="view = 'login'; window.history.pushState({}, '', '/login')">
+              silakan masuk 
+            </a>
+            dengan akun anda.
+          </div>
+        </form>
+      </div>
         <div class="divider">atau</div>
 
         <a href="{{ route('google.redirect') }}" class="google-btn">
@@ -305,7 +366,12 @@
 
   <script>
     const cb = document.getElementById('showpw');
+    const cbre = document.getElementById('showpwre');
     const pw = document.getElementById('pw');
+    const pwre = document.getElementById('pwre');
+    const pwconf = document.getElementById('pwconf')
     if (cb && pw) cb.addEventListener('change', () => { pw.type = cb.checked ? 'text' : 'password'; });
+    if (cbre && pwre) cbre.addEventListener('change', () => { pwre.type = cbre.checked ? 'text' : 'password'; });
+    if (cbre && pwconf) cbre.addEventListener('change', () => { pwconf.type = cbre.checked ? 'text' : 'password'; });
   </script>
 </x-layouts.guest-layout>

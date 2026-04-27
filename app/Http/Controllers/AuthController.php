@@ -40,7 +40,7 @@ class AuthController extends Controller
             ['label' => 'Kapasitas', 'value' => $totalKapas],
         ];
 
-        return view('auth.login', ['stats' => $statsArray]);
+        return view('auth.login', ['stats' => $statsArray, 'defaultTab' => 'login']);
     }
 
     public function login(Request $request)
@@ -184,5 +184,57 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/login');
+    }
+
+    public function registerForm()
+    {   if (Auth::check())
+        {   $role = Auth::user()->role;
+            return redirect($role === 'admin' ? '/admin/dashboard' : '/dashboard');
+        }
+
+        $stats = DB::selectOne("
+            SELECT
+                COUNT(r.id)                         AS total_ruangan,
+                COUNT(DISTINCT g.id)                AS total_gedung,
+                COALESCE(SUM(r.kapasitas), 0)       AS total_kapasitas
+            FROM ruangan r
+            LEFT JOIN lantai l ON l.id = r.lantai_id
+            LEFT JOIN gedung g ON g.id = l.gedung_id
+        ");
+
+        $totalRuangan = number_format((int) ($stats->total_ruangan ?? 0), 0, ',', '.');
+        $totalGedung = number_format((int) ($stats->total_gedung ?? 0), 0, ',', '.');
+        $totalKapas = number_format((int) ($stats->total_kapasitas ?? 0), 0, ',', '.') . ' org';
+
+        $statsArray = [
+            ['label' => 'Total Ruangan', 'value' => $totalRuangan],
+            ['label' => 'Gedung', 'value' => $totalGedung],
+            ['label' => 'Kapasitas', 'value' => $totalKapas],
+        ];
+
+        return view('auth.login', ['stats' => $statsArray, 'defaultTab' => 'register']);
+    }
+
+    public function register(Request $request)
+    {   $validated_request = $request->validate([
+            'username' => ['required', 'string', 'max:50', 'unique:users,username'],
+            'email' => ['nullable', 'string', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'prodi' => ['required', 'string', 'max:100'],
+        ]);
+
+        $user = User::create([
+            'nama' => $validated_request['username'],
+            'username' => $validated_request['username'],
+            'email' => $validated_request['email'],
+            'password' => Hash::make($validated_request['password']),
+            'role' => 'mahasiswa',
+            'prodi' => $validated_request['prodi'],
+        ]);
+
+        Auth::login($user, false);
+        $request->session()->regenerate();
+
+        return redirect()->intended('/dashboard');
     }
 }
