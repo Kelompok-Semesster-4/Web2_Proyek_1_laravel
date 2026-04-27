@@ -117,121 +117,105 @@
     </x-table-card>
 
 <!-- Modal Add Gedung -->
-<div class="modal fade" id="modalAddGedung" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
-            <div class="modal-header text-white" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border: none;">
-                <h5 class="modal-title fw-bold">
-                    <i class="bi bi-plus-circle-fill me-2"></i>Tambah Gedung Baru
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+<x-modal-admin
+    id="modalAddGedung"
+    title="Tambah Gedung Baru"
+    icon="bi bi-plus-circle-fill"
+>
+    <form action="{{ route('admin.gedung.store') }}" method="POST">
+        @csrf
+        <div class="modal-body p-4">
+            <div class="mb-3">
+                <label for="addNamaGedung" class="form-label fw-semibold">
+                    <i class="bi bi-building me-1" style="color: #22c55e;"></i>Nama Gedung
+                    <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control" id="addNamaGedung" name="nama_gedung" maxlength="100" required placeholder="Contoh: Gedung A">
+                <small class="text-muted">Nama gedung harus unik</small>
             </div>
-            <form action="{{ route('admin.gedung.store') }}" method="POST">
-                @csrf
-                <div class="modal-body p-4">
-                    <div class="mb-3">
-                        <label for="addNamaGedung" class="form-label fw-semibold">
-                            <i class="bi bi-building me-1" style="color: #22c55e;"></i>Nama Gedung
-                            <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" class="form-control" id="addNamaGedung" name="nama_gedung" maxlength="100" required placeholder="Contoh: Gedung A">
-                        <small class="text-muted">Nama gedung harus unik</small>
-                    </div>
-                    <div class="mb-3">
-                        <label for="addJumlahLantai" class="form-label fw-semibold">
-                            <i class="bi bi-layers me-1" style="color: #22c55e;"></i>Jumlah Lantai
-                            <span class="text-danger">*</span>
-                        </label>
-                        <input type="number" class="form-control" id="addJumlahLantai" name="jumlah_lantai" min="1" required placeholder="Contoh: 3">
-                        <small class="text-muted">Lantai akan dibuat otomatis (contoh: isi 3 = dibuatkan lantai 1, 2, 3)</small>
-                    </div>
-                </div>
-                <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-success">
-                        <i class="bi bi-check-circle me-1"></i>Simpan
-                    </button>
-                </div>
-            </form>
+            <div class="mb-3">
+                <label for="addJumlahLantai" class="form-label fw-semibold">
+                    <i class="bi bi-layers me-1" style="color: #22c55e;"></i>Jumlah Lantai
+                    <span class="text-danger">*</span>
+                </label>
+                <input type="number" class="form-control" id="addJumlahLantai" name="jumlah_lantai" min="1" required placeholder="Contoh: 3">
+                <small class="text-muted">Lantai akan dibuat otomatis (contoh: isi 3 = dibuatkan lantai 1, 2, 3)</small>
+            </div>
         </div>
-    </div>
-</div>
+        <div class="modal-footer border-0 pt-0">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-check-circle me-1"></i>Simpan
+            </button>
+        </div>
+    </form>
+</x-modal-admin>
 
 <!-- Modal Edit Gedung -->
-<div class="modal fade" id="modalEditGedung" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
-            <div class="modal-header text-white" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border: none;">
-                <h5 class="modal-title fw-bold">
-                    <i class="bi bi-pencil-square me-2"></i>Edit Gedung
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+<x-modal-admin
+    id="modalEditGedung"
+    title="Edit Gedung"
+    icon="bi bi-pencil-square"
+    header-gradient="linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)"
+>
+    <form action="{{ route('admin.gedung.update') }}" method="POST">
+        @csrf
+        @method('PUT')
+        <div class="modal-body p-4">
+            <input type="hidden" id="editGedungId" name="id">
+            <div class="mb-3">
+                <label for="editNamaGedung" class="form-label fw-semibold">
+                    <i class="bi bi-building me-1" style="color: #22c55e;"></i>Nama Gedung
+                    <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control" id="editNamaGedung" name="nama_gedung" maxlength="100" required placeholder="Contoh: Gedung A">
+                <small class="text-muted">Nama gedung harus unik</small>
             </div>
-            <form action="{{ route('admin.gedung.update') }}" method="POST">
-                @csrf
-                @method('PUT')
-                <div class="modal-body p-4">
-                    <input type="hidden" id="editGedungId" name="id">
-                    <div class="mb-3">
-                        <label for="editNamaGedung" class="form-label fw-semibold">
-                            <i class="bi bi-building me-1" style="color: #22c55e;"></i>Nama Gedung
-                            <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" class="form-control" id="editNamaGedung" name="nama_gedung" maxlength="100" required placeholder="Contoh: Gedung A">
-                        <small class="text-muted">Nama gedung harus unik</small>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editJumlahLantai" class="form-label fw-semibold">
-                            <i class="bi bi-layers me-1" style="color: #22c55e;"></i>Jumlah Lantai
-                            <span class="text-danger">*</span>
-                        </label>
-                        <input type="number" class="form-control" id="editJumlahLantai" name="jumlah_lantai" min="1" required placeholder="Contoh: 3">
-                        <small class="text-muted text-warning"><i class="bi bi-exclamation-triangle-fill"></i> Mengurangi jumlah lantai akan menghapus lantai atas jika belum ada ruangan.</small>
-                    </div>
-                </div>
-                <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-warning">
-                        <i class="bi bi-check-circle me-1"></i>Perbarui
-                    </button>
-                </div>
-            </form>
+            <div class="mb-3">
+                <label for="editJumlahLantai" class="form-label fw-semibold">
+                    <i class="bi bi-layers me-1" style="color: #22c55e;"></i>Jumlah Lantai
+                    <span class="text-danger">*</span>
+                </label>
+                <input type="number" class="form-control" id="editJumlahLantai" name="jumlah_lantai" min="1" required placeholder="Contoh: 3">
+                <small class="text-muted text-warning"><i class="bi bi-exclamation-triangle-fill"></i> Mengurangi jumlah lantai akan menghapus lantai atas jika belum ada ruangan.</small>
+            </div>
         </div>
-    </div>
-</div>
+        <div class="modal-footer border-0 pt-0">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-warning">
+                <i class="bi bi-check-circle me-1"></i>Perbarui
+            </button>
+        </div>
+    </form>
+</x-modal-admin>
 
 <!-- Modal Detail Gedung -->
-<div class="modal fade" id="modalViewDetailGedung" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
-            <div class="modal-header text-white" style="background: linear-gradient(135deg, #22b8cf 0%, #0ea5b7 100%); border: none;">
-                <h5 class="modal-title fw-bold">
-                    <i class="bi bi-eye-fill me-2"></i>Detail Gedung
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+<x-modal-admin
+    id="modalViewDetailGedung"
+    title="Detail Gedung"
+    icon="bi bi-eye-fill"
+    header-gradient="linear-gradient(135deg, #22b8cf 0%, #0ea5b7 100%)"
+>
+    <div class="modal-body p-4">
+        <div class="mb-3">
+            <label class="form-label fw-semibold text-muted mb-1">Nama Gedung</label>
+            <div id="detailGedungNama" class="fw-bold fs-5"></div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <label class="form-label fw-semibold text-muted mb-1">Jumlah Lantai</label>
+                <div id="detailGedungLantai" class="fw-bold"></div>
             </div>
-            <div class="modal-body p-4">
-                <div class="mb-3">
-                    <label class="form-label fw-semibold text-muted mb-1">Nama Gedung</label>
-                    <div id="detailGedungNama" class="fw-bold fs-5"></div>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <label class="form-label fw-semibold text-muted mb-1">Jumlah Lantai</label>
-                        <div id="detailGedungLantai" class="fw-bold"></div>
-                    </div>
-                    <div class="col-6">
-                        <label class="form-label fw-semibold text-muted mb-1">Jumlah Ruangan</label>
-                        <div id="detailGedungRuangan" class="fw-bold"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer bg-light border-0">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            <div class="col-6">
+                <label class="form-label fw-semibold text-muted mb-1">Jumlah Ruangan</label>
+                <div id="detailGedungRuangan" class="fw-bold"></div>
             </div>
         </div>
     </div>
-</div>
+    <div class="modal-footer bg-light border-0">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+    </div>
+</x-modal-admin>
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

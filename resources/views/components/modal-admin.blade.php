@@ -1,0 +1,33 @@
+@props([
+    'id',
+    'title' => '',
+    'icon' => null,
+    'headerGradient' => 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+    'headerTextClass' => 'text-white',
+    'dialogClass' => 'modal-dialog modal-dialog-centered',
+    'contentClass' => 'modal-content border-0 shadow-lg',
+    'closeButtonWhite' => true,
+])
+
+<div class="modal fade" id="{{ $id }}" tabindex="-1" aria-hidden="true">
+    <div class="{{ $dialogClass }}">
+        <div class="{{ $contentClass }}" style="border-radius: 15px; overflow: hidden;">
+            <div class="modal-header {{ $headerTextClass }}" style="background: {{ $headerGradient }}; border: none;">
+                <h5 class="modal-title fw-bold">
+                    @if ($icon)
+                        <i class="{{ $icon }} me-2"></i>
+                    @endif
+                    {{ $title }}
+                </h5>
+                <button
+                    type="button"
+                    class="btn-close {{ $closeButtonWhite ? 'btn-close-white' : '' }}"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+            </div>
+
+            {{ $slot }}
+        </div>
+    </div>
+</div>
