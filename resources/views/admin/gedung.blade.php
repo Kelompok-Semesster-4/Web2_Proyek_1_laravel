@@ -221,19 +221,18 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     // Search functionality
-    document.getElementById('searchInput').addEventListener('keyup', function() {
-        const searchValue = this.value.toLowerCase();
-        const tableRows = document.querySelectorAll('#tableGedung tbody tr');
+    const gedungSearchInput = document.getElementById('tableGedungSearch') || document.getElementById('searchInput');
+    if (gedungSearchInput) {
+        gedungSearchInput.addEventListener('keyup', function() {
+            const searchValue = this.value.toLowerCase();
+            const tableRows = document.querySelectorAll('#tableGedung tbody tr');
 
-        tableRows.forEach(row => {
-            const gedungName = row.querySelector('.gedung-name')?.textContent.toLowerCase() || '';
-            if (gedungName.includes(searchValue)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
+            tableRows.forEach(row => {
+                const gedungName = row.querySelector('.gedung-name')?.textContent.toLowerCase() || '';
+                row.style.display = gedungName.includes(searchValue) ? '' : 'none';
+            });
         });
-    });
+    }
 
     // View detail gedung
     function viewDetailGedung(namaGedung, jumlahLantai, jumlahRuangan) {

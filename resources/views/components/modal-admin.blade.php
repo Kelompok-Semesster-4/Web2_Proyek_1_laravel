@@ -2,6 +2,7 @@
     'id',
     'title' => '',
     'icon' => null,
+    'modalClass' => 'modal fade',
     'headerGradient' => 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
     'headerTextClass' => 'text-white',
     'dialogClass' => 'modal-dialog modal-dialog-centered',
@@ -9,7 +10,7 @@
     'closeButtonWhite' => true,
 ])
 
-<div class="modal fade" id="{{ $id }}" tabindex="-1" aria-hidden="true">
+<div class="{{ $modalClass }}" id="{{ $id }}" tabindex="-1" aria-hidden="true">
     <div class="{{ $dialogClass }}">
         <div class="{{ $contentClass }}" style="border-radius: 15px; overflow: hidden;">
             <div class="modal-header {{ $headerTextClass }}" style="background: {{ $headerGradient }}; border: none;">

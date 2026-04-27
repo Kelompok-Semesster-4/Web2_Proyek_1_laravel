@@ -130,19 +130,17 @@ function iconFasilitas(string $nama): string {
         </div>
     </div>
 
-    <div class="modal fade img-modal" id="imagePreviewModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-white">Foto Ruangan</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-0 text-center">
-                    <img id="imagePreviewSrc" src="" alt="Preview" class="img-fluid image-preview-src">
-                </div>
-            </div>
+    <x-modal-admin
+        id="imagePreviewModal"
+        title="Foto Ruangan"
+        modal-class="modal fade img-modal"
+        dialog-class="modal-dialog modal-dialog-centered modal-xl"
+        header-gradient="#212529"
+    >
+        <div class="modal-body p-0 text-center">
+            <img id="imagePreviewSrc" src="" alt="Preview" class="img-fluid image-preview-src">
         </div>
-    </div>
+    </x-modal-admin>
 
     @push('scripts')
     <script>

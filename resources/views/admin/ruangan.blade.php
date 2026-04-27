@@ -164,18 +164,15 @@
     </x-table-card>
 
 <!-- Modal Tambah Ruangan -->
-<div class="modal fade" id="modalAddRuangan" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
-            <div class="modal-header text-white" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border: none;">
-                <h5 class="modal-title fw-bold">
-                    <i class="bi bi-plus-circle-fill me-2"></i>Tambah Ruangan Baru
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <form method="POST" action="{{ route('admin.ruangan.store') }}" enctype="multipart/form-data">
-                @csrf
-                <div class="modal-body p-4">
+<x-modal-admin
+    id="modalAddRuangan"
+    title="Tambah Ruangan Baru"
+    icon="bi bi-plus-circle-fill"
+    dialog-class="modal-dialog modal-dialog-centered modal-lg"
+>
+    <form method="POST" action="{{ route('admin.ruangan.store') }}" enctype="multipart/form-data">
+        @csrf
+        <div class="modal-body p-4">
 
                     <div class="row">
                         <div class="col-md-4 mb-3">
@@ -276,36 +273,32 @@
                             <i class="bi bi-info-circle me-1"></i>Pilih beberapa foto untuk detail
                         </small>
                     </div>
-                </div>
-                <div class="modal-footer bg-light border-0">
-                    <button type="button" class="btn text-white" data-bs-dismiss="modal"
-                        style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
-                        <i class="bi bi-x-circle me-1"></i>Batal
-                    </button>
-                    <button type="submit" class="btn text-white"
-                        style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
-                        <i class="bi bi-save me-1"></i>Simpan Ruangan
-                    </button>
-                </div>
-            </form>
         </div>
-    </div>
-</div>
+        <div class="modal-footer bg-light border-0">
+            <button type="button" class="btn text-white" data-bs-dismiss="modal"
+                style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
+                <i class="bi bi-x-circle me-1"></i>Batal
+            </button>
+            <button type="submit" class="btn text-white"
+                style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
+                <i class="bi bi-save me-1"></i>Simpan Ruangan
+            </button>
+        </div>
+    </form>
+</x-modal-admin>
 
 <!-- Modal Edit Ruangan -->
-<div class="modal fade" id="modalEditRuangan" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
-            <div class="modal-header text-white" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border: none;">
-                <h5 class="modal-title fw-bold">
-                    <i class="bi bi-pencil-square me-2"></i>Edit Ruangan
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <form method="POST" action="{{ route('admin.ruangan.update') }}" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <div class="modal-body p-4">
+<x-modal-admin
+    id="modalEditRuangan"
+    title="Edit Ruangan"
+    icon="bi bi-pencil-square"
+    header-gradient="linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)"
+    dialog-class="modal-dialog modal-dialog-centered modal-lg"
+>
+    <form method="POST" action="{{ route('admin.ruangan.update') }}" enctype="multipart/form-data">
+        @csrf
+        @method('PUT')
+        <div class="modal-body p-4">
                     <input type="hidden" name="id" id="editRuanganId">
 
                     <div class="row">
@@ -428,33 +421,29 @@
                             <i class="bi bi-info-circle me-1"></i>Bisa pilih lebih dari satu foto
                         </small>
                     </div>
-                </div>
-                <div class="modal-footer bg-light border-0">
-                    <button type="button" class="btn text-white" data-bs-dismiss="modal"
-                        style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
-                        <i class="bi bi-x-circle me-1"></i>Batal
-                    </button>
-                    <button type="submit" class="btn text-white"
-                        style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
-                        <i class="bi bi-check-circle me-1"></i>Update Ruangan
-                    </button>
-                </div>
-            </form>
         </div>
-    </div>
-</div>
+        <div class="modal-footer bg-light border-0">
+            <button type="button" class="btn text-white" data-bs-dismiss="modal"
+                style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
+                <i class="bi bi-x-circle me-1"></i>Batal
+            </button>
+            <button type="submit" class="btn text-white"
+                style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
+                <i class="bi bi-check-circle me-1"></i>Update Ruangan
+            </button>
+        </div>
+    </form>
+</x-modal-admin>
 
 <!-- Modal View Detail -->
-<div class="modal fade" id="modalViewDetail" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
-            <div class="modal-header text-white" style="background: linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%); border: none;">
-                <h5 class="modal-title fw-bold">
-                    <i class="bi bi-eye-fill me-2"></i>Detail Ruangan
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-4">
+<x-modal-admin
+    id="modalViewDetail"
+    title="Detail Ruangan"
+    icon="bi bi-eye-fill"
+    header-gradient="linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%)"
+    dialog-class="modal-dialog modal-dialog-centered modal-lg"
+>
+    <div class="modal-body p-4">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
@@ -506,33 +495,28 @@
                     </label>
                     <p class="border p-3 rounded bg-light" id="detailDeskripsi">-</p>
                 </div>
-            </div>
-            <div class="modal-footer bg-light border-0">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                    style="border-radius: 8px; padding: 10px 24px;">
-                    <i class="bi bi-x-circle me-1"></i>Tutup
-                </button>
-            </div>
-        </div>
     </div>
-</div>
+    <div class="modal-footer bg-light border-0">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+            style="border-radius: 8px; padding: 10px 24px;">
+            <i class="bi bi-x-circle me-1"></i>Tutup
+        </button>
+    </div>
+</x-modal-admin>
 
 <!-- Modal View Image -->
-<div class="modal fade" id="modalViewImage" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 shadow-lg bg-dark" style="border-radius: 15px; overflow: hidden;">
-            <div class="modal-header bg-dark text-white border-0">
-                <h5 class="modal-title fw-bold" id="viewImageTitle">
-                    <i class="bi bi-images me-2"></i>Foto Ruangan
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-0 bg-dark text-center">
-                <img id="viewImageSrc" src="" alt="Foto Ruangan" class="img-fluid" style="max-height: 70vh;">
-            </div>
-        </div>
+<x-modal-admin
+    id="modalViewImage"
+    title="Foto Ruangan"
+    icon="bi bi-images"
+    header-gradient="#212529"
+    dialog-class="modal-dialog modal-dialog-centered modal-lg"
+    content-class="modal-content border-0 shadow-lg bg-dark"
+>
+    <div class="modal-body p-0 bg-dark text-center">
+        <img id="viewImageSrc" src="" alt="Foto Ruangan" class="img-fluid" style="max-height: 70vh;">
     </div>
-</div>
+</x-modal-admin>
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -598,19 +582,18 @@
     });
 
     // Search functionality
-    document.getElementById('searchInput').addEventListener('keyup', function() {
-        const searchValue = this.value.toLowerCase();
-        const tableRows = document.querySelectorAll('#tableRuangan tbody tr');
+    const ruanganSearchInput = document.getElementById('tableRuanganSearch') || document.getElementById('searchInput');
+    if (ruanganSearchInput) {
+        ruanganSearchInput.addEventListener('keyup', function() {
+            const searchValue = this.value.toLowerCase();
+            const tableRows = document.querySelectorAll('#tableRuangan tbody tr');
 
-        tableRows.forEach(row => {
-            const text = row.textContent.toLowerCase();
-            if (text.includes(searchValue)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
+            tableRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchValue) ? '' : 'none';
+            });
         });
-    });
+    }
 
     // Preview image on add modal
     function previewAddCover(event) {

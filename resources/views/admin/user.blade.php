@@ -6,7 +6,7 @@
     title="Kelola User"
     icon="bi bi-person-plus-fill"
     buttonText="Tambah User"
-    modalTarget="#modalAddUse"
+    modalTarget="#modalAddUser"
     />
     <!-- Alert Messages -->
     <x-alert-admin />
@@ -150,209 +150,192 @@
 </x-table-card>
 
 <!-- Modal Add User -->
-<div class="modal fade" id="modalAddUser" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
-            <div class="modal-header text-white border-0" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border-radius: 15px 15px 0 0;">
-                <h5 class="modal-title fw-bold">
-                    <i class="bi bi-person-plus-fill me-2"></i>Tambah User Baru
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+<x-modal-admin
+    id="modalAddUser"
+    title="Tambah User Baru"
+    icon="bi bi-person-plus-fill"
+>
+    <form action="{{ route('admin.user.store') }}" method="POST">
+        @csrf
+        <div class="modal-body p-4">
+            <div class="mb-3">
+                <label class="form-label fw-semibold">
+                    <i class="bi bi-person me-1"></i>Nama Lengkap <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control" name="nama" required
+                    style="border-radius: 8px; padding: 10px 15px;">
             </div>
-            <form action="{{ route('admin.user.store') }}" method="POST">
-                @csrf
-                <div class="modal-body p-4">
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-person me-1"></i>Nama Lengkap <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" class="form-control" name="nama" required
-                            style="border-radius: 8px; padding: 10px 15px;">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-at me-1"></i>Username <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" class="form-control" name="username" required
-                            style="border-radius: 8px; padding: 10px 15px;">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-key me-1"></i>Password <span class="text-danger">*</span>
-                        </label>
-                        <input type="password" class="form-control" name="password" required
-                            style="border-radius: 8px; padding: 10px 15px;">
-                        <small class="text-muted">Minimal 6 karakter</small>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-shield-check me-1"></i>Role <span class="text-danger">*</span>
-                        </label>
-                        <select class="form-select" name="role" id="addRole" required onchange="toggleProdiField('add')"
-                            style="border-radius: 8px; padding: 10px 15px;">
-                            <option value="">Pilih Role</option>
-                            <option value="admin">Admin</option>
-                            <option value="mahasiswa">Mahasiswa</option>
-                        </select>
-                    </div>
-                    <div class="mb-3" id="addProdiField" style="display: none;">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-mortarboard me-1"></i>Program Studi
-                        </label>
-                        <input type="text" class="form-control" name="prodi"
-                            style="border-radius: 8px; padding: 10px 15px;">
-                    </div>
-                </div>
-                <div class="modal-footer bg-light border-0">
-                    <button type="button" class="btn text-white" data-bs-dismiss="modal" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
-                        <i class="bi bi-x-circle me-1"></i>Batal
-                    </button>
-                    <button type="submit" class="btn text-white" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
-                        <i class="bi bi-save me-1"></i>Simpan User
-                    </button>
-                </div>
-            </form>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">
+                    <i class="bi bi-at me-1"></i>Username <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control" name="username" required
+                    style="border-radius: 8px; padding: 10px 15px;">
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">
+                    <i class="bi bi-key me-1"></i>Password <span class="text-danger">*</span>
+                </label>
+                <input type="password" class="form-control" name="password" required
+                    style="border-radius: 8px; padding: 10px 15px;">
+                <small class="text-muted">Minimal 6 karakter</small>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">
+                    <i class="bi bi-shield-check me-1"></i>Role <span class="text-danger">*</span>
+                </label>
+                <select class="form-select" name="role" id="addRole" required onchange="toggleProdiField('add')"
+                    style="border-radius: 8px; padding: 10px 15px;">
+                    <option value="">Pilih Role</option>
+                    <option value="admin">Admin</option>
+                    <option value="mahasiswa">Mahasiswa</option>
+                </select>
+            </div>
+            <div class="mb-3" id="addProdiField" style="display: none;">
+                <label class="form-label fw-semibold">
+                    <i class="bi bi-mortarboard me-1"></i>Program Studi
+                </label>
+                <input type="text" class="form-control" name="prodi"
+                    style="border-radius: 8px; padding: 10px 15px;">
+            </div>
         </div>
-    </div>
-</div>
+        <div class="modal-footer bg-light border-0">
+            <button type="button" class="btn text-white" data-bs-dismiss="modal" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
+                <i class="bi bi-x-circle me-1"></i>Batal
+            </button>
+            <button type="submit" class="btn text-white" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
+                <i class="bi bi-save me-1"></i>Simpan User
+            </button>
+        </div>
+    </form>
+</x-modal-admin>
 
 <!-- Modal Edit User -->
-<div class="modal fade" id="modalEditUser" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
-            <div class="modal-header text-white border-0" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border-radius: 15px 15px 0 0;">
-                <h5 class="modal-title fw-bold">
-                    <i class="bi bi-pencil-square me-2"></i>Edit User
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+<x-modal-admin
+    id="modalEditUser"
+    title="Edit User"
+    icon="bi bi-pencil-square"
+    header-gradient="linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)"
+>
+    <form action="{{ route('admin.user.update') }}" method="POST">
+        @csrf
+        @method('PUT')
+        <input type="hidden" name="id" id="editUserId">
+        <div class="modal-body p-4">
+            <div class="mb-3">
+                <label class="form-label fw-semibold">
+                    <i class="bi bi-person me-1"></i>Nama Lengkap <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control" name="nama" id="editNama" required
+                    style="border-radius: 8px; padding: 10px 15px;">
             </div>
-            <form action="{{ route('admin.user.update') }}" method="POST">
-                @csrf
-                @method('PUT')
-                <input type="hidden" name="id" id="editUserId">
-                <div class="modal-body p-4">
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-person me-1"></i>Nama Lengkap <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" class="form-control" name="nama" id="editNama" required
-                            style="border-radius: 8px; padding: 10px 15px;">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-at me-1"></i>Username <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" class="form-control" name="username" id="editUsername" required
-                            style="border-radius: 8px; padding: 10px 15px;">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-key me-1"></i>Password Baru
-                        </label>
-                        <input type="password" class="form-control" name="password" id="editPassword"
-                            style="border-radius: 8px; padding: 10px 15px;">
-                        <small class="text-muted">Kosongkan jika tidak ingin mengubah password</small>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-shield-check me-1"></i>Role <span class="text-danger">*</span>
-                        </label>
-                        <select class="form-select" name="role" id="editRole" required onchange="toggleProdiField('edit')"
-                            style="border-radius: 8px; padding: 10px 15px;">
-                            <option value="">Pilih Role</option>
-                            <option value="admin">Admin</option>
-                            <option value="mahasiswa">Mahasiswa</option>
-                        </select>
-                    </div>
-                    <div class="mb-3" id="editProdiField" style="display: none;">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-mortarboard me-1"></i>Program Studi
-                        </label>
-                        <input type="text" class="form-control" name="prodi" id="editProdi"
-                            style="border-radius: 8px; padding: 10px 15px;">
-                    </div>
-                </div>
-                <div class="modal-footer bg-light border-0">
-                    <button type="button" class="btn text-white" data-bs-dismiss="modal" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
-                        <i class="bi bi-x-circle me-1"></i>Batal
-                    </button>
-                    <button type="submit" class="btn text-white" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
-                        <i class="bi bi-check-circle me-1"></i>Update User
-                    </button>
-                </div>
-            </form>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">
+                    <i class="bi bi-at me-1"></i>Username <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control" name="username" id="editUsername" required
+                    style="border-radius: 8px; padding: 10px 15px;">
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">
+                    <i class="bi bi-key me-1"></i>Password Baru
+                </label>
+                <input type="password" class="form-control" name="password" id="editPassword"
+                    style="border-radius: 8px; padding: 10px 15px;">
+                <small class="text-muted">Kosongkan jika tidak ingin mengubah password</small>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">
+                    <i class="bi bi-shield-check me-1"></i>Role <span class="text-danger">*</span>
+                </label>
+                <select class="form-select" name="role" id="editRole" required onchange="toggleProdiField('edit')"
+                    style="border-radius: 8px; padding: 10px 15px;">
+                    <option value="">Pilih Role</option>
+                    <option value="admin">Admin</option>
+                    <option value="mahasiswa">Mahasiswa</option>
+                </select>
+            </div>
+            <div class="mb-3" id="editProdiField" style="display: none;">
+                <label class="form-label fw-semibold">
+                    <i class="bi bi-mortarboard me-1"></i>Program Studi
+                </label>
+                <input type="text" class="form-control" name="prodi" id="editProdi"
+                    style="border-radius: 8px; padding: 10px 15px;">
+            </div>
         </div>
-    </div>
-</div>
+        <div class="modal-footer bg-light border-0">
+            <button type="button" class="btn text-white" data-bs-dismiss="modal" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
+                <i class="bi bi-x-circle me-1"></i>Batal
+            </button>
+            <button type="submit" class="btn text-white" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
+                <i class="bi bi-check-circle me-1"></i>Update User
+            </button>
+        </div>
+    </form>
+</x-modal-admin>
 
 <!-- Modal View Detail -->
-<div class="modal fade" id="modalViewDetail" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
-            <div class="modal-header text-white border-0" style="background: linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%); border-radius: 15px 15px 0 0;">
-                <h5 class="modal-title fw-bold">
-                    <i class="bi bi-info-circle-fill me-2"></i>Detail User
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-4">
-                <div class="detail-item mb-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
-                    <label class="text-muted small mb-1">
-                        <i class="bi bi-person me-1"></i>Nama Lengkap
-                    </label>
-                    <div class="fw-bold" id="detailNama"></div>
-                </div>
-                <div class="detail-item mb-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
-                    <label class="text-muted small mb-1">
-                        <i class="bi bi-at me-1"></i>Username
-                    </label>
-                    <div class="fw-bold" id="detailUsername"></div>
-                </div>
-                <div class="detail-item mb-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
-                    <label class="text-muted small mb-1">
-                        <i class="bi bi-shield-check me-1"></i>Role
-                    </label>
-                    <div id="detailRole"></div>
-                </div>
-                <div class="detail-item mb-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
-                    <label class="text-muted small mb-1">
-                        <i class="bi bi-mortarboard me-1"></i>Program Studi
-                    </label>
-                    <div class="fw-bold" id="detailProdi"></div>
-                </div>
-                <div class="detail-item mb-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
-                    <label class="text-muted small mb-1">
-                        <i class="bi bi-calendar3 me-1"></i>Terdaftar Sejak
-                    </label>
-                    <div class="fw-bold" id="detailCreated"></div>
-                </div>
-            </div>
-            <div class="modal-footer bg-light border-0">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 8px; padding: 10px 24px;">
-                    <i class="bi bi-x-circle me-1"></i>Tutup
-                </button>
-            </div>
+<x-modal-admin
+    id="modalViewDetail"
+    title="Detail User"
+    icon="bi bi-info-circle-fill"
+    header-gradient="linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%)"
+>
+    <div class="modal-body p-4">
+        <div class="detail-item mb-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
+            <label class="text-muted small mb-1">
+                <i class="bi bi-person me-1"></i>Nama Lengkap
+            </label>
+            <div class="fw-bold" id="detailNama"></div>
+        </div>
+        <div class="detail-item mb-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
+            <label class="text-muted small mb-1">
+                <i class="bi bi-at me-1"></i>Username
+            </label>
+            <div class="fw-bold" id="detailUsername"></div>
+        </div>
+        <div class="detail-item mb-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
+            <label class="text-muted small mb-1">
+                <i class="bi bi-shield-check me-1"></i>Role
+            </label>
+            <div id="detailRole"></div>
+        </div>
+        <div class="detail-item mb-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
+            <label class="text-muted small mb-1">
+                <i class="bi bi-mortarboard me-1"></i>Program Studi
+            </label>
+            <div class="fw-bold" id="detailProdi"></div>
+        </div>
+        <div class="detail-item mb-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
+            <label class="text-muted small mb-1">
+                <i class="bi bi-calendar3 me-1"></i>Terdaftar Sejak
+            </label>
+            <div class="fw-bold" id="detailCreated"></div>
         </div>
     </div>
-</div>
+    <div class="modal-footer bg-light border-0">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 8px; padding: 10px 24px;">
+            <i class="bi bi-x-circle me-1"></i>Tutup
+        </button>
+    </div>
+</x-modal-admin>
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     // Search functionality
-    document.getElementById('searchInput').addEventListener('keyup', function() {
-        const searchValue = this.value.toLowerCase();
-        const tableRows = document.querySelectorAll('#tableUser tbody tr');
+    const userSearchInput = document.getElementById('tableUserSearch') || document.getElementById('searchInput');
+    if (userSearchInput) {
+        userSearchInput.addEventListener('keyup', function() {
+            const searchValue = this.value.toLowerCase();
+            const tableRows = document.querySelectorAll('#tableUser tbody tr');
 
-        tableRows.forEach(row => {
-            const text = row.textContent.toLowerCase();
-            if (text.includes(searchValue)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
+            tableRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchValue) ? '' : 'none';
+            });
         });
-    });
+    }
 
     // Toggle prodi field based on role
     function toggleProdiField(mode) {
