@@ -10,6 +10,36 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}?v=8">
   <link rel="shortcut icon" href="{{ asset('assets/icons/favicon.ico') }}" type="image/x-icon">
+  <style>
+    .admin-body,
+    .admin-body * {
+      scrollbar-width: thin;
+      scrollbar-color: #ffffff #edf2f7;
+    }
+
+    .admin-body::-webkit-scrollbar,
+    .admin-body *::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    .admin-body::-webkit-scrollbar-track,
+    .admin-body *::-webkit-scrollbar-track {
+      background: #edf2f7;
+    }
+
+    .admin-body::-webkit-scrollbar-thumb,
+    .admin-body *::-webkit-scrollbar-thumb {
+      background: #ffffff;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+    }
+
+    .admin-body::-webkit-scrollbar-thumb:hover,
+    .admin-body *::-webkit-scrollbar-thumb:hover {
+      background: #f8fafc;
+    }
+  </style>
   @stack('styles')
 </head>
 

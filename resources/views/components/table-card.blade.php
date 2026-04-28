@@ -12,6 +12,8 @@
     'colspan' => 1,
     'showSearch' => true,
     'showFooter' => true,
+    'bodyMaxHeight' => null,
+    'stickyHead' => false,
 ])
 
 @php
@@ -55,9 +57,13 @@
     </div>
 
     <div class="card-body p-0">
-        <div class="table-responsive">
+        <div class="table-responsive table-scroll-area"
+            @if ($bodyMaxHeight)
+                style="max-height: {{ $bodyMaxHeight }}; overflow-y: auto;"
+            @endif>
             <table class="table table-hover align-middle mb-0 custom-data-table" id="{{ $tableId }}">
-                <thead style="background: linear-gradient(to right, #f8f9fa, #e9ecef);">
+                <thead
+                    style="background: linear-gradient(to right, #f8f9fa, #e9ecef); @if ($stickyHead) position: sticky; top: 0; z-index: 2; @endif">
                     {{ $head }}
                 </thead>
 
@@ -79,6 +85,32 @@
             </table>
         </div>
     </div>
+
+    <style>
+        .table-scroll-area {
+            scrollbar-width: thin;
+            scrollbar-color: #ffffff #edf2f7;
+        }
+
+        .table-scroll-area::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .table-scroll-area::-webkit-scrollbar-track {
+            background: #edf2f7;
+        }
+
+        .table-scroll-area::-webkit-scrollbar-thumb {
+            background: #ffffff;
+            border-radius: 999px;
+            border: 1px solid #d1d5db;
+        }
+
+        .table-scroll-area::-webkit-scrollbar-thumb:hover {
+            background: #f8fafc;
+        }
+    </style>
 
     @if ($showFooter)
         <div class="card-footer bg-white py-3">

@@ -23,7 +23,8 @@
     empty-title="Belum ada data user"
     empty-subtitle="Tambahkan user pertama Anda"
     :colspan="6"
-    :show-footer="false"
+    body-max-height="420px"
+    :sticky-head="true"
 >
     <x-slot name="head">
         <tr>

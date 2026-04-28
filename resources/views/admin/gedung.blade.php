@@ -23,6 +23,8 @@
     empty-title="Belum ada data gedung"
     empty-subtitle="Tambahkan gedung pertama Anda"
     :colspan="5"
+    body-max-height="420px"
+    :sticky-head="true"
 >
     <x-slot name="head">
         <tr>

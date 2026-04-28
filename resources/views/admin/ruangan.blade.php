@@ -23,6 +23,8 @@
     empty-title="Belum ada data ruangan"
     empty-subtitle="Tambahkan ruangan pertama Anda"
     :colspan="7"
+    body-max-height="420px"
+    :sticky-head="true"
 >
     <x-slot name="head">
         <tr>
