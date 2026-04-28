@@ -259,40 +259,5 @@
         });
     }, 5000);
 </script>
-<style>
-    .swal2-popup.swal-compact {
-        border-radius: 14px;
-    }
-
-    .swal2-icon.swal2-warning,
-    .swal2-icon.swal2-question {
-        width: 3.25rem;
-        height: 3.25rem;
-        margin: 0.4rem auto 0.5rem;
-    }
-
-    .swal2-icon.swal2-warning .swal2-icon-content,
-    .swal2-icon.swal2-question .swal2-icon-content {
-        font-size: 1.75rem;
-    }
-
-    .swal2-title.swal-compact-title {
-        font-size: 1rem;
-        padding: 0.15rem 0 0;
-    }
-
-    .swal2-html-container.swal-compact-text {
-        font-size: 0.88rem;
-        margin-top: 0.35rem;
-        line-height: 1.45;
-    }
-
-    .swal2-actions .swal2-confirm.swal-compact-btn,
-    .swal2-actions .swal2-cancel.swal-compact-btn {
-        font-size: 0.86rem;
-        padding: 0.42rem 0.85rem;
-        border-radius: 0.6rem;
-    }
-</style>
 @endpush
 </x-layouts.admin-layout>
