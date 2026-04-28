@@ -21,7 +21,7 @@
         return route('admin.laporan', array_merge($sortParams, [
             'sort_by' => $field,
             'sort_dir' => $nextDir,
-        ])) . '#detail-transaction-table';
+        ])) . '#tableLaporan';
     };
 @endphp
 
@@ -224,107 +224,118 @@
         </div>
     </div>
 
-    <div class="card shadow-sm" id="detail-transaction-table">
-        <div class="card-header bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <h6 class="mb-0">Detail Transaction Table</h6>
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-                <a class="btn btn-sm btn-success"
-                    href="{{ route('admin.laporan', ['year' => $year, 'month' => $month, 'ruangan_id' => $ruanganId, 'status_id' => $statusId, 'sort_by' => $sortBy, 'sort_dir' => $sortDir, 'export' => 'csv']) }}">
-                    <i class="bi bi-file-earmark-spreadsheet me-1"></i>Export CSV
-                </a>
-            </div>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-hover mb-0 align-middle">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>
-                            <a href="{{ $sortLink('tanggal') }}" class="text-decoration-none text-dark">
-                                Tanggal
-                            </a>
-                        </th>
-                        <th>
-                            <a href="{{ $sortLink('jam') }}" class="text-decoration-none text-dark">
-                                Jam
-                            </a>
-                        </th>
-                        <th>Ruangan</th>
-                        <th>
-                            <a href="{{ $sortLink('peminjam') }}" class="text-decoration-none text-dark">
-                                Peminjam
-                            </a>
-                        </th>
-                        <th>
-                            <a href="{{ $sortLink('prodi') }}" class="text-decoration-none text-dark">
-                                Prodi
-                            </a>
-                        </th>
-                        <th>
-                            <a href="{{ $sortLink('kegiatan') }}" class="text-decoration-none text-dark">
-                                Kegiatan
-                            </a>
-                        </th>
-                        <th class="text-center">
-                            <a href="{{ $sortLink('peserta') }}" class="text-decoration-none text-dark">
-                                Peserta
-                            </a>
-                        </th>
-                        <th class="text-center">
-                            <a href="{{ $sortLink('status') }}" class="text-decoration-none text-dark">
-                                Status
-                            </a>
-                        </th>
-                        <th>Catatan</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (empty($detail))
-                        <tr>
-                            <td colspan="10" class="text-center py-5 text-muted">Tidak ada data transaksi.</td>
-                        </tr>
-                    @else
-                        @php
-                            $statusBadgeMap = [
-                                'Menunggu' => 'warning', 
-                                'Disetujui' => 'success', 
-                                'Ditolak' => 'danger', 
-                                'Selesai' => 'info', 
-                                'Dibatalkan' => 'secondary'
-                            ];
-                        @endphp
-                        @foreach ($detail as $idx => $d)
-                            @php $badgeClass = $statusBadgeMap[$d->nama_status] ?? 'secondary'; @endphp
-                            <tr>
-                                <td>{{ $idx + 1 }}</td>
-                                <td>{{ date('d M Y', strtotime($d->tanggal)) }}</td>
-                                <td>{{ substr($d->jam_mulai, 0, 5) }} - {{ substr($d->jam_selesai, 0, 5) }}</td>
-                                <td>
-                                    {{ $d->nama_ruangan }}<br>
-                                    <small class="text-muted">{{ $d->gedung ?? '-' }}</small>
-                                </td>
-                                <td>{{ $d->nama_peminjam }}</td>
-                                <td>{{ !empty($d->prodi) ? $d->prodi : '-' }}</td>
-                                <td>{{ $d->nama_kegiatan }}</td>
-                                <td class="text-center">
-                                    <span class="badge bg-info">{{ $d->jumlah_peserta ?? '-' }}</span>
-                                </td>
-                                <td class="text-center">
-                                    <span class="badge bg-{{ $badgeClass }}">{{ $d->nama_status }}</span>
-                                </td>
-                                <td>{{ !empty($d->catatan_admin) ? $d->catatan_admin : '-' }}</td>
-                            </tr>
-                        @endforeach
-                    @endif
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <x-table-card
+        title="Detail Transaction Table"
+        icon="bi bi-list-check"
+        table-id="tableLaporan"
+        :total="count($detail)"
+        total-label="transaksi ditemukan"
+        :empty="empty($detail)"
+        empty-title="Tidak ada data transaksi"
+        empty-subtitle="Coba sesuaikan filter pencarian Anda"
+        :colspan="10"
+    >
+        <x-slot name="headerActions">
+            <a class="btn btn-sm btn-success shadow-sm" style="border-radius: 8px;"
+                href="{{ route('admin.laporan', ['year' => $year, 'month' => $month, 'ruangan_id' => $ruanganId, 'status_id' => $statusId, 'sort_by' => $sortBy, 'sort_dir' => $sortDir, 'export' => 'csv']) }}">
+                <i class="bi bi-file-earmark-spreadsheet me-1"></i>Export CSV
+            </a>
+        </x-slot>
+
+        <x-slot name="head">
+            <tr>
+                <th class="text-center" style="width: 50px; padding: 15px 10px;">#</th>
+                <th style="padding: 15px 10px;">
+                    <a href="{{ $sortLink('tanggal') }}" class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                        Tanggal @if($sortBy === 'tanggal') <i class="bi bi-sort-{{ $sortDir === 'asc' ? 'up' : 'down' }} text-success"></i> @endif
+                    </a>
+                </th>
+                <th style="padding: 15px 10px;">
+                    <a href="{{ $sortLink('jam') }}" class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                        Jam @if($sortBy === 'jam') <i class="bi bi-sort-{{ $sortDir === 'asc' ? 'up' : 'down' }} text-success"></i> @endif
+                    </a>
+                </th>
+                <th style="padding: 15px 10px;">Ruangan</th>
+                <th style="padding: 15px 10px;">
+                    <a href="{{ $sortLink('peminjam') }}" class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                        Peminjam @if($sortBy === 'peminjam') <i class="bi bi-sort-{{ $sortDir === 'asc' ? 'up' : 'down' }} text-success"></i> @endif
+                    </a>
+                </th>
+                <th style="padding: 15px 10px;">
+                    <a href="{{ $sortLink('prodi') }}" class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                        Prodi @if($sortBy === 'prodi') <i class="bi bi-sort-{{ $sortDir === 'asc' ? 'up' : 'down' }} text-success"></i> @endif
+                    </a>
+                </th>
+                <th style="padding: 15px 10px;">
+                    <a href="{{ $sortLink('kegiatan') }}" class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                        Kegiatan @if($sortBy === 'kegiatan') <i class="bi bi-sort-{{ $sortDir === 'asc' ? 'up' : 'down' }} text-success"></i> @endif
+                    </a>
+                </th>
+                <th class="text-center" style="padding: 15px 10px;">
+                    <a href="{{ $sortLink('peserta') }}" class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                        Peserta @if($sortBy === 'peserta') <i class="bi bi-sort-{{ $sortDir === 'asc' ? 'up' : 'down' }} text-success"></i> @endif
+                    </a>
+                </th>
+                <th class="text-center" style="padding: 15px 10px;">
+                    <a href="{{ $sortLink('status') }}" class="text-decoration-none text-dark d-flex align-items-center justify-content-between">
+                        Status @if($sortBy === 'status') <i class="bi bi-sort-{{ $sortDir === 'asc' ? 'up' : 'down' }} text-success"></i> @endif
+                    </a>
+                </th>
+                <th style="padding: 15px 10px;">Catatan</th>
+            </tr>
+        </x-slot>
+
+        @php
+            $statusBadgeMap = [
+                'Menunggu' => 'warning', 
+                'Disetujui' => 'success', 
+                'Ditolak' => 'danger', 
+                'Selesai' => 'info', 
+                'Dibatalkan' => 'secondary'
+            ];
+        @endphp
+        @foreach ($detail as $idx => $d)
+            @php $badgeClass = $statusBadgeMap[$d->nama_status] ?? 'secondary'; @endphp
+            <tr>
+                <td class="text-center">{{ $idx + 1 }}</td>
+                <td>{{ date('d M Y', strtotime($d->tanggal)) }}</td>
+                <td>{{ substr($d->jam_mulai, 0, 5) }} - {{ substr($d->jam_selesai, 0, 5) }}</td>
+                <td>
+                    {{ $d->nama_ruangan }}<br>
+                    <small class="text-muted">{{ $d->gedung ?? '-' }}</small>
+                </td>
+                <td>{{ $d->nama_peminjam }}</td>
+                <td>{{ !empty($d->prodi) ? $d->prodi : '-' }}</td>
+                <td>{{ $d->nama_kegiatan }}</td>
+                <td class="text-center">
+                    <span class="badge bg-info">{{ $d->jumlah_peserta ?? '-' }}</span>
+                </td>
+                <td class="text-center">
+                    <span class="badge bg-{{ $badgeClass }}">{{ $d->nama_status }}</span>
+                </td>
+                <td>{{ !empty($d->catatan_admin) ? $d->catatan_admin : '-' }}</td>
+            </tr>
+        @endforeach
+    </x-table-card>
 </div>
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
+    // Search functionality for Detail Transaction Table
+    const tableLaporanSearch = document.getElementById('tableLaporanSearch');
+    if (tableLaporanSearch) {
+        tableLaporanSearch.addEventListener('keyup', function() {
+            const searchValue = this.value.toLowerCase();
+            const tableRows = document.querySelectorAll('#tableLaporan tbody tr');
+
+            tableRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchValue) ? '' : 'none';
+            });
+        });
+    }
+
     const monthLabels = @json($monthLabels);
     
     new Chart(document.getElementById('bookingTrendChart'), {

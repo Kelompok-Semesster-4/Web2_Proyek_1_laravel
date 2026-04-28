@@ -21,28 +21,36 @@
 <div class="card shadow border-0" style="border-radius: 15px; overflow: hidden;">
     <div class="card-header bg-white py-3 border-bottom"
         style="background: linear-gradient(to right, #f8f9fa, #e9ecef) !important;">
-        <div class="row align-items-center">
-            <div class="{{ $showSearch ? 'col-md-6' : 'col-12' }}">
-                <h5 class="mb-0  fw-bold" style="color: #495057;">
+        <div class="row align-items-center g-3">
+            <div class="col-md-4">
+                <h5 class="mb-0 fw-bold text-dark">
                     <i class="{{ $icon }} me-1" style="color: #22c55e;"></i>{{ ' '. $title }}
                 </h5>
             </div>
 
-            @if ($showSearch)
-                <div class="col-md-6">
-                    <div class="input-group shadow-sm" style="border-radius: 8px; overflow: hidden;">
-                        <span class="input-group-text bg-white border-end-0">
-                            <i class="bi bi-search" style="color: #22c55e;"></i>
-                        </span>
-                        <input type="text"
-                            class="form-control border-start-0 bg-white table-search-input"
-                            id="{{ $finalSearchId }}"
-                            data-target-table="{{ $tableId }}"
-                            placeholder="{{ $searchPlaceholder }}"
-                            style="border-left: 0;">
-                    </div>
+            <div class="col-md-8">
+                <div class="d-flex flex-wrap justify-content-md-end align-items-center gap-2">
+                    @if (isset($headerActions))
+                        <div class="header-actions">
+                            {{ $headerActions }}
+                        </div>
+                    @endif
+
+                    @if ($showSearch)
+                        <div class="input-group shadow-sm" style="border-radius: 8px; overflow: hidden; max-width: 300px;">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="bi bi-search" style="color: #22c55e;"></i>
+                            </span>
+                            <input type="text"
+                                class="form-control border-start-0 bg-white table-search-input"
+                                id="{{ $finalSearchId }}"
+                                data-target-table="{{ $tableId }}"
+                                placeholder="{{ $searchPlaceholder }}"
+                                style="border-left: 0;">
+                        </div>
+                    @endif
                 </div>
-            @endif
+            </div>
         </div>
     </div>
 
