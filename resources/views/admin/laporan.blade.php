@@ -1,12 +1,36 @@
 <x-layouts.admin-layout>
 
+@push('styles')
+<style>
+    html {
+        scroll-behavior: auto !important;
+    }
+</style>
+@endpush
+
+@php
+    $sortParams = [
+        'year' => $year,
+        'month' => $month,
+        'ruangan_id' => $ruanganId,
+        'status_id' => $statusId,
+    ];
+
+    $sortLink = function (string $field) use ($sortBy, $sortDir, $sortParams) {
+        $nextDir = ($sortBy === $field && $sortDir === 'asc') ? 'desc' : 'asc';
+        return route('admin.laporan', array_merge($sortParams, [
+            'sort_by' => $field,
+            'sort_dir' => $nextDir,
+        ])) . '#detail-transaction-table';
+    };
+@endphp
+
 <div class="admin-container" style="max-width:100%;">
     <x-head-title-admin
         title="Laporan"
         icon="bi bi-file-earmark-bar-graph"
         :showButton="false"
     />
-    <p class="text-light mb-4">Seluruh chart bulanan, statistik penggunaan, dan tabel transaksi detail ada di halaman ini.</p>
 
     <div class="card shadow border-0 mb-4">
         <div class="card-header bg-light">
@@ -200,27 +224,57 @@
         </div>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+    <div class="card shadow-sm" id="detail-transaction-table">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
             <h6 class="mb-0">Detail Transaction Table</h6>
-            <a class="btn btn-sm btn-success"
-                href="{{ route('admin.laporan', ['year' => $year, 'month' => $month, 'ruangan_id' => $ruanganId, 'status_id' => $statusId, 'export' => 'csv']) }}">
-                <i class="bi bi-file-earmark-spreadsheet me-1"></i>Export CSV
-            </a>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <a class="btn btn-sm btn-success"
+                    href="{{ route('admin.laporan', ['year' => $year, 'month' => $month, 'ruangan_id' => $ruanganId, 'status_id' => $statusId, 'sort_by' => $sortBy, 'sort_dir' => $sortDir, 'export' => 'csv']) }}">
+                    <i class="bi bi-file-earmark-spreadsheet me-1"></i>Export CSV
+                </a>
+            </div>
         </div>
         <div class="table-responsive">
             <table class="table table-hover mb-0 align-middle">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Tanggal</th>
-                        <th>Jam</th>
+                        <th>
+                            <a href="{{ $sortLink('tanggal') }}" class="text-decoration-none text-dark">
+                                Tanggal
+                            </a>
+                        </th>
+                        <th>
+                            <a href="{{ $sortLink('jam') }}" class="text-decoration-none text-dark">
+                                Jam
+                            </a>
+                        </th>
                         <th>Ruangan</th>
-                        <th>Peminjam</th>
-                        <th>Prodi</th>
-                        <th>Kegiatan</th>
-                        <th class="text-center">Peserta</th>
-                        <th class="text-center">Status</th>
+                        <th>
+                            <a href="{{ $sortLink('peminjam') }}" class="text-decoration-none text-dark">
+                                Peminjam
+                            </a>
+                        </th>
+                        <th>
+                            <a href="{{ $sortLink('prodi') }}" class="text-decoration-none text-dark">
+                                Prodi
+                            </a>
+                        </th>
+                        <th>
+                            <a href="{{ $sortLink('kegiatan') }}" class="text-decoration-none text-dark">
+                                Kegiatan
+                            </a>
+                        </th>
+                        <th class="text-center">
+                            <a href="{{ $sortLink('peserta') }}" class="text-decoration-none text-dark">
+                                Peserta
+                            </a>
+                        </th>
+                        <th class="text-center">
+                            <a href="{{ $sortLink('status') }}" class="text-decoration-none text-dark">
+                                Status
+                            </a>
+                        </th>
                         <th>Catatan</th>
                     </tr>
                 </thead>
