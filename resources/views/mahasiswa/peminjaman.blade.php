@@ -12,6 +12,7 @@
     @endpush
    
     <div class="wrap peminjaman-page">
+        <div class="container">
         <!--HEAD-->
         @include('components.Head-Peminjaman')
 
@@ -156,6 +157,7 @@
                 </tr>
             @endforeach
         </x-table-card>
+        </div>
     </div>
 
     @push('scripts')

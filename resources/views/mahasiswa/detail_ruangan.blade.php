@@ -43,11 +43,11 @@ function iconFasilitas(string $nama): string {
     </section>
 
     <div class="wrap detail-ruangan-page">
+        <div class="container">
 
         <div class="glass-card">
             <div class="glass-head">
                 <p class="title mb-1">Detail Ruangan</p>
-                <p class="sub mb-0">Slide foto + fasilitas.</p>
             </div>
 
             <div class="p-4">
@@ -127,6 +127,7 @@ function iconFasilitas(string $nama): string {
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 
