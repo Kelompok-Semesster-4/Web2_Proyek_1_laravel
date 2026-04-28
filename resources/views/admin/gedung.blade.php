@@ -139,7 +139,9 @@
             </div>
         </div>
         <div class="modal-footer border-0 pt-0">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                <i class="bi bi-arrow-left-circle me-1"></i>Kembali
+            </button>
             <button type="submit" class="btn btn-success">
                 <i class="bi bi-check-circle me-1"></i>Simpan
             </button>
