@@ -21,6 +21,22 @@ class AdminLaporanController extends Controller
 
         $ruanganId = (int) $request->input('ruangan_id', 0);
         $statusId = (int) $request->input('status_id', 0);
+        $sortBy = (string) $request->input('sort_by', 'tanggal');
+        $sortDir = strtolower((string) $request->input('sort_dir', 'desc')) === 'asc' ? 'asc' : 'desc';
+
+        $allowedSorts = [
+            'tanggal' => 'p.tanggal',
+            'jam' => 'p.jam_mulai',
+            'peminjam' => 'u.nama',
+            'prodi' => 'u.prodi',
+            'kegiatan' => 'p.nama_kegiatan',
+            'peserta' => 'p.jumlah_peserta',
+            'status' => 'sp.nama_status',
+        ];
+        if (!array_key_exists($sortBy, $allowedSorts)) {
+            $sortBy = 'tanggal';
+        }
+        $sortColumn = $allowedSorts[$sortBy];
 
         $reportWhere = 'p.tanggal BETWEEN ? AND ?';
         $reportParams = [$startDate, $endDate];
@@ -58,7 +74,7 @@ class AdminLaporanController extends Controller
             $statusCounts[(int) $row->id] = ['nama' => $row->nama_status, 'jumlah' => (int) $row->jumlah];
         }
 
-        $approvedCount = $statusCounts[2]['jumlah'] ?? 0;
+        $approvedCount = ($statusCounts[2]['jumlah'] ?? 0) + ($statusCounts[4]['jumlah'] ?? 0);
         $rejectedCount = $statusCounts[3]['jumlah'] ?? 0;
         $approvalRate = $totalRequests > 0 ? round(($approvedCount / $totalRequests) * 100, 1) : 0.0;
         $rejectionRate = $totalRequests > 0 ? round(($rejectedCount / $totalRequests) * 100, 1) : 0.0;
@@ -148,7 +164,8 @@ class AdminLaporanController extends Controller
             LEFT JOIN gedung g ON g.id = l.gedung_id 
             JOIN status_peminjaman sp ON sp.id = p.status_id 
             WHERE $reportWhere 
-            ORDER BY p.tanggal DESC, p.jam_mulai DESC, p.id DESC
+            ORDER BY $sortColumn " . strtoupper($sortDir) . ",
+                     p.tanggal DESC, p.jam_mulai DESC, p.id DESC
         ", $reportParams);
 
         if ($request->input('export') === 'csv') {
@@ -201,6 +218,7 @@ class AdminLaporanController extends Controller
 
         return view('admin.laporan', compact(
             'year', 'month', 'startDate', 'ruanganId', 'statusId',
+            'sortBy', 'sortDir',
             'ruanganList', 'statusList', 'totalRequests', 'approvalRate', 'rejectionRate',
             'avgDurasi', 'totalJam', 'usedHours', 'capacityHours', 'utilizationRate',
             'topRuangan', 'detail', 'monthLabels', 'trendTotalData', 'trendApprovedData', 'trendRejectedData',
