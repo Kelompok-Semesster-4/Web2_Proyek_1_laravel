@@ -168,6 +168,40 @@
         border-radius: 0.6rem;
         margin: 0;
     }
+
+    .swal2-popup.swal-compact {
+        border-radius: 14px;
+    }
+
+    .swal2-icon.swal2-warning,
+    .swal2-icon.swal2-question {
+        width: 3.25rem;
+        height: 3.25rem;
+        margin: 0.4rem auto 0.5rem;
+    }
+
+    .swal2-icon.swal2-warning .swal2-icon-content,
+    .swal2-icon.swal2-question .swal2-icon-content {
+        font-size: 1.75rem;
+    }
+
+    .swal2-title.swal-compact-title {
+        font-size: 1rem;
+        padding: 0.15rem 0 0;
+    }
+
+    .swal2-html-container.swal-compact-text {
+        font-size: 0.88rem;
+        margin-top: 0.35rem;
+        line-height: 1.45;
+    }
+
+    .swal2-actions .swal2-confirm.swal-compact-btn,
+    .swal2-actions .swal2-cancel.swal-compact-btn {
+        font-size: 0.86rem;
+        padding: 0.42rem 0.85rem;
+        border-radius: 0.6rem;
+    }
 </style>
 @endpush
 
@@ -221,7 +255,7 @@
                     <h6 class="pending-card-title">Pending Booking Requests</h6>
                     <div class="d-flex align-items-center pending-header-actions">
                         <span class="badge bg-danger-subtle text-danger border border-danger-subtle pending-total-badge">{{ $pendingTotal }}</span>
-                        <a href="{{ url('/admin/approve') }}" class="btn btn-outline-danger pending-view-all-btn">Lihat semua</a>
+                        <a href="{{ route('admin.persetujuan') }}" class="btn btn-outline-danger pending-view-all-btn">Lihat semua</a>
                     </div>
                 </div>
                 <div class="table-responsive dashboard-scroll-thin">
@@ -254,8 +288,8 @@
                                                 @csrf
                                                 <input type="hidden" name="peminjaman_id" value="{{ $item->id }}">
                                                 <input type="text" name="catatan_admin" class="form-control form-control-sm" placeholder="Catatan">
-                                                <button class="btn btn-success pending-icon-btn" name="action" value="approve" title="Setujui" aria-label="Setujui" onclick="return confirm('Setujui pengajuan ini?')"><i class="bi bi-check-lg"></i></button>
-                                                <button class="btn btn-danger pending-icon-btn" name="action" value="reject" title="Tolak" aria-label="Tolak" onclick="return confirm('Tolak pengajuan ini?')"><i class="bi bi-x-lg"></i></button>
+                                                <button type="button" class="btn btn-success pending-icon-btn approve-action-btn" title="Setujui" aria-label="Setujui"><i class="bi bi-check-lg"></i></button>
+                                                <button type="button" class="btn btn-danger pending-icon-btn reject-action-btn" title="Tolak" aria-label="Tolak"><i class="bi bi-x-lg"></i></button>
                                             </form>
                                         </td>
                                     </tr>
@@ -329,6 +363,7 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     new Chart(document.getElementById('roomStatusChart'), {
         type: 'doughnut',
@@ -340,6 +375,78 @@
         type: 'bar',
         data: { labels: ['Disetujui', 'Pending', 'Ditolak'], datasets: [{ data: [{{ $disetujuiHariIni }}, {{ $pendingHariIni }}, {{ $ditolakHariIni }}], backgroundColor: ['#10b981', '#f59e0b', '#ef4444'], borderRadius: 8, borderSkipped: false }] },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { precision: 0 } } } }
+    });
+
+    document.querySelectorAll('.approve-action-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const form = this.closest('form');
+
+            Swal.fire({
+                title: 'Setujui pengajuan ini?',
+                html: 'Pengajuan lain yang bentrok jadwal akan otomatis ditolak.',
+                icon: 'question',
+                width: 400,
+                padding: '0.85rem',
+                showCancelButton: true,
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="bi bi-check-circle me-1"></i>Setujui',
+                cancelButtonText: 'Batal',
+                customClass: {
+                    popup: 'swal-compact',
+                    title: 'swal-compact-title',
+                    htmlContainer: 'swal-compact-text',
+                    confirmButton: 'swal-compact-btn',
+                    cancelButton: 'swal-compact-btn'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.querySelector('input[name="action"]')?.remove();
+                    const actionInput = document.createElement('input');
+                    actionInput.type = 'hidden';
+                    actionInput.name = 'action';
+                    actionInput.value = 'approve';
+                    form.appendChild(actionInput);
+                    form.submit();
+                }
+            });
+        });
+    });
+
+    document.querySelectorAll('.reject-action-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const form = this.closest('form');
+
+            Swal.fire({
+                title: 'Tolak pengajuan ini?',
+                text: 'Pengajuan akan diproses sebagai ditolak.',
+                icon: 'warning',
+                width: 390,
+                padding: '0.85rem',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="bi bi-x-circle me-1"></i>Tolak',
+                cancelButtonText: 'Batal',
+                customClass: {
+                    popup: 'swal-compact',
+                    title: 'swal-compact-title',
+                    htmlContainer: 'swal-compact-text',
+                    confirmButton: 'swal-compact-btn',
+                    cancelButton: 'swal-compact-btn'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.querySelector('input[name="action"]')?.remove();
+                    const actionInput = document.createElement('input');
+                    actionInput.type = 'hidden';
+                    actionInput.name = 'action';
+                    actionInput.value = 'reject';
+                    form.appendChild(actionInput);
+                    form.submit();
+                }
+            });
+        });
     });
 </script>
 @endpush
