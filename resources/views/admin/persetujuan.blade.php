@@ -132,17 +132,15 @@
                         style="font-size: 0.875rem;">
 
                     <div class="d-flex justify-content-center">
-                        <button class="btn btn-success aksi-btn me-2"
-                            name="action"
-                            value="approve"
-                            onclick="return confirm('Setujui pengajuan ini?\n\nPengajuan lain yang bentrok jadwal akan otomatis ditolak.');">
+                        <button type="button"
+                            class="btn btn-success aksi-btn me-2 approve-action-btn"
+                            data-action="approve">
                             <i class="bi bi-check-circle me-1"></i>Setujui
                         </button>
 
-                        <button class="btn btn-danger aksi-btn"
-                            name="action"
-                            value="reject"
-                            onclick="return confirm('Tolak pengajuan ini?');">
+                        <button type="button"
+                            class="btn btn-danger aksi-btn reject-action-btn"
+                            data-action="reject">
                             <i class="bi bi-x-circle me-1"></i>Tolak
                         </button>
                         </div>
@@ -153,27 +151,103 @@
     </x-table-card>
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     // Search functionality
-    document.getElementById('searchInput').addEventListener('keyup', function() {
-        const searchValue = this.value.toLowerCase();
-        const table = document.getElementById('tablePersetujuan');
-        const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+    const searchInput = document.getElementById('tablePersetujuanSearch');
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function() {
+            const searchValue = this.value.toLowerCase();
+            const table = document.getElementById('tablePersetujuan');
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
 
-        for (let i = 0; i < rows.length; i++) {
-            const row = rows[i];
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
 
-            // Skip empty state row
-            if (row.cells.length === 1) continue;
+                // Skip empty state row
+                if (row.cells.length === 1) continue;
 
-            const text = row.textContent.toLowerCase();
+                const text = row.textContent.toLowerCase();
 
-            if (text.includes(searchValue)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
+                if (text.includes(searchValue)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
             }
-        }
+        });
+    }
+
+    document.querySelectorAll('.approve-action-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const form = this.closest('form');
+
+            Swal.fire({
+                title: 'Setujui pengajuan ini?',
+                html: 'Pengajuan lain yang bentrok jadwal akan otomatis ditolak.',
+                icon: 'question',
+                width: 400,
+                padding: '0.85rem',
+                showCancelButton: true,
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="bi bi-check-circle me-1"></i>Setujui',
+                cancelButtonText: 'Batal',
+                customClass: {
+                    popup: 'swal-compact',
+                    title: 'swal-compact-title',
+                    htmlContainer: 'swal-compact-text',
+                    confirmButton: 'swal-compact-btn',
+                    cancelButton: 'swal-compact-btn'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.querySelector('input[name="action"]')?.remove();
+                    const actionInput = document.createElement('input');
+                    actionInput.type = 'hidden';
+                    actionInput.name = 'action';
+                    actionInput.value = 'approve';
+                    form.appendChild(actionInput);
+                    form.submit();
+                }
+            });
+        });
+    });
+
+    document.querySelectorAll('.reject-action-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const form = this.closest('form');
+
+            Swal.fire({
+                title: 'Tolak pengajuan ini?',
+                text: 'Pengajuan akan diproses sebagai ditolak.',
+                icon: 'warning',
+                width: 390,
+                padding: '0.85rem',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="bi bi-x-circle me-1"></i>Tolak',
+                cancelButtonText: 'Batal',
+                customClass: {
+                    popup: 'swal-compact',
+                    title: 'swal-compact-title',
+                    htmlContainer: 'swal-compact-text',
+                    confirmButton: 'swal-compact-btn',
+                    cancelButton: 'swal-compact-btn'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.querySelector('input[name="action"]')?.remove();
+                    const actionInput = document.createElement('input');
+                    actionInput.type = 'hidden';
+                    actionInput.name = 'action';
+                    actionInput.value = 'reject';
+                    form.appendChild(actionInput);
+                    form.submit();
+                }
+            });
+        });
     });
 
     // Auto-dismiss alerts after 5 seconds
@@ -185,5 +259,40 @@
         });
     }, 5000);
 </script>
+<style>
+    .swal2-popup.swal-compact {
+        border-radius: 14px;
+    }
+
+    .swal2-icon.swal2-warning,
+    .swal2-icon.swal2-question {
+        width: 3.25rem;
+        height: 3.25rem;
+        margin: 0.4rem auto 0.5rem;
+    }
+
+    .swal2-icon.swal2-warning .swal2-icon-content,
+    .swal2-icon.swal2-question .swal2-icon-content {
+        font-size: 1.75rem;
+    }
+
+    .swal2-title.swal-compact-title {
+        font-size: 1rem;
+        padding: 0.15rem 0 0;
+    }
+
+    .swal2-html-container.swal-compact-text {
+        font-size: 0.88rem;
+        margin-top: 0.35rem;
+        line-height: 1.45;
+    }
+
+    .swal2-actions .swal2-confirm.swal-compact-btn,
+    .swal2-actions .swal2-cancel.swal-compact-btn {
+        font-size: 0.86rem;
+        padding: 0.42rem 0.85rem;
+        border-radius: 0.6rem;
+    }
+</style>
 @endpush
 </x-layouts.admin-layout>

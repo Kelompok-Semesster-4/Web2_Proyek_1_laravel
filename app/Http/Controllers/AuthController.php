@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
@@ -20,27 +19,7 @@ class AuthController extends Controller
             return redirect($role === 'admin' ? '/admin/dashboard' : '/dashboard');
         }
 
-        $stats = DB::selectOne("
-            SELECT
-                COUNT(r.id)                         AS total_ruangan,
-                COUNT(DISTINCT g.id)                AS total_gedung,
-                COALESCE(SUM(r.kapasitas), 0)       AS total_kapasitas
-            FROM ruangan r
-            LEFT JOIN lantai l ON l.id = r.lantai_id
-            LEFT JOIN gedung g ON g.id = l.gedung_id
-        ");
-
-        $totalRuangan = number_format((int) ($stats->total_ruangan ?? 0), 0, ',', '.');
-        $totalGedung = number_format((int) ($stats->total_gedung ?? 0), 0, ',', '.');
-        $totalKapas = number_format((int) ($stats->total_kapasitas ?? 0), 0, ',', '.') . ' org';
-
-        $statsArray = [
-            ['label' => 'Total Ruangan', 'value' => $totalRuangan],
-            ['label' => 'Gedung', 'value' => $totalGedung],
-            ['label' => 'Kapasitas', 'value' => $totalKapas],
-        ];
-
-        return view('auth.login', ['stats' => $statsArray, 'defaultTab' => 'login']);
+        return view('auth.login', ['defaultTab' => 'login']);
     }
 
     public function login(Request $request)
@@ -192,27 +171,7 @@ class AuthController extends Controller
             return redirect($role === 'admin' ? '/admin/dashboard' : '/dashboard');
         }
 
-        $stats = DB::selectOne("
-            SELECT
-                COUNT(r.id)                         AS total_ruangan,
-                COUNT(DISTINCT g.id)                AS total_gedung,
-                COALESCE(SUM(r.kapasitas), 0)       AS total_kapasitas
-            FROM ruangan r
-            LEFT JOIN lantai l ON l.id = r.lantai_id
-            LEFT JOIN gedung g ON g.id = l.gedung_id
-        ");
-
-        $totalRuangan = number_format((int) ($stats->total_ruangan ?? 0), 0, ',', '.');
-        $totalGedung = number_format((int) ($stats->total_gedung ?? 0), 0, ',', '.');
-        $totalKapas = number_format((int) ($stats->total_kapasitas ?? 0), 0, ',', '.') . ' org';
-
-        $statsArray = [
-            ['label' => 'Total Ruangan', 'value' => $totalRuangan],
-            ['label' => 'Gedung', 'value' => $totalGedung],
-            ['label' => 'Kapasitas', 'value' => $totalKapas],
-        ];
-
-        return view('auth.login', ['stats' => $statsArray, 'defaultTab' => 'register']);
+        return view('auth.login', ['defaultTab' => 'register']);
     }
 
     public function register(Request $request)

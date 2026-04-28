@@ -1,17 +1,19 @@
 <x-layouts.admin-layout>
 
 <div class="admin-container" style="max-width:100%;">
-    <div class="kelola-header mb-4">
-        <h1>Laporan Historis & Analisis</h1>
-        <p class="text-muted mb-0">Seluruh chart bulanan, statistik penggunaan, dan tabel transaksi detail ada di halaman ini.</p>
-    </div>
+    <x-head-title-admin
+        title="Laporan"
+        icon="bi bi-file-earmark-bar-graph"
+        :showButton="false"
+    />
+    <p class="text-light mb-4">Seluruh chart bulanan, statistik penggunaan, dan tabel transaksi detail ada di halaman ini.</p>
 
     <div class="card shadow border-0 mb-4">
         <div class="card-header bg-light">
             <h6 class="mb-0">Filter Laporan</h6>
         </div>
-        <div class="card-body">
-            <form class="row g-3 align-items-end" method="GET" action="{{ route('admin.laporan') }}">
+        <div class="card-body py-1">
+            <form class="row gx-3 gy-2 mt-0 align-items-end" method="GET" action="{{ route('admin.laporan') }}">
                 <div class="col-md-2">
                     <label class="form-label">Bulan</label>
                     <select name="month" class="form-select">

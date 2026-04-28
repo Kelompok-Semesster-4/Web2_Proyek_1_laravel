@@ -1,7 +1,17 @@
 <x-layouts.mahasiswa-layout>
     <x-slot:title>Peminjaman - Peminjaman Ruangan</x-slot>
+
+    @push('styles')
+    <style>
+        .peminjaman-page {
+            padding-top: 30px;
+            padding-bottom: 30px;
+            min-height: calc(100vh - 68px);
+        }
+    </style>
+    @endpush
    
-    <div class="container py-4">
+    <div class="wrap peminjaman-page">
         <!--HEAD-->
         @include('components.Head-Peminjaman')
 
