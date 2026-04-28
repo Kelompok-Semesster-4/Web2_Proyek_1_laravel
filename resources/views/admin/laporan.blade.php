@@ -181,46 +181,42 @@
             </div>
         </div>
         <div class="col-lg-8">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-light">
-                    <h6 class="mb-0">Most Used Rooms</h6>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0 align-middle">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Ruangan</th>
-                                <th class="text-center">Jumlah Booking</th>
-                                <th class="text-center">Total Jam</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (empty($topRuangan))
-                                <tr>
-                                    <td colspan="4" class="text-center py-4 text-muted">Tidak ada data.</td>
-                                </tr>
-                            @else
-                                @foreach ($topRuangan as $i => $room)
-                                    <tr>
-                                        <td>{{ $i + 1 }}</td>
-                                        <td>
-                                            {{ $room->nama_ruangan }}<br>
-                                            <small class="text-muted">{{ $room->gedung ?? '-' }}</small>
-                                        </td>
-                                        <td class="text-center">
-                                            <span class="badge bg-info">{{ $room->jumlah_booking }}</span>
-                                        </td>
-                                        <td class="text-center">
-                                            <span class="badge bg-success">{{ $room->total_jam }}</span>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @endif
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <x-table-card
+                title="Most Used Rooms"
+                icon="bi bi-star-fill"
+                :show-search="false"
+                :total="count($topRuangan)"
+                total-label="ruangan terdata"
+                :empty="empty($topRuangan)"
+                empty-title="Tidak ada data"
+                empty-subtitle="Data penggunaan ruangan belum tersedia"
+                :colspan="4"
+            >
+                <x-slot name="head">
+                    <tr>
+                        <th class="text-center" style="width: 50px; padding: 15px 10px;">#</th>
+                        <th style="padding: 15px 10px;">Ruangan</th>
+                        <th class="text-center" style="padding: 15px 10px;">Jumlah Booking</th>
+                        <th class="text-center" style="padding: 15px 10px;">Total Jam</th>
+                    </tr>
+                </x-slot>
+
+                @foreach ($topRuangan as $i => $room)
+                    <tr>
+                        <td class="text-center">{{ $i + 1 }}</td>
+                        <td>
+                            <div class="fw-bold text-dark">{{ $room->nama_ruangan }}</div>
+                            <small class="text-muted">{{ $room->gedung ?? '-' }}</small>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-info shadow-sm">{{ $room->jumlah_booking }}</span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-success shadow-sm">{{ $room->total_jam }}</span>
+                        </td>
+                    </tr>
+                @endforeach
+            </x-table-card>
         </div>
     </div>
 
