@@ -5,14 +5,14 @@
     }
 
     .login-stage .panel {
-      max-width: 1100px;
+      max-width: 560px;
       width: 100%;
-      min-height: 78vh;
+      min-height: 60vh;
       margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 36px 22px;
+      padding: 20px 16px;
       border-radius: 28px;
       background: rgba(255, 255, 255, .96);
       box-shadow: 0 22px 60px rgba(15, 23, 42, .18);
@@ -20,56 +20,55 @@
 
     .login-card {
       width: 100%;
-      max-width: 420px;
+      max-width: 340px;
       background: transparent;
     }
 
     .login-card .cardhead {
       text-align: center;
-      padding: 0 0 18px;
+      padding: 0 0 14px;
       background: transparent;
       border: 0;
       box-shadow: none;
     }
 
     .login-mark {
-      width: 56px;
-      height: 56px;
-      margin: 0 auto 14px;
-      display: grid;
-      place-items: center;
-      border-radius: 18px;
-      color: #1f2937;
-      background: linear-gradient(145deg, #f8fafc, #eef6f3);
-      box-shadow: inset 0 0 0 1px rgba(148, 163, 184, .2);
+      width: auto;
+      height: auto;
+      margin: 0 auto 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .login-mark i {
-      font-size: 1.55rem;
+    .login-mark img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
     }
 
     .login-card .title {
       font-weight: 800;
-      font-size: 2rem;
+      font-size: 1.55rem;
       line-height: 1.12;
       color: #1f2937;
       letter-spacing: -.02em;
     }
 
     .login-card .sub {
-      margin-top: 8px;
+      margin-top: 6px;
       color: #94a3b8;
-      font-size: .96rem;
+      font-size: .88rem;
     }
 
     .login-card .msg {
       background: #fee2e2;
       color: #991b1b;
-      padding: 10px 12px;
-      border-radius: 14px;
-      margin: 0 0 14px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      margin: 0 0 12px;
       border: 1px solid #fecaca;
-      font-size: .92rem;
+      font-size: .86rem;
     }
 
     .login-card form {
@@ -77,21 +76,21 @@
     }
 
     .login-card .field {
-      margin-bottom: 18px;
+      margin-bottom: 14px;
     }
 
     .login-card label {
       display: block;
-      font-size: .85rem;
+      font-size: .8rem;
       font-weight: 600;
       color: #475569;
-      margin-bottom: 7px;
+      margin-bottom: 6px;
     }
 
     .login-card .input {
       width: 100%;
-      padding: 12px 14px;
-      border-radius: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
       border: 1px solid #e2e8f0;
       outline: none;
       background: #fff;
@@ -112,18 +111,18 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 38px;
+      gap: 28px;
       width: 100%;
-      margin: 10px 0 18px;
+      margin: 8px 0 14px;
       flex-wrap: nowrap;
     }
 
     .login-card .checkline {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       color: #475569;
-      font-size: .86rem;
+      font-size: .8rem;
     }
 
     .login-card .checkline label {
@@ -135,11 +134,11 @@
     .login-card .btn {
       width: 100%;
       border: 0;
-      border-radius: 12px;
-      padding: 12px 14px;
+      border-radius: 10px;
+      padding: 10px 12px;
       margin-top: 0;
       font-weight: 800;
-      font-size: .96rem;
+      font-size: .9rem;
       color: #fff;
       background: linear-gradient(180deg, #22c55e, #16a34a);
       box-shadow: 0 14px 30px rgba(34, 197, 94, .22);
@@ -147,9 +146,9 @@
     }
 
     .login-card .switch-text {
-      margin: 16px 0 0;
+      margin: 12px 0 0;
       text-align: center;
-      font-size: .9rem;
+      font-size: .84rem;
       color: #64748b;
     }
 
@@ -163,9 +162,9 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      margin: 18px 0 16px;
+      margin: 14px 0 12px;
       color: #94a3b8;
-      font-size: .8rem;
+      font-size: .74rem;
       text-transform: uppercase;
       letter-spacing: .08em;
     }
@@ -182,21 +181,21 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
       width: 100%;
-      padding: 12px 14px;
-      border-radius: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
       border: 1px solid #e2e8f0;
       background: #fff;
       color: #0f172a;
-      font-size: .95rem;
+      font-size: .86rem;
       font-weight: 700;
       text-decoration: none;
     }
 
     .login-card .google-icon {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       display: block;
     }
 
@@ -207,12 +206,13 @@
 
       .login-stage .panel {
         min-height: auto;
-        padding: 26px 14px;
+        padding: 18px 12px;
         border-radius: 22px;
+        max-width: 560px;
       }
 
       .login-card .title {
-        font-size: 1.7rem;
+        font-size: 1.4rem;
       }
 
       .login-card .login-options-row {
@@ -228,13 +228,24 @@
 
   <div class="login-stage">
     <div class="panel">
-      <section class="login-card" x-data="{ view: '{{ $defaultTab ?? 'login' }}' }"
+      <section class="login-card" x-data="{
+          view: '{{ $defaultTab ?? 'login' }}',
+          switchView(target, path) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            setTimeout(() => {
+              this.view = target;
+              window.history.pushState({}, '', path);
+              this.$nextTick(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
+            }, 120);
+          }
+        }"
         @popstate.window="view = window.location.pathname.includes('register') ? 'register' : 'login'">
 
         <div x-show="view === 'login'" x-transition>
           <div class="cardhead">
             <div class="login-mark">
-              <i class="bi bi-box-arrow-in-right"></i>
+              <img src="{{ asset('assets/icons/logo.svg') }}" alt="Logo SIPERU">
             </div>
             <div class="title">Log in to your account</div>
             <div class="sub">Enter your username and password below to log in</div>
@@ -277,7 +288,7 @@
 
             <div class="switch-text">
               Belum punya akun?
-              <a href="/register" @click.prevent="view = 'register'; window.history.pushState({}, '', '/register')">Daftar</a>
+              <a href="/register" @click.prevent="switchView('register', '/register')">Daftar</a>
             </div>
           </form>
         </div>
@@ -285,7 +296,7 @@
         <div x-show="view === 'register'" x-transition x-cloak>
           <div class="cardhead">
             <div class="login-mark">
-              <i class="bi bi-person-plus"></i>
+              <img src="{{ asset('assets/icons/logo.svg') }}" alt="Logo SIPERU">
             </div>
             <div class="title">Create your account</div>
             <div class="sub">Lengkapi data berikut untuk membuat akun baru</div>
@@ -338,7 +349,7 @@
 
             <div class="switch-text">
               Sudah punya akun?
-              <a href="/login" @click.prevent="view = 'login'; window.history.pushState({}, '', '/login')">Masuk</a>
+              <a href="/login" @click.prevent="switchView('login', '/login')">Masuk</a>
             </div>
           </form>
         </div>

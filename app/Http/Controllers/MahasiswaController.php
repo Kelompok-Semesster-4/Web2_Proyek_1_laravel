@@ -179,14 +179,30 @@ class MahasiswaController extends Controller
             'tanggal' => 'required|date_format:Y-m-d',
             'jam_mulai' => 'required|date_format:H:i',
             'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
-            'jumlah_peserta' => 'nullable|integer|min:1',
+            'jumlah_peserta' => 'required|integer|min:1',
             'surat' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
         ], [
             'jam_selesai.after' => 'Jam selesai harus lebih besar dari jam mulai.',
+            'jumlah_peserta.required' => 'Jumlah peserta wajib diisi.',
             'surat.mimes' => 'Format surat harus PDF/JPG/PNG.',
         ]);
 
         $userId = Auth::id();
+        $ruangan = DB::table('ruangan')
+            ->select('id', 'nama_ruangan', 'kapasitas')
+            ->where('id', $request->ruangan_id)
+            ->first();
+
+        if (!$ruangan) {
+            return back()->with('error', 'Ruangan tidak ditemukan.')->withInput();
+        }
+
+        if (!is_null($ruangan->kapasitas) && (int) $request->jumlah_peserta > (int) $ruangan->kapasitas) {
+            return back()->with(
+                'error',
+                'Jumlah peserta melebihi kapasitas ruangan. Kapasitas ' . $ruangan->nama_ruangan . ' hanya ' . (int) $ruangan->kapasitas . ' orang.'
+            )->withInput();
+        }
 
         // Cek Bentrok (dengan peminjaman yang sudah disetujui = status 2)
         $conflict = DB::table('peminjaman')
