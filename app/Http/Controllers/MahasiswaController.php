@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class MahasiswaController extends Controller
@@ -212,7 +213,7 @@ class MahasiswaController extends Controller
             ->where(function ($query) use ($request) {
                 $query->whereNot(function ($q) use ($request) {
                     $q->where('jam_selesai', '<=', $request->jam_mulai)
-                      ->orWhere('jam_mulai', '>=', $request->jam_selesai);
+                        ->orWhere('jam_mulai', '>=', $request->jam_selesai);
                 });
             })
             ->exists();
@@ -295,18 +296,21 @@ class MahasiswaController extends Controller
 
     // Pengaturan Akun
     public function profil()
-    {   $user = Auth::user();
+    {
+        $user = Auth::user();
 
         return view('mahasiswa.profil', compact('user'));
     }
 
     public function ubahProfil(Request $request)
-    {   $user = Auth::user();
+    {
+        $user = Auth::user();
 
         $validated_request = $request->validate([
             'nama' => ['required', 'string', 'max:100'],
             'username' => ['required', 'string', 'max:50', Rule::unique('users', 'username')->ignore($user->getKey(), 'id')],
             'email' => ['nullable', 'string', 'max:255', Rule::unique('users', 'email')->ignore($user->getKey(), 'id')],
+            'foto_profil' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'current_password' => ['required_with:password', 'nullable', 'current_password'],
             'password' => ['nullable', 'string', 'min:6', 'confirmed'],
         ]);
@@ -315,8 +319,19 @@ class MahasiswaController extends Controller
         $user->username = $validated_request['username'];
         $user->email = $validated_request['email'];
 
-        if ($request->filled('password'))
-        {   $user->password = Hash::make($validated_request['password']);
+        if ($request->hasFile('foto_profil')) {
+            if (!empty($user->foto_profil)) {
+                Storage::disk('public')->delete('uploads/profil/' . $user->foto_profil);
+            }
+
+            $fotoProfil = $request->file('foto_profil');
+            $fotoProfilName = 'profil_' . $user->id . '_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $fotoProfil->getClientOriginalExtension();
+            $fotoProfil->storeAs('uploads/profil', $fotoProfilName, 'public');
+            $user->foto_profil = $fotoProfilName;
+        }
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($validated_request['password']);
         }
 
         $user->save();
