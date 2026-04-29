@@ -308,9 +308,14 @@
         <div class="wrap profil-page">
             <div class="container">
                 @php
-                    $profilePhotoUrl = !empty($user->foto_profil)
-                        ? asset('storage/uploads/profil/' . $user->foto_profil)
-                        : null;
+                    $profilePhotoUrl = null;
+                    if (!empty($user->foto_profil)) {
+                        if (filter_var($user->foto_profil, FILTER_VALIDATE_URL)) {
+                            $profilePhotoUrl = $user->foto_profil;
+                        } else {
+                            $profilePhotoUrl = asset('storage/uploads/profil/' . $user->foto_profil);
+                        }
+                    }
                     $profileInitial = strtoupper(substr($user->nama, 0, 1));
                 @endphp
 
@@ -343,49 +348,50 @@
                     </div>
                 @endif
 
-                <div class="profil-container">
-                    <!-- Sidebar Profil -->
-                    <div class="profil-sidebar">
-                        <div class="avatar-container">
-                            <div class="avatar">
-                                <img id="avatarPreview" src="{{ $profilePhotoUrl ?? '' }}" alt="Foto Profil"
-                                    class="{{ $profilePhotoUrl ? '' : 'd-none' }}">
-                                <span id="avatarInitial"
-                                    class="avatar-initial {{ $profilePhotoUrl ? 'd-none' : '' }}">{{ $profileInitial }}</span>
-                            </div>
-                        </div>
-                        <div class="photo-upload-wrap">
-                            <label for="foto_profil" class="photo-upload-btn">
-                                <i class="bi bi-camera"></i>
-                                Ubah Foto
-                            </label>
-                            <input type="file" name="foto_profil" id="foto_profil" class="d-none" accept="image/*">
-                        </div>
-                        <h2 class="user-name">{{ $user->nama }}</h2>
-                        <p class="user-handle">{{ $user->username }}</p>
-                        <span class="user-role">
-                            {{ ucfirst($user->role === 'mahasiswa' ? 'Mahasiswa' : ($user->prodi ?? 'User')) }}
-                        </span>
+                <form action="{{ route('mahasiswa.ubahProfil') }}" method="post" enctype="multipart/form-data"
+                    id="profilForm">
+                    @csrf
+                    @method('PATCH')
 
-                        <div class="user-info">
-                            <div class="info-item">
-                                <div class="info-label">Email</div>
-                                <div class="info-value">{{ $user->email ?? '-' }}</div>
+                    <div class="profil-container">
+                        <!-- Sidebar Profil -->
+                        <div class="profil-sidebar">
+                            <div class="avatar-container">
+                                <div class="avatar">
+                                    <img id="avatarPreview" src="{{ $profilePhotoUrl ?? '' }}" alt="Foto Profil"
+                                        class="{{ $profilePhotoUrl ? '' : 'd-none' }}">
+                                    <span id="avatarInitial"
+                                        class="avatar-initial {{ $profilePhotoUrl ? 'd-none' : '' }}">{{ $profileInitial }}</span>
+                                </div>
                             </div>
-                            <div class="info-item">
-                                <div class="info-label">Bergabung</div>
-                                <div class="info-value">{{ $user->created_at->locale('id')->format('F Y') ?? 'N/A' }}
+                            <div class="photo-upload-wrap">
+                                <label for="foto_profil" class="photo-upload-btn">
+                                    <i class="bi bi-camera"></i>
+                                    Ubah Foto
+                                </label>
+                                <input type="file" name="foto_profil" id="foto_profil" class="d-none" accept="image/*">
+                            </div>
+                            <h2 class="user-name">{{ $user->nama }}</h2>
+                            <p class="user-handle">{{ $user->username }}</p>
+                            <span class="user-role">
+                                {{ ucfirst($user->role === 'mahasiswa' ? 'Mahasiswa' : ($user->prodi ?? 'User')) }}
+                            </span>
+
+                            <div class="user-info">
+                                <div class="info-item">
+                                    <div class="info-label">Email</div>
+                                    <div class="info-value">{{ $user->email ?? '-' }}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Bergabung</div>
+                                    <div class="info-value">
+                                        {{ $user->created_at->locale('id')->format('F Y') ?? 'N/A' }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Konten Profil -->
-                    <form action="{{ route('mahasiswa.ubahProfil') }}" method="post" enctype="multipart/form-data"
-                        id="profilForm">
-                        @csrf
-                        @method('PATCH')
-
+                        <!-- Konten Profil -->
                         <div class="profil-forms">
                             <div class="profil-card">
                                 <!-- Informasi Dasar -->
@@ -504,77 +510,78 @@
                                 </button>
                             </div>
                         </div>
-                    </form>
+                    </div>
+                </form>
 
-                    @push('scripts')
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function () {
-                                const passwordInput = document.getElementById('password');
-                                const currentPasswordGroup = document.getElementById('currentPasswordGroup');
-                                const currentPasswordInput = document.getElementById('current_password');
-                                const fotoInput = document.getElementById('foto_profil');
-                                const avatarPreview = document.getElementById('avatarPreview');
-                                const avatarInitial = document.getElementById('avatarInitial');
-                                const hasPassword = {{ $user->password ? 'true' : 'false' }};
-                                const originalAvatarUrl = @json($profilePhotoUrl);
+                @push('scripts')
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const passwordInput = document.getElementById('password');
+                            const currentPasswordGroup = document.getElementById('currentPasswordGroup');
+                            const currentPasswordInput = document.getElementById('current_password');
+                            const fotoInput = document.getElementById('foto_profil');
+                            const avatarPreview = document.getElementById('avatarPreview');
+                            const avatarInitial = document.getElementById('avatarInitial');
+                            const hasPassword = {{ $user->password ? 'true' : 'false' }};
+                            const originalAvatarUrl = @json($profilePhotoUrl);
 
-                                function toggleCurrentPasswordField() {
-                                    const hasNewPassword = passwordInput.value.trim() !== '';
+                            function toggleCurrentPasswordField() {
+                                const hasNewPassword = passwordInput.value.trim() !== '';
 
-                                    if (hasPassword) {
-                                        // Jika user sudah punya password, selalu tampilkan field password lama
-                                        currentPasswordGroup.style.display = 'block';
-                                        currentPasswordInput.required = hasNewPassword;
-                                    } else {
-                                        // Jika user tidak punya password (Google login), tampilkan hanya saat input password baru
-                                        currentPasswordGroup.style.display = hasNewPassword ? 'block' : 'none';
-                                        currentPasswordInput.required = hasNewPassword;
-                                    }
+                                if (hasPassword) {
+                                    // Jika user sudah punya password, selalu tampilkan field password lama
+                                    currentPasswordGroup.style.display = 'block';
+                                    currentPasswordInput.required = hasNewPassword;
+                                } else {
+                                    // Jika user tidak punya password (Google login), tampilkan hanya saat input password baru
+                                    currentPasswordGroup.style.display = hasNewPassword ? 'block' : 'none';
+                                    currentPasswordInput.required = hasNewPassword;
                                 }
+                            }
 
-                                // Check on input
-                                passwordInput.addEventListener('input', toggleCurrentPasswordField);
+                            // Check on input
+                            passwordInput.addEventListener('input', toggleCurrentPasswordField);
 
-                                // Initial check
-                                toggleCurrentPasswordField();
+                            // Initial check
+                            toggleCurrentPasswordField();
 
-                                if (fotoInput) {
-                                    fotoInput.addEventListener('change', function () {
-                                        const file = this.files && this.files[0];
+                            if (fotoInput) {
+                                fotoInput.addEventListener('change', function () {
+                                    const file = this.files && this.files[0];
 
-                                        if (!file) {
-                                            if (originalAvatarUrl && avatarPreview) {
-                                                avatarPreview.src = originalAvatarUrl;
-                                                avatarPreview.classList.remove('d-none');
-                                                avatarInitial.classList.add('d-none');
-                                            } else {
-                                                avatarPreview?.classList.add('d-none');
-                                                avatarInitial?.classList.remove('d-none');
-                                            }
-                                            return;
+                                    if (!file) {
+                                        if (originalAvatarUrl && avatarPreview) {
+                                            avatarPreview.src = originalAvatarUrl;
+                                            avatarPreview.classList.remove('d-none');
+                                            avatarInitial.classList.add('d-none');
+                                        } else {
+                                            avatarPreview?.classList.add('d-none');
+                                            avatarInitial?.classList.remove('d-none');
                                         }
+                                        return;
+                                    }
 
-                                        const reader = new FileReader();
-                                        reader.onload = function (event) {
-                                            if (avatarPreview) {
-                                                avatarPreview.src = event.target.result;
-                                                avatarPreview.classList.remove('d-none');
-                                            }
-                                            avatarInitial?.classList.add('d-none');
-                                        };
-                                        reader.readAsDataURL(file);
-                                    });
-                                }
-
-                                // Auto-dismiss alerts after 5 seconds
-                                const alerts = document.querySelectorAll('.alert');
-                                alerts.forEach(alert => {
-                                    setTimeout(() => {
-                                        const bsAlert = new bootstrap.Alert(alert);
-                                        bsAlert.close();
-                                    }, 5000);
+                                    const reader = new FileReader();
+                                    reader.onload = function (event) {
+                                        if (avatarPreview) {
+                                            avatarPreview.src = event.target.result;
+                                            avatarPreview.classList.remove('d-none');
+                                        }
+                                        avatarInitial?.classList.add('d-none');
+                                    };
+                                    reader.readAsDataURL(file);
                                 });
+                            }
+
+                            // Auto-dismiss alerts after 5 seconds
+                            const alerts = document.querySelectorAll('.alert');
+                            alerts.forEach(alert => {
+                                setTimeout(() => {
+                                    const bsAlert = new bootstrap.Alert(alert);
+                                    bsAlert.close();
+                                }, 5000);
                             });
-                        </script>
-                    @endpush
+                        });
+                    </script>
+                @endpush
 </x-layouts.mahasiswa-layout>

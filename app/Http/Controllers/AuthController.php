@@ -84,6 +84,7 @@ class AuthController extends Controller
             $googleId = $googleUser->getId();
             $email = $googleUser->getEmail();
             $nama = $googleUser->getName();
+            $avatarUrl = $googleUser->getAvatar();
 
             // 1. Cek apakah akun dengan google_id ini sudah pernah login
             $user = User::where('google_id', $googleId)->first();
@@ -103,6 +104,10 @@ class AuthController extends Controller
 
                 if (!$user->nama && $nama) {
                     $user->nama = $nama;
+                }
+
+                if (!$user->foto_profil && $avatarUrl) {
+                    $user->foto_profil = $avatarUrl;
                 }
 
                 $user->save();
@@ -127,6 +132,7 @@ class AuthController extends Controller
                 }
 
                 $user = User::create([
+                    'foto_profil' => $avatarUrl,
                     'nama' => $nama ?: $username,
                     'username' => $username,
                     'email' => $email,
@@ -166,8 +172,9 @@ class AuthController extends Controller
     }
 
     public function registerForm()
-    {   if (Auth::check())
-        {   $role = Auth::user()->role;
+    {
+        if (Auth::check()) {
+            $role = Auth::user()->role;
             return redirect($role === 'admin' ? '/admin/dashboard' : '/dashboard');
         }
 
@@ -175,7 +182,8 @@ class AuthController extends Controller
     }
 
     public function register(Request $request)
-    {   $validated_request = $request->validate([
+    {
+        $validated_request = $request->validate([
             'username' => ['required', 'string', 'max:50', 'unique:users,username'],
             'email' => ['nullable', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
