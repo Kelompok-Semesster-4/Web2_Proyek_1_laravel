@@ -1,4 +1,5 @@
 <x-layouts.admin-layout>
+    <x-slot:title>Dashboard - Admin</x-slot>
 
 <div class="admin-container" style="max-width:100%;">
     <x-head-title-admin

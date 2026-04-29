@@ -73,8 +73,8 @@ function iconFasilitas(string $nama): string {
                             @else
                                 <div class="d-flex flex-wrap gap-2">
                                     @foreach ($fasilitas as $fa)
-                                        <span class="info-pill">
-                                            <i class="bi {{ iconFasilitas($fa->nama_fasilitas) }}"></i>
+                                        <span class="facility-pill">
+                                            <i class="bi bi-check-lg"></i>
                                             {{ $fa->nama_fasilitas }}
                                         </span>
                                     @endforeach

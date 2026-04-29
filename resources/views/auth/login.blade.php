@@ -1,4 +1,5 @@
 <x-layouts.guest-layout>
+  <x-slot:title>Masuk - Peminjaman Ruangan</x-slot>
 
   <div class="login-stage">
     <div class="panel">

@@ -1,4 +1,5 @@
 <x-layouts.admin-layout>
+    <x-slot:title>Kelola Ruangan - Admin</x-slot>
 
 <div class="admin-container" style="max-width: 100%;">
     <!-- Page Header -->
@@ -719,7 +720,11 @@
         } else {
             fIds.forEach(fId => {
                 const fname = fasilitasNameMap[fId] || ('Fasilitas ' + fId);
-                fList.innerHTML += `<span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1"><i class="bi bi-check2 me-1"></i>${escapeHtml(fname)}</span>`;
+                fList.innerHTML += `
+                    <span style="display:inline-flex; align-items:center; gap:8px; padding:8px 14px; border-radius:10px; background:#18a86b; border:1px solid #18a86b; color:#ffffff !important; font-weight:700; font-size:13px; box-shadow:0 6px 14px rgba(24, 168, 107, 0.18);">
+                        <i class="bi bi-check-lg" style="color:#ffffff !important;"></i>${escapeHtml(fname)}
+                    </span>
+                `;
             });
         }
 
@@ -781,14 +786,32 @@
 
     function deleteRuangan(id, namaRuangan) {
         Swal.fire({
-            title: 'Hapus Ruangan?',
-            html: `<strong>${namaRuangan}</strong><br><small class="text-muted">Data beserta semua fotonya akan dihapus permanen.</small>`,
-            icon: 'warning',
+            html: `
+                <div style="text-align:center; padding-top: 6px;">
+                    <div style="width:64px; height:64px; margin:0 auto 18px; border-radius:999px; background:#fde8e7; color:#ef4444; display:flex; align-items:center; justify-content:center; font-size:30px;">
+                        <i class="bi bi-trash"></i>
+                    </div>
+                    <h2 style="margin:0 0 12px; font-size:28px; font-weight:800; line-height:1.2; color:#0f172a;">Hapus Ruangan?</h2>
+                    <p style="margin:0; font-size:17px; line-height:1.6; color:#475569;">
+                        Ruangan "${escapeHtml(namaRuangan)}" akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
+                    </p>
+                </div>
+            `,
+            width: 390,
+            padding: '1.4rem 1.4rem 1.25rem',
             showCancelButton: true,
+            reverseButtons: true,
+            focusCancel: true,
             confirmButtonColor: '#dc3545',
             cancelButtonColor: '#6c757d',
-            confirmButtonText: '<i class="bi bi-trash me-2"></i>Hapus',
-            cancelButtonText: 'Batal'
+            confirmButtonText: 'Ya, Hapus',
+            cancelButtonText: 'Batal',
+            customClass: {
+                popup: 'swal-compact swal-delete-popup',
+                htmlContainer: 'swal-compact-text',
+                confirmButton: 'swal-compact-btn',
+                cancelButton: 'swal-compact-btn'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById('formDelete' + id).submit();

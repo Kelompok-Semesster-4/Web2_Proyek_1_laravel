@@ -1,4 +1,5 @@
 <x-layouts.admin-layout>
+    <x-slot:title>Kelola Gedung - Admin</x-slot>
 
 <div class="admin-container" style="max-width: 100%;">
     <!-- Page Header -->
@@ -218,6 +219,12 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    function escapeHtml(value) {
+        const div = document.createElement('div');
+        div.textContent = value || '';
+        return div.innerHTML;
+    }
+
     // Search functionality
     const gedungSearchInput = document.getElementById('tableGedungSearch') || document.getElementById('searchInput');
     if (gedungSearchInput) {
@@ -252,14 +259,32 @@
     // Delete gedung with confirmation
     function deleteGedung(id, namaGedung) {
         Swal.fire({
-            title: 'Hapus Gedung?',
-            html: `<strong>${namaGedung}</strong><br><small class="text-muted">Data ini akan dihapus secara permanen</small>`,
-            icon: 'warning',
+            html: `
+                <div style="text-align:center; padding-top: 6px;">
+                    <div style="width:64px; height:64px; margin:0 auto 18px; border-radius:999px; background:#fde8e7; color:#ef4444; display:flex; align-items:center; justify-content:center; font-size:30px;">
+                        <i class="bi bi-trash"></i>
+                    </div>
+                    <h2 style="margin:0 0 12px; font-size:28px; font-weight:800; line-height:1.2; color:#0f172a;">Hapus Gedung?</h2>
+                    <p style="margin:0; font-size:17px; line-height:1.6; color:#475569;">
+                        Gedung "${escapeHtml(namaGedung)}" akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
+                    </p>
+                </div>
+            `,
+            width: 390,
+            padding: '1.4rem 1.4rem 1.25rem',
             showCancelButton: true,
+            reverseButtons: true,
+            focusCancel: true,
             confirmButtonColor: '#dc3545',
             cancelButtonColor: '#6c757d',
-            confirmButtonText: '<i class="bi bi-trash me-2"></i>Hapus',
-            cancelButtonText: 'Batal'
+            confirmButtonText: 'Ya, Hapus',
+            cancelButtonText: 'Batal',
+            customClass: {
+                popup: 'swal-compact swal-delete-popup',
+                htmlContainer: 'swal-compact-text',
+                confirmButton: 'swal-compact-btn',
+                cancelButton: 'swal-compact-btn'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById('formDelete' + id).submit();

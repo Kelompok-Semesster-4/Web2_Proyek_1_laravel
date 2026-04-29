@@ -1,4 +1,5 @@
 <x-layouts.admin-layout>
+    <x-slot:title>Persetujuan Peminjaman - Admin</x-slot>
 
 <div class="admin-container" style="max-width: 100%;">
     <!-- Page Header -->

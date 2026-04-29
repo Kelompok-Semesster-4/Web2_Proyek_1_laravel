@@ -1,4 +1,5 @@
 <x-layouts.admin-layout>
+    <x-slot:title>Laporan - Admin</x-slot>
 
 @push('styles')
 <style>
@@ -234,7 +235,7 @@
         <x-slot name="headerActions">
             <a class="btn btn-sm btn-success shadow-sm" style="border-radius: 8px;"
                 href="{{ route('admin.laporan', ['year' => $year, 'month' => $month, 'ruangan_id' => $ruanganId, 'status_id' => $statusId, 'sort_by' => $sortBy, 'sort_dir' => $sortDir, 'export' => 'csv']) }}">
-                <i class="bi bi-file-earmark-spreadsheet me-1"></i>Export CSV
+                <i class="bi bi-file-earmark-spreadsheet"></i>Export CSV
             </a>
         </x-slot>
 
@@ -318,22 +319,11 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-    // Search functionality for Detail Transaction Table
-    const tableLaporanSearch = document.getElementById('tableLaporanSearch');
-    if (tableLaporanSearch) {
-        tableLaporanSearch.addEventListener('keyup', function() {
-            const searchValue = this.value.toLowerCase();
-            const tableRows = document.querySelectorAll('#tableLaporan tbody tr');
-
-            tableRows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchValue) ? '' : 'none';
-            });
-        });
-    }
-
+    // ======================
+    // Chart Configuration
+    // ======================
     const monthLabels = @json($monthLabels);
-    
+
     new Chart(document.getElementById('bookingTrendChart'), {
         type: 'line',
         data: {

@@ -1,4 +1,5 @@
 <x-layouts.guest-layout>
+   <x-slot:title>Beranda - Peminjaman Ruangan</x-slot>
 
 <!-- HERO -->
 <section class="hero-full">
