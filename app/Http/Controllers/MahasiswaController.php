@@ -320,7 +320,7 @@ class MahasiswaController extends Controller
         $user->email = $validated_request['email'];
 
         if ($request->hasFile('foto_profil')) {
-            if (!empty($user->foto_profil)) {
+            if (!empty($user->foto_profil) && !filter_var($user->foto_profil, FILTER_VALIDATE_URL)) {
                 Storage::disk('public')->delete('uploads/profil/' . $user->foto_profil);
             }
 

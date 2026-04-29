@@ -3,9 +3,14 @@
     $currentUser = Auth::user();
     $profileName = $currentUser ? ($currentUser->nama ?: $currentUser->username ?: 'User') : 'User';
     $profileInitial = strtoupper(substr($profileName, 0, 1));
-    $profilePhotoUrl = $currentUser && !empty($currentUser->foto_profil)
-      ? asset('storage/uploads/profil/' . $currentUser->foto_profil)
-      : null;
+    $profilePhotoUrl = null;
+    if ($currentUser && !empty($currentUser->foto_profil)) {
+        if (filter_var($currentUser->foto_profil, FILTER_VALIDATE_URL)) {
+            $profilePhotoUrl = $currentUser->foto_profil;
+        } else {
+            $profilePhotoUrl = asset('storage/uploads/profil/' . $currentUser->foto_profil);
+        }
+    }
   @endphp
   <div class="topnavin">
     <a class="brand" href="{{ route('mahasiswa.dashboard') }}">

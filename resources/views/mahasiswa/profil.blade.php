@@ -308,9 +308,14 @@
         <div class="wrap profil-page">
             <div class="container">
                 @php
-                    $profilePhotoUrl = !empty($user->foto_profil)
-                        ? asset('storage/uploads/profil/' . $user->foto_profil)
-                        : null;
+                    $profilePhotoUrl = null;
+                    if (!empty($user->foto_profil)) {
+                        if (filter_var($user->foto_profil, FILTER_VALIDATE_URL)) {
+                            $profilePhotoUrl = $user->foto_profil;
+                        } else {
+                            $profilePhotoUrl = asset('storage/uploads/profil/' . $user->foto_profil);
+                        }
+                    }
                     $profileInitial = strtoupper(substr($user->nama, 0, 1));
                 @endphp
 
@@ -343,49 +348,48 @@
                     </div>
                 @endif
 
-                <div class="profil-container">
-                    <!-- Sidebar Profil -->
-                    <div class="profil-sidebar">
-                        <div class="avatar-container">
-                            <div class="avatar">
-                                <img id="avatarPreview" src="{{ $profilePhotoUrl ?? '' }}" alt="Foto Profil"
-                                    class="{{ $profilePhotoUrl ? '' : 'd-none' }}">
-                                <span id="avatarInitial"
-                                    class="avatar-initial {{ $profilePhotoUrl ? 'd-none' : '' }}">{{ $profileInitial }}</span>
-                            </div>
-                        </div>
-                        <div class="photo-upload-wrap">
-                            <label for="foto_profil" class="photo-upload-btn">
-                                <i class="bi bi-camera"></i>
-                                Ubah Foto
-                            </label>
-                            <input type="file" name="foto_profil" id="foto_profil" class="d-none" accept="image/*">
-                        </div>
-                        <h2 class="user-name">{{ $user->nama }}</h2>
-                        <p class="user-handle">{{ $user->username }}</p>
-                        <span class="user-role">
-                            {{ ucfirst($user->role === 'mahasiswa' ? 'Mahasiswa' : ($user->prodi ?? 'User')) }}
-                        </span>
+                <form action="{{ route('mahasiswa.ubahProfil') }}" method="post" enctype="multipart/form-data" id="profilForm">
+                    @csrf
+                    @method('PATCH')
 
-                        <div class="user-info">
-                            <div class="info-item">
-                                <div class="info-label">Email</div>
-                                <div class="info-value">{{ $user->email ?? '-' }}</div>
+                    <div class="profil-container">
+                        <!-- Sidebar Profil -->
+                        <div class="profil-sidebar">
+                            <div class="avatar-container">
+                                <div class="avatar">
+                                    <img id="avatarPreview" src="{{ $profilePhotoUrl ?? '' }}" alt="Foto Profil"
+                                        class="{{ $profilePhotoUrl ? '' : 'd-none' }}">
+                                    <span id="avatarInitial"
+                                        class="avatar-initial {{ $profilePhotoUrl ? 'd-none' : '' }}">{{ $profileInitial }}</span>
+                                </div>
                             </div>
-                            <div class="info-item">
-                                <div class="info-label">Bergabung</div>
-                                <div class="info-value">{{ $user->created_at->locale('id')->format('F Y') ?? 'N/A' }}
+                            <div class="photo-upload-wrap">
+                                <label for="foto_profil" class="photo-upload-btn">
+                                    <i class="bi bi-camera"></i>
+                                    Ubah Foto
+                                </label>
+                                <input type="file" name="foto_profil" id="foto_profil" class="d-none" accept="image/*">
+                            </div>
+                            <h2 class="user-name">{{ $user->nama }}</h2>
+                            <p class="user-handle">{{ $user->username }}</p>
+                            <span class="user-role">
+                                {{ ucfirst($user->role === 'mahasiswa' ? 'Mahasiswa' : ($user->prodi ?? 'User')) }}
+                            </span>
+
+                            <div class="user-info">
+                                <div class="info-item">
+                                    <div class="info-label">Email</div>
+                                    <div class="info-value">{{ $user->email ?? '-' }}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Bergabung</div>
+                                    <div class="info-value">{{ $user->created_at->locale('id')->format('F Y') ?? 'N/A' }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Konten Profil -->
-                    <form action="{{ route('mahasiswa.ubahProfil') }}" method="post" enctype="multipart/form-data"
-                        id="profilForm">
-                        @csrf
-                        @method('PATCH')
-
+                        <!-- Konten Profil -->
                         <div class="profil-forms">
                             <div class="profil-card">
                                 <!-- Informasi Dasar -->
@@ -504,7 +508,8 @@
                                 </button>
                             </div>
                         </div>
-                    </form>
+                    </div>
+                </form>
 
                     @push('scripts')
                         <script>
