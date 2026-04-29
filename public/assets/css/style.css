@@ -1501,6 +1501,90 @@ label {
   align-items: center;
 }
 
+#tableRuangan {
+  min-width: 1040px;
+}
+
+#tableRuangan thead th {
+  padding: 12px 10px !important;
+  vertical-align: middle;
+}
+
+#tableRuangan tbody td {
+  padding: 12px 10px;
+}
+
+#tableRuangan tbody td {
+  text-align: center;
+}
+
+#tableRuangan th:nth-child(2),
+#tableRuangan td:nth-child(2) {
+  width: 180px;
+  max-width: 180px;
+}
+
+#tableRuangan .ruangan-name-text {
+  font-size: 0.95rem;
+  line-height: 1.3;
+  max-width: 160px;
+  margin: 0 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#tableRuangan .badge {
+  line-height: 1;
+  white-space: nowrap;
+}
+
+#tableRuangan td:nth-child(3) .badge,
+#tableRuangan td:nth-child(5) .badge {
+  min-width: 118px;
+}
+
+#tableRuangan td:nth-child(4) .badge {
+  min-width: 78px;
+}
+
+#tableRuangan .badge-number {
+  width: 36px;
+  height: 36px;
+}
+
+#tableRuangan .ruangan-photo-cell {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+#tableRuangan .ruangan-photo-cell img {
+  width: 78px !important;
+  height: 34px !important;
+  border-radius: 8px !important;
+}
+
+#tableRuangan .ruangan-photo-meta {
+  margin-top: 0 !important;
+  font-size: 0.78rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+#tableRuangan .ruangan-actions {
+  gap: 8px !important;
+  flex-wrap: nowrap;
+}
+
+#tableRuangan .ruangan-actions .aksi-btn {
+  min-width: 76px !important;
+  height: 36px;
+  padding: 0 10px !important;
+  font-size: 0.8rem !important;
+}
+
 #tableRiwayat {
   border-collapse: separate;
   border-spacing: 0;

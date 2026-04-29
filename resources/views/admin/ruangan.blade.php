@@ -31,22 +31,22 @@
             <th class="text-center" style="width: 50px; padding: 15px 10px;">
                 <i class="bi bi-hash"></i>
             </th>
-            <th class="text-center" style="width: 20%; padding: 15px;">
+            <th class="text-center" style="width: 16%; padding: 15px;">
                 <i class="bi bi-door-closed me-1"></i>Nama Ruangan
             </th>
-            <th class="text-center" style="width: 12%; padding: 15px;">
+            <th class="text-center" style="width: 13%; padding: 15px;">
                 <i class="bi bi-building me-1"></i>Gedung
             </th>
             <th class="text-center" style="width: 10%; padding: 15px;">
                 <i class="bi bi-layers me-1"></i>Lantai
             </th>
-            <th class="text-center" style="width: 12%; padding: 15px;">
+            <th class="text-center" style="width: 13%; padding: 15px;">
                 <i class="bi bi-people me-1"></i>Kapasitas
             </th>
-            <th class="text-center" style="width: 10%; padding: 15px;">
+            <th class="text-center" style="width: 14%; padding: 15px;">
                 <i class="bi bi-image me-1"></i>Foto
             </th>
-            <th class="text-center" style="width: 280px; padding: 15px;">
+            <th class="text-center" style="width: 230px; padding: 15px;">
                 <i class="bi bi-gear me-1"></i>Aksi
             </th>
         </tr>
@@ -59,16 +59,9 @@
             </td>
 
             <td>
-                <div class="fw-bold text-dark" style="font-size: 1rem;">
+                <div class="fw-bold text-dark ruangan-name-text">
                     {{ $ruangan->nama_ruangan }}
                 </div>
-
-                @if (!empty($ruangan->deskripsi))
-                    <small class="text-muted" style="font-size: 0.85rem;">
-                        <i class="bi bi-info-circle me-1"></i>
-                        {{ Str::limit($ruangan->deskripsi, 50) }}
-                    </small>
-                @endif
             </td>
 
             <td>
@@ -93,6 +86,7 @@
             </td>
 
             <td class="text-center">
+                <div class="ruangan-photo-cell">
                 @if ($ruangan->cover_foto)
                     <img src="{{ asset('storage/uploads/ruangan/' . $ruangan->cover_foto) }}"
                         alt="{{ $ruangan->nama_ruangan }}"
@@ -107,13 +101,14 @@
                     </span>
                 @endif
 
-                <div class="small text-muted mt-1">
+                <div class="small text-muted ruangan-photo-meta">
                     Detail: {{ $ruangan->detail_count ?? 0 }} foto
+                </div>
                 </div>
             </td>
 
             <td>
-                <div class="d-flex gap-1 justify-content-center">
+                <div class="d-flex gap-1 justify-content-center ruangan-actions">
                     <button class="btn btn-info aksi-btn"
                         style="min-width: 65px; font-size: 0.8rem;"
                         data-bs-toggle="modal"
