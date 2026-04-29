@@ -170,14 +170,15 @@
     id="modalAddRuangan"
     title="Tambah Ruangan Baru"
     icon="bi bi-plus-circle-fill"
-    dialog-class="modal-dialog modal-dialog-centered modal-lg"
+    dialog-class="modal-dialog modal-dialog-centered modal-add-ruangan"
+    content-class="modal-content border-0 shadow-lg modal-add-ruangan-content"
 >
-    <form method="POST" action="{{ route('admin.ruangan.store') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('admin.ruangan.store') }}" enctype="multipart/form-data" class="compact-ruangan-form">
         @csrf
-        <div class="modal-body p-4">
+        <div class="modal-body p-3">
 
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
+                    <div class="row g-2">
+                        <div class="col-md-6">
                             <label class="form-label fw-semibold">
                                 <i class="bi bi-door-closed me-1" style="color: #22c55e;"></i>Nama Ruangan
                                 <span class="text-danger">*</span>
@@ -185,7 +186,7 @@
                             <input type="text" class="form-control" name="nama_ruangan" required placeholder="Contoh: Ruang 301">
                         </div>
 
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-6">
                             <label class="form-label fw-semibold">
                                 <i class="bi bi-building me-1" style="color: #22c55e;"></i>Gedung
                                 <span class="text-danger">*</span>
@@ -198,7 +199,7 @@
                             </select>
                         </div>
 
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-6">
                             <label class="form-label fw-semibold">
                                 <i class="bi bi-layers me-1" style="color: #22c55e;"></i>Lantai
                                 <span class="text-danger">*</span>
@@ -208,29 +209,29 @@
                             </select>
                             <small class="text-muted">Pilih gedung terlebih dahulu</small>
                         </div>
-                    </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-people me-1" style="color: #22c55e;"></i>Kapasitas
-                            <span class="text-danger">*</span>
-                        </label>
-                        <div class="input-group">
-                            <input type="number" class="form-control" name="kapasitas" placeholder="Jumlah orang" min="1" required>
-                            <span class="input-group-text">
-                                <i class="bi bi-person-fill"></i> orang
-                            </span>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-people me-1" style="color: #22c55e;"></i>Kapasitas
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" name="kapasitas" placeholder="Jumlah orang" min="1" required>
+                                <span class="input-group-text">
+                                    <i class="bi bi-person-fill me-1"></i>orang
+                                </span>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="mb-3">
+                    <div class="mb-2 mt-2">
                         <label class="form-label fw-semibold">
                             <i class="bi bi-card-text me-1" style="color: #22c55e;"></i>Deskripsi
                         </label>
-                        <textarea class="form-control" name="deskripsi" rows="3" placeholder="Keterangan ruangan (opsional)"></textarea>
+                        <textarea class="form-control" name="deskripsi" rows="2" placeholder="Keterangan ruangan (opsional)"></textarea>
                     </div>
 
-                    <div class="mb-3">
+                    <div class="mb-2">
                         <label class="form-label fw-semibold">
                             <i class="bi bi-check2-square me-1" style="color: #22c55e;"></i>Fasilitas
                         </label>
@@ -253,36 +254,38 @@
                         @endif
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-image me-1" style="color: #22c55e;"></i>Foto Sampul
-                        </label>
-                        <input type="file" class="form-control" name="foto_cover" accept="image/*" id="addCoverInput" onchange="previewAddCover(event)">
-                        <small class="text-muted">
-                            <i class="bi bi-info-circle me-1"></i>Format: JPG, PNG, GIF (Max 2MB)
-                        </small>
-                        <div class="mt-3" id="addCoverPreviewContainer" style="display: none;">
-                            <img id="addCoverPreview" src="" alt="Preview" class="img-thumbnail rounded" style="max-height: 200px;">
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-image me-1" style="color: #22c55e;"></i>Foto Sampul
+                            </label>
+                            <input type="file" class="form-control" name="foto_cover" accept="image/*" id="addCoverInput" onchange="previewAddCover(event)">
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle me-1"></i>Max 2MB
+                            </small>
+                            <div class="mt-2" id="addCoverPreviewContainer" style="display: none;">
+                                <img id="addCoverPreview" src="" alt="Preview" class="img-thumbnail rounded">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-images me-1" style="color: #22c55e;"></i>Foto Detail
+                            </label>
+                            <input type="file" class="form-control" name="foto_detail[]" accept="image/*" multiple>
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle me-1"></i>Bisa lebih dari satu
+                            </small>
                         </div>
                     </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-images me-1" style="color: #22c55e;"></i>Foto Detail (Bisa lebih dari satu)
-                        </label>
-                        <input type="file" class="form-control" name="foto_detail[]" accept="image/*" multiple>
-                        <small class="text-muted">
-                            <i class="bi bi-info-circle me-1"></i>Pilih beberapa foto untuk detail
-                        </small>
-                    </div>
         </div>
-        <div class="modal-footer bg-light border-0">
+        <div class="modal-footer bg-light border-0 py-2 px-3">
             <button type="button" class="btn text-white" data-bs-dismiss="modal"
-                style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
+                style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; border-radius: 8px; padding: 8px 18px; font-weight: 600;">
                 <i class="bi bi-x-circle me-1"></i>Batal
             </button>
             <button type="submit" class="btn text-white"
-                style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
+                style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border: none; border-radius: 8px; padding: 8px 18px; font-weight: 600;">
                 <i class="bi bi-save me-1"></i>Simpan Ruangan
             </button>
         </div>
@@ -345,7 +348,7 @@
                         <div class="input-group">
                             <input type="number" class="form-control" name="kapasitas" id="editKapasitas" min="1" required>
                             <span class="input-group-text">
-                                <i class="bi bi-person-fill"></i> orang
+                                <i class="bi bi-person-fill me-1"></i>orang
                             </span>
                         </div>
                     </div>
