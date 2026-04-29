@@ -213,7 +213,7 @@ class MahasiswaController extends Controller
             ->where(function ($query) use ($request) {
                 $query->whereNot(function ($q) use ($request) {
                     $q->where('jam_selesai', '<=', $request->jam_mulai)
-                      ->orWhere('jam_mulai', '>=', $request->jam_selesai);
+                        ->orWhere('jam_mulai', '>=', $request->jam_selesai);
                 });
             })
             ->exists();
@@ -296,13 +296,15 @@ class MahasiswaController extends Controller
 
     // Pengaturan Akun
     public function profil()
-    {   $user = Auth::user();
+    {
+        $user = Auth::user();
 
         return view('mahasiswa.profil', compact('user'));
     }
 
     public function ubahProfil(Request $request)
-    {   $user = Auth::user();
+    {
+        $user = Auth::user();
 
         $validated_request = $request->validate([
             'nama' => ['required', 'string', 'max:100'],
@@ -328,8 +330,8 @@ class MahasiswaController extends Controller
             $user->foto_profil = $fotoProfilName;
         }
 
-        if ($request->filled('password'))
-        {   $user->password = Hash::make($validated_request['password']);
+        if ($request->filled('password')) {
+            $user->password = Hash::make($validated_request['password']);
         }
 
         $user->save();
