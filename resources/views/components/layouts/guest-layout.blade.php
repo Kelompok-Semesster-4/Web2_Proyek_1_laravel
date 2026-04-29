@@ -30,8 +30,8 @@
         <a href="{{ url('/peminjaman') }}">Peminjaman</a>
         @auth
           <form method="POST" action="{{ route('logout') }}" style="display:inline;">
-              @csrf
-              <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">Logout</a>
+            @csrf
+            <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">Logout</a>
           </form>
         @else
           <a class="active" href="{{ route('login') }}">Login</a>
@@ -53,12 +53,13 @@
         <a href="{{ url('/ruangan') }}" role="menuitem">Ruangan</a>
         <a href="{{ url('/peminjaman') }}" role="menuitem">Peminjaman</a>
         @auth
-            <form method="POST" action="{{ route('logout') }}" style="display:inline; width: 100%;">
-                @csrf
-                <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();" role="menuitem">Logout</a>
-            </form>
+          <form method="POST" action="{{ route('logout') }}" style="display:inline; width: 100%;">
+            @csrf
+            <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();"
+              role="menuitem">Logout</a>
+          </form>
         @else
-            <a class="active" href="{{ route('login') }}" role="menuitem">Login</a>
+          <a class="active" href="{{ route('login') }}" role="menuitem">Login</a>
         @endauth
       </div>
     </div>
@@ -80,12 +81,12 @@
     const burgerBtn = document.getElementById('burgerBtn');
     const mobileMenu = document.getElementById('mobileMenu');
 
-    function closeMenu(){
+    function closeMenu() {
       if (!mobileMenu || !burgerBtn) return;
       mobileMenu.classList.remove('show');
       burgerBtn.setAttribute('aria-expanded', 'false');
     }
-    function toggleMenu(){
+    function toggleMenu() {
       if (!mobileMenu || !burgerBtn) return;
       const isOpen = mobileMenu.classList.toggle('show');
       burgerBtn.setAttribute('aria-expanded', String(isOpen));
@@ -104,4 +105,5 @@
   </script>
 
 </body>
+
 </html>

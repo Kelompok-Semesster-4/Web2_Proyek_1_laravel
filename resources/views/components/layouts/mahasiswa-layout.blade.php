@@ -36,12 +36,12 @@
     const burgerBtn = document.getElementById('burgerBtn');
     const mobileMenu = document.getElementById('mobileMenu');
 
-    function closeMenu(){
+    function closeMenu() {
       if (!mobileMenu || !burgerBtn) return;
       mobileMenu.classList.remove('show');
       burgerBtn.setAttribute('aria-expanded', 'false');
     }
-    function toggleMenu(){
+    function toggleMenu() {
       if (!mobileMenu || !burgerBtn) return;
       const isOpen = mobileMenu.classList.toggle('show');
       burgerBtn.setAttribute('aria-expanded', String(isOpen));
@@ -61,4 +61,5 @@
 
   @stack('scripts')
 </body>
+
 </html>

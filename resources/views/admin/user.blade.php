@@ -1,446 +1,417 @@
 <x-layouts.admin-layout>
     <x-slot:title>Kelola User - Admin</x-slot>
 
-<div class="admin-container" style="max-width: 100%;">
-    <!-- Page Header -->
-    <x-head-title-admin
-    title="Kelola User"
-    icon="bi bi-person-plus-fill"
-    buttonText="Tambah User"
-    modalTarget="#modalAddUser"
-    />
-    <!-- Alert Messages -->
-    <x-alert-admin entity="User" />
+        <div class="admin-container" style="max-width: 100%;">
+            <!-- Page Header -->
+            <x-head-title-admin title="Kelola User" icon="bi bi-person-plus-fill" buttonText="Tambah User"
+                modalTarget="#modalAddUser" />
+            <!-- Alert Messages -->
+            <x-alert-admin entity="User" />
 
-    <!-- Card Tabel User -->
-   <x-table-card
-    title="Daftar User"
-    icon="bi bi-people-fill"
-    table-id="tableUser"
-    search-placeholder="Cari nama, username..."
-    :total="count($users)"
-    total-label="user terdaftar"
-    :empty="$users->isEmpty()"
-    empty-title="Belum ada data user"
-    empty-subtitle="Tambahkan user pertama Anda"
-    :colspan="6"
-    body-max-height="420px"
-    :sticky-head="true"
->
-    <x-slot name="head">
-        <tr>
-            <th class="text-center" style="width: 50px; padding: 15px 10px;">
-                <i class="bi bi-hash"></i>
-            </th>
-            <th style="width: 25%; padding: 15px;">
-                <i class="bi bi-person me-1"></i>Nama
-            </th>
-            <th style="width: 20%; padding: 15px;">
-                <i class="bi bi-at me-1"></i>Username
-            </th>
-            <th class="text-center" style="width: 12%; padding: 15px;">
-                <i class="bi bi-shield-check me-1"></i>Role
-            </th>
-            <th style="width: 18%; padding: 15px;">
-                <i class="bi bi-mortarboard me-1"></i>Prodi
-            </th>
-            <th class="text-center" style="width: 280px; padding: 15px;">
-                <i class="bi bi-gear me-1"></i>Aksi
-            </th>
-        </tr>
-    </x-slot>
+            <!-- Card Tabel User -->
+            <x-table-card title="Daftar User" icon="bi bi-people-fill" table-id="tableUser"
+                search-placeholder="Cari nama, username..." :total="count($users)" total-label="user terdaftar"
+                :empty="$users->isEmpty()" empty-title="Belum ada data user"
+                empty-subtitle="Tambahkan user pertama Anda" :colspan="6" body-max-height="420px" :sticky-head="true">
+                <x-slot name="head">
+                    <tr>
+                        <th class="text-center" style="width: 50px; padding: 15px 10px;">
+                            <i class="bi bi-hash"></i>
+                        </th>
+                        <th style="width: 25%; padding: 15px;">
+                            <i class="bi bi-person me-1"></i>Nama
+                        </th>
+                        <th style="width: 20%; padding: 15px;">
+                            <i class="bi bi-at me-1"></i>Username
+                        </th>
+                        <th class="text-center" style="width: 12%; padding: 15px;">
+                            <i class="bi bi-shield-check me-1"></i>Role
+                        </th>
+                        <th style="width: 18%; padding: 15px;">
+                            <i class="bi bi-mortarboard me-1"></i>Prodi
+                        </th>
+                        <th class="text-center" style="width: 280px; padding: 15px;">
+                            <i class="bi bi-gear me-1"></i>Aksi
+                        </th>
+                    </tr>
+                </x-slot>
 
-    @foreach ($users as $i => $user)
-        <tr>
-            <td class="text-center">
-                <span class="badge-number">{{ $i + 1 }}</span>
-            </td>
+                @foreach ($users as $i => $user)
+                    <tr>
+                        <td class="text-center">
+                            <span class="badge-number">{{ $i + 1 }}</span>
+                        </td>
 
-            <td>
-                <div class="d-flex align-items-center">
-                    <div class="avatar-circle me-3">
-                        {{ strtoupper(substr($user->nama, 0, 1)) }}
-                    </div>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-circle me-3">
+                                    {{ strtoupper(substr($user->nama, 0, 1)) }}
+                                </div>
 
-                    <div>
-                        <div class="fw-bold text-dark" style="font-size: 1rem;">
-                            {{ $user->nama }}
+                                <div>
+                                    <div class="fw-bold text-dark" style="font-size: 1rem;">
+                                        {{ $user->nama }}
+                                    </div>
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar3 me-1"></i>
+                                        {{ date('d M Y', strtotime($user->created_at)) }}
+                                    </small>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="text-dark">
+                                <i class="bi bi-person-badge me-1 text-muted"></i>{{ $user->username }}
+                            </span>
+                        </td>
+
+                        <td class="text-center">
+                            @if ($user->role === 'admin')
+                                <span class="badge" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                                    <i class="bi bi-shield-fill-check me-1"></i>Admin
+                                </span>
+                            @else
+                                <span class="badge" style="background: linear-gradient(135deg, #0dcaf0, #0aa2c0);">
+                                    <i class="bi bi-person-fill me-1"></i>Mahasiswa
+                                </span>
+                            @endif
+                        </td>
+
+                        <td>
+                            <span class="text-dark">
+                                @if ($user->prodi)
+                                    <i class="bi bi-mortarboard-fill me-1 text-success"></i>{{ $user->prodi }}
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="d-flex justify-content-center gap-1">
+                                <button class="btn btn-info aksi-btn" style="min-width: 65px; font-size: 0.8rem;" onclick="viewDetail(
+                                {{ $user->id }},
+                                '{{ addslashes($user->nama) }}',
+                                '{{ addslashes($user->username) }}',
+                                '{{ $user->role }}',
+                                '{{ addslashes($user->prodi ?? '') }}',
+                                '{{ date('d M Y', strtotime($user->created_at)) }}'
+                            )">
+                                    <i class="bi bi-eye-fill me-1"></i>Detail
+                                </button>
+
+                                <button class="btn btn-warning aksi-btn" style="min-width: 60px; font-size: 0.8rem;"
+                                    data-bs-toggle="modal" data-bs-target="#modalEditUser" onclick="editUser(
+                                {{ $user->id }},
+                                '{{ addslashes($user->nama) }}',
+                                '{{ addslashes($user->username) }}',
+                                '{{ $user->role }}',
+                                '{{ addslashes($user->prodi ?? '') }}'
+                            )">
+                                    <i class="bi bi-pencil-fill me-1"></i>Edit
+                                </button>
+
+                                <form action="{{ route('admin.user.destroy', $user->id) }}" method="POST" class="d-inline"
+                                    id="formDelete{{ $user->id }}">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button type="button" class="btn btn-danger aksi-btn"
+                                        style="min-width: 65px; font-size: 0.8rem;"
+                                        onclick="deleteUser({{ $user->id }}, '{{ addslashes($user->nama) }}')">
+                                        <i class="bi bi-trash-fill me-1"></i>Hapus
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                @endforeach
+            </x-table-card>
+
+            <!-- Modal Add User -->
+            <x-modal-admin id="modalAddUser" title="Tambah User Baru" icon="bi bi-person-plus-fill">
+                <form action="{{ route('admin.user.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-person me-1"></i>Nama Lengkap <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control" name="nama" required
+                                style="border-radius: 8px; padding: 10px 15px;">
                         </div>
-                        <small class="text-muted">
-                            <i class="bi bi-calendar3 me-1"></i>
-                            {{ date('d M Y', strtotime($user->created_at)) }}
-                        </small>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-at me-1"></i>Username <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control" name="username" required
+                                style="border-radius: 8px; padding: 10px 15px;">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-key me-1"></i>Password <span class="text-danger">*</span>
+                            </label>
+                            <input type="password" class="form-control" name="password" required
+                                style="border-radius: 8px; padding: 10px 15px;">
+                            <small class="text-muted">Minimal 6 karakter</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-shield-check me-1"></i>Role <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select" name="role" id="addRole" required
+                                onchange="toggleProdiField('add')" style="border-radius: 8px; padding: 10px 15px;">
+                                <option value="">Pilih Role</option>
+                                <option value="admin">Admin</option>
+                                <option value="mahasiswa">Mahasiswa</option>
+                            </select>
+                        </div>
+                        <div class="mb-3" id="addProdiField" style="display: none;">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-mortarboard me-1"></i>Program Studi
+                            </label>
+                            <input type="text" class="form-control" name="prodi"
+                                style="border-radius: 8px; padding: 10px 15px;">
+                        </div>
                     </div>
-                </div>
-            </td>
-
-            <td>
-                <span class="text-dark">
-                    <i class="bi bi-person-badge me-1 text-muted"></i>{{ $user->username }}
-                </span>
-            </td>
-
-            <td class="text-center">
-                @if ($user->role === 'admin')
-                    <span class="badge" style="background: linear-gradient(135deg, #667eea, #764ba2);">
-                        <i class="bi bi-shield-fill-check me-1"></i>Admin
-                    </span>
-                @else
-                    <span class="badge" style="background: linear-gradient(135deg, #0dcaf0, #0aa2c0);">
-                        <i class="bi bi-person-fill me-1"></i>Mahasiswa
-                    </span>
-                @endif
-            </td>
-
-            <td>
-                <span class="text-dark">
-                    @if ($user->prodi)
-                        <i class="bi bi-mortarboard-fill me-1 text-success"></i>{{ $user->prodi }}
-                    @else
-                        <span class="text-muted">-</span>
-                    @endif
-                </span>
-            </td>
-
-            <td>
-                <div class="d-flex justify-content-center gap-1">
-                    <button class="btn btn-info aksi-btn"
-                        style="min-width: 65px; font-size: 0.8rem;"
-                        onclick="viewDetail(
-                            {{ $user->id }},
-                            '{{ addslashes($user->nama) }}',
-                            '{{ addslashes($user->username) }}',
-                            '{{ $user->role }}',
-                            '{{ addslashes($user->prodi ?? '') }}',
-                            '{{ date('d M Y', strtotime($user->created_at)) }}'
-                        )">
-                        <i class="bi bi-eye-fill me-1"></i>Detail
-                    </button>
-
-                    <button class="btn btn-warning aksi-btn"
-                        style="min-width: 60px; font-size: 0.8rem;"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalEditUser"
-                        onclick="editUser(
-                            {{ $user->id }},
-                            '{{ addslashes($user->nama) }}',
-                            '{{ addslashes($user->username) }}',
-                            '{{ $user->role }}',
-                            '{{ addslashes($user->prodi ?? '') }}'
-                        )">
-                        <i class="bi bi-pencil-fill me-1"></i>Edit
-                    </button>
-
-                    <form action="{{ route('admin.user.destroy', $user->id) }}"
-                        method="POST"
-                        class="d-inline"
-                        id="formDelete{{ $user->id }}">
-                        @csrf
-                        @method('DELETE')
-
-                        <button type="button"
-                            class="btn btn-danger aksi-btn"
-                            style="min-width: 65px; font-size: 0.8rem;"
-                            onclick="deleteUser({{ $user->id }}, '{{ addslashes($user->nama) }}')">
-                            <i class="bi bi-trash-fill me-1"></i>Hapus
+                    <div class="modal-footer bg-light border-0">
+                        <button type="button" class="btn text-white" data-bs-dismiss="modal"
+                            style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
+                            <i class="bi bi-x-circle me-1"></i>Batal
                         </button>
-                    </form>
-                </div>
-            </td>
-        </tr>
-    @endforeach
-</x-table-card>
-
-<!-- Modal Add User -->
-<x-modal-admin
-    id="modalAddUser"
-    title="Tambah User Baru"
-    icon="bi bi-person-plus-fill"
->
-    <form action="{{ route('admin.user.store') }}" method="POST">
-        @csrf
-        <div class="modal-body p-4">
-            <div class="mb-3">
-                <label class="form-label fw-semibold">
-                    <i class="bi bi-person me-1"></i>Nama Lengkap <span class="text-danger">*</span>
-                </label>
-                <input type="text" class="form-control" name="nama" required
-                    style="border-radius: 8px; padding: 10px 15px;">
-            </div>
-            <div class="mb-3">
-                <label class="form-label fw-semibold">
-                    <i class="bi bi-at me-1"></i>Username <span class="text-danger">*</span>
-                </label>
-                <input type="text" class="form-control" name="username" required
-                    style="border-radius: 8px; padding: 10px 15px;">
-            </div>
-            <div class="mb-3">
-                <label class="form-label fw-semibold">
-                    <i class="bi bi-key me-1"></i>Password <span class="text-danger">*</span>
-                </label>
-                <input type="password" class="form-control" name="password" required
-                    style="border-radius: 8px; padding: 10px 15px;">
-                <small class="text-muted">Minimal 6 karakter</small>
-            </div>
-            <div class="mb-3">
-                <label class="form-label fw-semibold">
-                    <i class="bi bi-shield-check me-1"></i>Role <span class="text-danger">*</span>
-                </label>
-                <select class="form-select" name="role" id="addRole" required onchange="toggleProdiField('add')"
-                    style="border-radius: 8px; padding: 10px 15px;">
-                    <option value="">Pilih Role</option>
-                    <option value="admin">Admin</option>
-                    <option value="mahasiswa">Mahasiswa</option>
-                </select>
-            </div>
-            <div class="mb-3" id="addProdiField" style="display: none;">
-                <label class="form-label fw-semibold">
-                    <i class="bi bi-mortarboard me-1"></i>Program Studi
-                </label>
-                <input type="text" class="form-control" name="prodi"
-                    style="border-radius: 8px; padding: 10px 15px;">
-            </div>
-        </div>
-        <div class="modal-footer bg-light border-0">
-            <button type="button" class="btn text-white" data-bs-dismiss="modal" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
-                <i class="bi bi-x-circle me-1"></i>Batal
-            </button>
-            <button type="submit" class="btn text-white" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
-                <i class="bi bi-save me-1"></i>Simpan User
-            </button>
-        </div>
-    </form>
-</x-modal-admin>
-
-<!-- Modal Edit User -->
-<x-modal-admin
-    id="modalEditUser"
-    title="Edit User"
-    icon="bi bi-pencil-square"
-    header-gradient="linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)"
->
-    <form action="{{ route('admin.user.update') }}" method="POST">
-        @csrf
-        @method('PUT')
-        <input type="hidden" name="id" id="editUserId">
-        <div class="modal-body p-4">
-            <div class="mb-3">
-                <label class="form-label fw-semibold">
-                    <i class="bi bi-person me-1"></i>Nama Lengkap <span class="text-danger">*</span>
-                </label>
-                <input type="text" class="form-control" name="nama" id="editNama" required
-                    style="border-radius: 8px; padding: 10px 15px;">
-            </div>
-            <div class="mb-3">
-                <label class="form-label fw-semibold">
-                    <i class="bi bi-at me-1"></i>Username <span class="text-danger">*</span>
-                </label>
-                <input type="text" class="form-control" name="username" id="editUsername" required
-                    style="border-radius: 8px; padding: 10px 15px;">
-            </div>
-            <div class="mb-3">
-                <label class="form-label fw-semibold">
-                    <i class="bi bi-key me-1"></i>Password Baru
-                </label>
-                <input type="password" class="form-control" name="password" id="editPassword"
-                    style="border-radius: 8px; padding: 10px 15px;">
-                <small class="text-muted">Kosongkan jika tidak ingin mengubah password</small>
-            </div>
-            <div class="mb-3">
-                <label class="form-label fw-semibold">
-                    <i class="bi bi-shield-check me-1"></i>Role <span class="text-danger">*</span>
-                </label>
-                <select class="form-select" name="role" id="editRole" required onchange="toggleProdiField('edit')"
-                    style="border-radius: 8px; padding: 10px 15px;">
-                    <option value="">Pilih Role</option>
-                    <option value="admin">Admin</option>
-                    <option value="mahasiswa">Mahasiswa</option>
-                </select>
-            </div>
-            <div class="mb-3" id="editProdiField" style="display: none;">
-                <label class="form-label fw-semibold">
-                    <i class="bi bi-mortarboard me-1"></i>Program Studi
-                </label>
-                <input type="text" class="form-control" name="prodi" id="editProdi"
-                    style="border-radius: 8px; padding: 10px 15px;">
-            </div>
-        </div>
-        <div class="modal-footer bg-light border-0">
-            <button type="button" class="btn text-white" data-bs-dismiss="modal" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
-                <i class="bi bi-x-circle me-1"></i>Batal
-            </button>
-            <button type="submit" class="btn text-white" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
-                <i class="bi bi-check-circle me-1"></i>Update User
-            </button>
-        </div>
-    </form>
-</x-modal-admin>
-
-<!-- Modal View Detail -->
-<x-modal-admin
-    id="modalViewDetail"
-    title="Detail User"
-    icon="bi bi-info-circle-fill"
-    header-gradient="linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%)"
->
-    <div class="modal-body p-4">
-        <div class="detail-item mb-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
-            <label class="text-muted small mb-1">
-                <i class="bi bi-person me-1"></i>Nama Lengkap
-            </label>
-            <div class="fw-bold" id="detailNama"></div>
-        </div>
-        <div class="detail-item mb-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
-            <label class="text-muted small mb-1">
-                <i class="bi bi-at me-1"></i>Username
-            </label>
-            <div class="fw-bold" id="detailUsername"></div>
-        </div>
-        <div class="detail-item mb-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
-            <label class="text-muted small mb-1">
-                <i class="bi bi-shield-check me-1"></i>Role
-            </label>
-            <div id="detailRole"></div>
-        </div>
-        <div class="detail-item mb-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
-            <label class="text-muted small mb-1">
-                <i class="bi bi-mortarboard me-1"></i>Program Studi
-            </label>
-            <div class="fw-bold" id="detailProdi"></div>
-        </div>
-        <div class="detail-item mb-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
-            <label class="text-muted small mb-1">
-                <i class="bi bi-calendar3 me-1"></i>Terdaftar Sejak
-            </label>
-            <div class="fw-bold" id="detailCreated"></div>
-        </div>
-    </div>
-    <div class="modal-footer bg-light border-0">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 8px; padding: 10px 24px;">
-            <i class="bi bi-x-circle me-1"></i>Tutup
-        </button>
-    </div>
-</x-modal-admin>
-
-@push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    function escapeHtml(value) {
-        const div = document.createElement('div');
-        div.textContent = value || '';
-        return div.innerHTML;
-    }
-
-    // Search functionality
-    const userSearchInput = document.getElementById('tableUserSearch') || document.getElementById('searchInput');
-    if (userSearchInput) {
-        userSearchInput.addEventListener('keyup', function() {
-            const searchValue = this.value.toLowerCase();
-            const tableRows = document.querySelectorAll('#tableUser tbody tr');
-
-            tableRows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchValue) ? '' : 'none';
-            });
-        });
-    }
-
-    // Toggle prodi field based on role
-    function toggleProdiField(mode) {
-        const roleSelect = document.getElementById(mode + 'Role');
-        const prodiField = document.getElementById(mode + 'ProdiField');
-
-        if (roleSelect.value === 'mahasiswa') {
-            prodiField.style.display = 'block';
-        } else {
-            prodiField.style.display = 'none';
-        }
-    }
-
-    // Edit user function
-    function editUser(id, nama, username, role, prodi) {
-        document.getElementById('editUserId').value = id;
-        document.getElementById('editNama').value = nama;
-        document.getElementById('editUsername').value = username;
-        document.getElementById('editRole').value = role;
-        document.getElementById('editProdi').value = prodi;
-        document.getElementById('editPassword').value = '';
-
-        // Toggle prodi field
-        toggleProdiField('edit');
-    }
-
-    // View detail function
-    function viewDetail(id, nama, username, role, prodi, created) {
-        document.getElementById('detailNama').textContent = nama;
-        document.getElementById('detailUsername').textContent = username;
-        document.getElementById('detailProdi').textContent = prodi || '-';
-        document.getElementById('detailCreated').textContent = created;
-
-        // Set role badge
-        if (role === 'admin') {
-            document.getElementById('detailRole').innerHTML = '<span class="badge" style="background: linear-gradient(135deg, #667eea, #764ba2);"><i class="bi bi-shield-fill-check me-1"></i>Admin</span>';
-        } else {
-            document.getElementById('detailRole').innerHTML = '<span class="badge" style="background: linear-gradient(135deg, #0dcaf0, #0aa2c0);"><i class="bi bi-person-fill me-1"></i>Mahasiswa</span>';
-        }
-
-        // Show modal
-        const modal = new bootstrap.Modal(document.getElementById('modalViewDetail'));
-        modal.show();
-    }
-
-    // Delete user with confirmation
-    function deleteUser(id, nama) {
-        Swal.fire({
-            html: `
-                <div style="text-align:center; padding-top: 6px;">
-                    <div style="width:64px; height:64px; margin:0 auto 18px; border-radius:999px; background:#fde8e7; color:#ef4444; display:flex; align-items:center; justify-content:center; font-size:30px;">
-                        <i class="bi bi-trash"></i>
+                        <button type="submit" class="btn text-white"
+                            style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
+                            <i class="bi bi-save me-1"></i>Simpan User
+                        </button>
                     </div>
-                    <h2 style="margin:0 0 12px; font-size:28px; font-weight:800; line-height:1.2; color:#0f172a;">Hapus User?</h2>
-                    <p style="margin:0; font-size:17px; line-height:1.6; color:#475569;">
-                        User "${escapeHtml(nama)}" akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
-                    </p>
+                </form>
+            </x-modal-admin>
+
+            <!-- Modal Edit User -->
+            <x-modal-admin id="modalEditUser" title="Edit User" icon="bi bi-pencil-square"
+                header-gradient="linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)">
+                <form action="{{ route('admin.user.update') }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="id" id="editUserId">
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-person me-1"></i>Nama Lengkap <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control" name="nama" id="editNama" required
+                                style="border-radius: 8px; padding: 10px 15px;">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-at me-1"></i>Username <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control" name="username" id="editUsername" required
+                                style="border-radius: 8px; padding: 10px 15px;">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-key me-1"></i>Password Baru
+                            </label>
+                            <input type="password" class="form-control" name="password" id="editPassword"
+                                style="border-radius: 8px; padding: 10px 15px;">
+                            <small class="text-muted">Kosongkan jika tidak ingin mengubah password</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-shield-check me-1"></i>Role <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select" name="role" id="editRole" required
+                                onchange="toggleProdiField('edit')" style="border-radius: 8px; padding: 10px 15px;">
+                                <option value="">Pilih Role</option>
+                                <option value="admin">Admin</option>
+                                <option value="mahasiswa">Mahasiswa</option>
+                            </select>
+                        </div>
+                        <div class="mb-3" id="editProdiField" style="display: none;">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-mortarboard me-1"></i>Program Studi
+                            </label>
+                            <input type="text" class="form-control" name="prodi" id="editProdi"
+                                style="border-radius: 8px; padding: 10px 15px;">
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light border-0">
+                        <button type="button" class="btn text-white" data-bs-dismiss="modal"
+                            style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
+                            <i class="bi bi-x-circle me-1"></i>Batal
+                        </button>
+                        <button type="submit" class="btn text-white"
+                            style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
+                            <i class="bi bi-check-circle me-1"></i>Update User
+                        </button>
+                    </div>
+                </form>
+            </x-modal-admin>
+
+            <!-- Modal View Detail -->
+            <x-modal-admin id="modalViewDetail" title="Detail User" icon="bi bi-info-circle-fill"
+                header-gradient="linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%)">
+                <div class="modal-body p-4">
+                    <div class="detail-item mb-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
+                        <label class="text-muted small mb-1">
+                            <i class="bi bi-person me-1"></i>Nama Lengkap
+                        </label>
+                        <div class="fw-bold" id="detailNama"></div>
+                    </div>
+                    <div class="detail-item mb-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
+                        <label class="text-muted small mb-1">
+                            <i class="bi bi-at me-1"></i>Username
+                        </label>
+                        <div class="fw-bold" id="detailUsername"></div>
+                    </div>
+                    <div class="detail-item mb-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
+                        <label class="text-muted small mb-1">
+                            <i class="bi bi-shield-check me-1"></i>Role
+                        </label>
+                        <div id="detailRole"></div>
+                    </div>
+                    <div class="detail-item mb-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
+                        <label class="text-muted small mb-1">
+                            <i class="bi bi-mortarboard me-1"></i>Program Studi
+                        </label>
+                        <div class="fw-bold" id="detailProdi"></div>
+                    </div>
+                    <div class="detail-item mb-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
+                        <label class="text-muted small mb-1">
+                            <i class="bi bi-calendar3 me-1"></i>Terdaftar Sejak
+                        </label>
+                        <div class="fw-bold" id="detailCreated"></div>
+                    </div>
                 </div>
-            `,
-            width: 390,
-            padding: '1.4rem 1.4rem 1.25rem',
-            showCancelButton: true,
-            reverseButtons: true,
-            focusCancel: true,
-            confirmButtonColor: '#dc3545',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Ya, Hapus',
-            cancelButtonText: 'Batal',
-            customClass: {
-                popup: 'swal-compact swal-delete-popup',
-                htmlContainer: 'swal-compact-text',
-                confirmButton: 'swal-compact-btn',
-                cancelButton: 'swal-compact-btn'
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('formDelete' + id).submit();
-            }
-        });
-    }
+                <div class="modal-footer bg-light border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        style="border-radius: 8px; padding: 10px 24px;">
+                        <i class="bi bi-x-circle me-1"></i>Tutup
+                    </button>
+                </div>
+            </x-modal-admin>
 
-    // Reset add form when modal is closed
-    document.getElementById('modalAddUser').addEventListener('hidden.bs.modal', function() {
-        this.querySelector('form').reset();
-        document.getElementById('addProdiField').style.display = 'none';
-    });
+            @push('scripts')
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <script>
+                    function escapeHtml(value) {
+                        const div = document.createElement('div');
+                        div.textContent = value || '';
+                        return div.innerHTML;
+                    }
 
-    // Auto-dismiss alerts after 5 seconds
-    document.addEventListener('DOMContentLoaded', function() {
-        const alerts = document.querySelectorAll('.alert:not(.alert-permanent)');
-        alerts.forEach(function(alert) {
-            setTimeout(function() {
-                const bsAlert = new bootstrap.Alert(alert);
-                bsAlert.close();
-            }, 5000);
-        });
-    });
-</script>
-@endpush
+                    // Search functionality
+                    const userSearchInput = document.getElementById('tableUserSearch') || document.getElementById('searchInput');
+                    if (userSearchInput) {
+                        userSearchInput.addEventListener('keyup', function () {
+                            const searchValue = this.value.toLowerCase();
+                            const tableRows = document.querySelectorAll('#tableUser tbody tr');
+
+                            tableRows.forEach(row => {
+                                const text = row.textContent.toLowerCase();
+                                row.style.display = text.includes(searchValue) ? '' : 'none';
+                            });
+                        });
+                    }
+
+                    // Toggle prodi field based on role
+                    function toggleProdiField(mode) {
+                        const roleSelect = document.getElementById(mode + 'Role');
+                        const prodiField = document.getElementById(mode + 'ProdiField');
+
+                        if (roleSelect.value === 'mahasiswa') {
+                            prodiField.style.display = 'block';
+                        } else {
+                            prodiField.style.display = 'none';
+                        }
+                    }
+
+                    // Edit user function
+                    function editUser(id, nama, username, role, prodi) {
+                        document.getElementById('editUserId').value = id;
+                        document.getElementById('editNama').value = nama;
+                        document.getElementById('editUsername').value = username;
+                        document.getElementById('editRole').value = role;
+                        document.getElementById('editProdi').value = prodi;
+                        document.getElementById('editPassword').value = '';
+
+                        // Toggle prodi field
+                        toggleProdiField('edit');
+                    }
+
+                    // View detail function
+                    function viewDetail(id, nama, username, role, prodi, created) {
+                        document.getElementById('detailNama').textContent = nama;
+                        document.getElementById('detailUsername').textContent = username;
+                        document.getElementById('detailProdi').textContent = prodi || '-';
+                        document.getElementById('detailCreated').textContent = created;
+
+                        // Set role badge
+                        if (role === 'admin') {
+                            document.getElementById('detailRole').innerHTML = '<span class="badge" style="background: linear-gradient(135deg, #667eea, #764ba2);"><i class="bi bi-shield-fill-check me-1"></i>Admin</span>';
+                        } else {
+                            document.getElementById('detailRole').innerHTML = '<span class="badge" style="background: linear-gradient(135deg, #0dcaf0, #0aa2c0);"><i class="bi bi-person-fill me-1"></i>Mahasiswa</span>';
+                        }
+
+                        // Show modal
+                        const modal = new bootstrap.Modal(document.getElementById('modalViewDetail'));
+                        modal.show();
+                    }
+
+                    // Delete user with confirmation
+                    function deleteUser(id, nama) {
+                        Swal.fire({
+                            html: `
+                    <div style="text-align:center; padding-top: 6px;">
+                        <div style="width:64px; height:64px; margin:0 auto 18px; border-radius:999px; background:#fde8e7; color:#ef4444; display:flex; align-items:center; justify-content:center; font-size:30px;">
+                            <i class="bi bi-trash"></i>
+                        </div>
+                        <h2 style="margin:0 0 12px; font-size:28px; font-weight:800; line-height:1.2; color:#0f172a;">Hapus User?</h2>
+                        <p style="margin:0; font-size:17px; line-height:1.6; color:#475569;">
+                            User "${escapeHtml(nama)}" akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
+                        </p>
+                    </div>
+                `,
+                            width: 390,
+                            padding: '1.4rem 1.4rem 1.25rem',
+                            showCancelButton: true,
+                            reverseButtons: true,
+                            focusCancel: true,
+                            confirmButtonColor: '#dc3545',
+                            cancelButtonColor: '#6c757d',
+                            confirmButtonText: 'Ya, Hapus',
+                            cancelButtonText: 'Batal',
+                            customClass: {
+                                popup: 'swal-compact swal-delete-popup',
+                                htmlContainer: 'swal-compact-text',
+                                confirmButton: 'swal-compact-btn',
+                                cancelButton: 'swal-compact-btn'
+                            }
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                document.getElementById('formDelete' + id).submit();
+                            }
+                        });
+                    }
+
+                    // Reset add form when modal is closed
+                    document.getElementById('modalAddUser').addEventListener('hidden.bs.modal', function () {
+                        this.querySelector('form').reset();
+                        document.getElementById('addProdiField').style.display = 'none';
+                    });
+
+                    // Auto-dismiss alerts after 5 seconds
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const alerts = document.querySelectorAll('.alert:not(.alert-permanent)');
+                        alerts.forEach(function (alert) {
+                            setTimeout(function () {
+                                const bsAlert = new bootstrap.Alert(alert);
+                                bsAlert.close();
+                            }, 5000);
+                        });
+                    });
+                </script>
+            @endpush
 </x-layouts.admin-layout>
