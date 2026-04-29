@@ -348,7 +348,8 @@
                     </div>
                 @endif
 
-                <form action="{{ route('mahasiswa.ubahProfil') }}" method="post" enctype="multipart/form-data" id="profilForm">
+                <form action="{{ route('mahasiswa.ubahProfil') }}" method="post" enctype="multipart/form-data"
+                    id="profilForm">
                     @csrf
                     @method('PATCH')
 
@@ -383,7 +384,8 @@
                                 </div>
                                 <div class="info-item">
                                     <div class="info-label">Bergabung</div>
-                                    <div class="info-value">{{ $user->created_at->locale('id')->format('F Y') ?? 'N/A' }}
+                                    <div class="info-value">
+                                        {{ $user->created_at->locale('id')->format('F Y') ?? 'N/A' }}
                                     </div>
                                 </div>
                             </div>
@@ -511,75 +513,75 @@
                     </div>
                 </form>
 
-                    @push('scripts')
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function () {
-                                const passwordInput = document.getElementById('password');
-                                const currentPasswordGroup = document.getElementById('currentPasswordGroup');
-                                const currentPasswordInput = document.getElementById('current_password');
-                                const fotoInput = document.getElementById('foto_profil');
-                                const avatarPreview = document.getElementById('avatarPreview');
-                                const avatarInitial = document.getElementById('avatarInitial');
-                                const hasPassword = {{ $user->password ? 'true' : 'false' }};
-                                const originalAvatarUrl = @json($profilePhotoUrl);
+                @push('scripts')
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const passwordInput = document.getElementById('password');
+                            const currentPasswordGroup = document.getElementById('currentPasswordGroup');
+                            const currentPasswordInput = document.getElementById('current_password');
+                            const fotoInput = document.getElementById('foto_profil');
+                            const avatarPreview = document.getElementById('avatarPreview');
+                            const avatarInitial = document.getElementById('avatarInitial');
+                            const hasPassword = {{ $user->password ? 'true' : 'false' }};
+                            const originalAvatarUrl = @json($profilePhotoUrl);
 
-                                function toggleCurrentPasswordField() {
-                                    const hasNewPassword = passwordInput.value.trim() !== '';
+                            function toggleCurrentPasswordField() {
+                                const hasNewPassword = passwordInput.value.trim() !== '';
 
-                                    if (hasPassword) {
-                                        // Jika user sudah punya password, selalu tampilkan field password lama
-                                        currentPasswordGroup.style.display = 'block';
-                                        currentPasswordInput.required = hasNewPassword;
-                                    } else {
-                                        // Jika user tidak punya password (Google login), tampilkan hanya saat input password baru
-                                        currentPasswordGroup.style.display = hasNewPassword ? 'block' : 'none';
-                                        currentPasswordInput.required = hasNewPassword;
-                                    }
+                                if (hasPassword) {
+                                    // Jika user sudah punya password, selalu tampilkan field password lama
+                                    currentPasswordGroup.style.display = 'block';
+                                    currentPasswordInput.required = hasNewPassword;
+                                } else {
+                                    // Jika user tidak punya password (Google login), tampilkan hanya saat input password baru
+                                    currentPasswordGroup.style.display = hasNewPassword ? 'block' : 'none';
+                                    currentPasswordInput.required = hasNewPassword;
                                 }
+                            }
 
-                                // Check on input
-                                passwordInput.addEventListener('input', toggleCurrentPasswordField);
+                            // Check on input
+                            passwordInput.addEventListener('input', toggleCurrentPasswordField);
 
-                                // Initial check
-                                toggleCurrentPasswordField();
+                            // Initial check
+                            toggleCurrentPasswordField();
 
-                                if (fotoInput) {
-                                    fotoInput.addEventListener('change', function () {
-                                        const file = this.files && this.files[0];
+                            if (fotoInput) {
+                                fotoInput.addEventListener('change', function () {
+                                    const file = this.files && this.files[0];
 
-                                        if (!file) {
-                                            if (originalAvatarUrl && avatarPreview) {
-                                                avatarPreview.src = originalAvatarUrl;
-                                                avatarPreview.classList.remove('d-none');
-                                                avatarInitial.classList.add('d-none');
-                                            } else {
-                                                avatarPreview?.classList.add('d-none');
-                                                avatarInitial?.classList.remove('d-none');
-                                            }
-                                            return;
+                                    if (!file) {
+                                        if (originalAvatarUrl && avatarPreview) {
+                                            avatarPreview.src = originalAvatarUrl;
+                                            avatarPreview.classList.remove('d-none');
+                                            avatarInitial.classList.add('d-none');
+                                        } else {
+                                            avatarPreview?.classList.add('d-none');
+                                            avatarInitial?.classList.remove('d-none');
                                         }
+                                        return;
+                                    }
 
-                                        const reader = new FileReader();
-                                        reader.onload = function (event) {
-                                            if (avatarPreview) {
-                                                avatarPreview.src = event.target.result;
-                                                avatarPreview.classList.remove('d-none');
-                                            }
-                                            avatarInitial?.classList.add('d-none');
-                                        };
-                                        reader.readAsDataURL(file);
-                                    });
-                                }
-
-                                // Auto-dismiss alerts after 5 seconds
-                                const alerts = document.querySelectorAll('.alert');
-                                alerts.forEach(alert => {
-                                    setTimeout(() => {
-                                        const bsAlert = new bootstrap.Alert(alert);
-                                        bsAlert.close();
-                                    }, 5000);
+                                    const reader = new FileReader();
+                                    reader.onload = function (event) {
+                                        if (avatarPreview) {
+                                            avatarPreview.src = event.target.result;
+                                            avatarPreview.classList.remove('d-none');
+                                        }
+                                        avatarInitial?.classList.add('d-none');
+                                    };
+                                    reader.readAsDataURL(file);
                                 });
+                            }
+
+                            // Auto-dismiss alerts after 5 seconds
+                            const alerts = document.querySelectorAll('.alert');
+                            alerts.forEach(alert => {
+                                setTimeout(() => {
+                                    const bsAlert = new bootstrap.Alert(alert);
+                                    bsAlert.close();
+                                }, 5000);
                             });
-                        </script>
-                    @endpush
+                        });
+                    </script>
+                @endpush
 </x-layouts.mahasiswa-layout>

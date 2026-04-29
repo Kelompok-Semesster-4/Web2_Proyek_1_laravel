@@ -172,8 +172,9 @@ class AuthController extends Controller
     }
 
     public function registerForm()
-    {   if (Auth::check())
-        {   $role = Auth::user()->role;
+    {
+        if (Auth::check()) {
+            $role = Auth::user()->role;
             return redirect($role === 'admin' ? '/admin/dashboard' : '/dashboard');
         }
 
@@ -181,7 +182,8 @@ class AuthController extends Controller
     }
 
     public function register(Request $request)
-    {   $validated_request = $request->validate([
+    {
+        $validated_request = $request->validate([
             'username' => ['required', 'string', 'max:50', 'unique:users,username'],
             'email' => ['nullable', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
