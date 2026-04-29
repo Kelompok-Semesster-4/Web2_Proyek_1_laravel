@@ -8,7 +8,7 @@
 @endphp
 
 @if ($success)
-    <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="border-left: 5px solid #28a745; background: white;">
+    <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="border-left: 5px solid #28a745; background: white; margin-top: 20px;">
         <div class="d-flex align-items-center">
             <i class="bi bi-check-circle-fill me-3 fs-4 text-success"></i>
             <div>
@@ -27,7 +27,7 @@
 @endif
 
 @if ($error)
-    <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="border-left: 5px solid #dc3545; background: white;">
+    <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="border-left: 5px solid #dc3545; background: white; margin-top: 20px;">
         <div class="d-flex align-items-center">
             <i class="bi bi-exclamation-triangle-fill me-3 fs-4 text-danger"></i>
             <div>
@@ -40,7 +40,7 @@
 @endif
 
 @if ($errors->any())
-    <div class="alert alert-warning alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="border-left: 5px solid #ffc107; background: white;">
+    <div class="alert alert-warning alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="border-left: 5px solid #ffc107; background: white; margin-top: 20px;">
         <div class="d-flex align-items-center">
             <i class="bi bi-exclamation-circle-fill me-3 fs-4 text-warning"></i>
             <div>

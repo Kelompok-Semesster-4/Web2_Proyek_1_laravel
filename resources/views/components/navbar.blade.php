@@ -3,6 +3,9 @@
         $currentUser = Auth::user();
         $profileName = $currentUser ? ($currentUser->nama ?: $currentUser->username ?: 'User') : 'User';
         $profileInitial = strtoupper(substr($profileName, 0, 1));
+      $profilePhotoUrl = $currentUser && !empty($currentUser->foto_profil)
+        ? asset('storage/uploads/profil/' . $currentUser->foto_profil)
+        : null;
     @endphp
     <div class="topnavin">
       <a class="brand" href="{{ route('mahasiswa.dashboard') }}">
@@ -22,11 +25,21 @@
             @endif
             <div class="profile-menu">
               <button class="profile-avatar {{ request()->routeIs('mahasiswa.profil') ? 'active' : '' }}" type="button" aria-label="Buka menu profil" aria-expanded="false">
-                <span>{{ $profileInitial }}</span>
+                @if ($profilePhotoUrl)
+                  <img src="{{ $profilePhotoUrl }}" alt="Foto Profil" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                @else
+                  <span>{{ $profileInitial }}</span>
+                @endif
               </button>
               <div class="profile-dropdown">
                 <div class="profile-summary">
-                  <div class="profile-summary-avatar">{{ $profileInitial }}</div>
+                  <div class="profile-summary-avatar">
+                    @if ($profilePhotoUrl)
+                      <img src="{{ $profilePhotoUrl }}" alt="Foto Profil" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                    @else
+                      {{ $profileInitial }}
+                    @endif
+                  </div>
                   <div>
                     <strong>{{ $profileName }}</strong>
                     <small>{{ $currentUser->role ?? '' }}</small>
