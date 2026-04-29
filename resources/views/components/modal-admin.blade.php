@@ -8,13 +8,14 @@
     'dialogClass' => 'modal-dialog modal-dialog-centered',
     'contentClass' => 'modal-content border-0 shadow-lg',
     'closeButtonWhite' => true,
+    'titleId' => null,
 ])
 
 <div class="{{ $modalClass }}" id="{{ $id }}" tabindex="-1" aria-hidden="true">
     <div class="{{ $dialogClass }}">
         <div class="{{ $contentClass }}" style="border-radius: 15px; overflow: hidden;">
             <div class="modal-header {{ $headerTextClass }}" style="background: {{ $headerGradient }}; border: none;">
-                <h5 class="modal-title fw-bold">
+                <h5 class="modal-title fw-bold" @if ($titleId) id="{{ $titleId }}" @endif>
                     @if ($icon)
                         <i class="{{ $icon }} me-2"></i>
                     @endif

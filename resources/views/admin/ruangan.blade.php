@@ -508,6 +508,7 @@
 <x-modal-admin
     id="modalViewImage"
     title="Foto Ruangan"
+    title-id="viewImageTitle"
     icon="bi bi-images"
     header-gradient="#212529"
     dialog-class="modal-dialog modal-dialog-centered modal-lg"
@@ -526,7 +527,7 @@
     const fasilitasNameMap = @json($fasilitasNameMap);
     const lantaiMapByGedung = @json($lantaiMapByGedung);
     const baseUrl = "{{ url('/') }}";
-    const assetUrl = "{{ asset('storage/uploads/ruangan/') }}";
+    const assetUrl = "{{ asset('storage/uploads/ruangan') }}";
 
     function renderLantaiOptions(selectId, gedungId, selectedLantaiId = '') {
         const selectEl = document.getElementById(selectId);
@@ -772,7 +773,10 @@
 
     function viewImage(src, title) {
         document.getElementById('viewImageSrc').src = src;
-        document.getElementById('viewImageTitle').innerHTML = `<i class="bi bi-images me-2"></i>${title}`;
+        const titleEl = document.getElementById('viewImageTitle');
+        if (titleEl) {
+            titleEl.innerHTML = `<i class="bi bi-images me-2"></i>${escapeHtml(title || 'Foto Ruangan')}`;
+        }
     }
 
     function deleteRuangan(id, namaRuangan) {
