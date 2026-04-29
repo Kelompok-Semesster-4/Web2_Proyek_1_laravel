@@ -1,4 +1,9 @@
  <div class="topnav">
+    @php
+        $currentUser = Auth::user();
+        $profileName = $currentUser ? ($currentUser->nama ?: $currentUser->username ?: 'User') : 'User';
+        $profileInitial = strtoupper(substr($profileName, 0, 1));
+    @endphp
     <div class="topnavin">
       <a class="brand" href="{{ route('mahasiswa.dashboard') }}">
         <img class="logo" src="{{ asset('assets/icons/logo_big.svg') }}" alt="SIPERU">
@@ -15,13 +20,33 @@
             @if(Auth::user()->role === 'admin')
                 <a href="{{ route('admin.dashboard') }}">Admin Dashboard</a>
             @endif
-            @if (Auth::user()->role === 'mahasiswa')
-              <a class="{{ request()->routeIs('mahasiswa.profil') ? 'active' : '' }}" href="{{ route('mahasiswa.profil') }}">Profil Pengguna</a>
-            @endif
-            <form method="POST" action="{{ route('logout') }}" style="display:inline; padding:0; margin:0;" class="d-inline">
-                @csrf
-                <button type="submit" style="background:none; border:none; color:inherit; font:inherit; cursor:pointer; padding:0; outline:none;" class="nav-link">Logout</button>
-            </form>
+            <div class="profile-menu">
+              <button class="profile-avatar {{ request()->routeIs('mahasiswa.profil') ? 'active' : '' }}" type="button" aria-label="Buka menu profil" aria-expanded="false">
+                <span>{{ $profileInitial }}</span>
+              </button>
+              <div class="profile-dropdown">
+                <div class="profile-summary">
+                  <div class="profile-summary-avatar">{{ $profileInitial }}</div>
+                  <div>
+                    <strong>{{ $profileName }}</strong>
+                    <small>{{ $currentUser->role ?? '' }}</small>
+                  </div>
+                </div>
+                @if (Auth::user()->role === 'mahasiswa')
+                  <a class="{{ request()->routeIs('mahasiswa.profil') ? 'active' : '' }}" href="{{ route('mahasiswa.profil') }}">
+                    <i class="bi bi-person-circle"></i>
+                    <span>Profil Pengguna</span>
+                  </a>
+                @endif
+                <form method="POST" action="{{ route('logout') }}" class="profile-logout-form">
+                    @csrf
+                    <button type="submit">
+                      <i class="bi bi-box-arrow-right"></i>
+                      <span>Logout</span>
+                    </button>
+                </form>
+              </div>
+            </div>
         @else
             <a class="{{ request()->routeIs('login') ? 'active' : '' }}" href="{{ route('login') }}">Login</a>
         @endauth
@@ -45,9 +70,18 @@
             @if(Auth::user()->role === 'admin')
                 <a href="{{ route('admin.dashboard') }}" role="menuitem">Admin Dashboard</a>
             @endif
-            <form method="POST" action="{{ route('logout') }}" style="display:inline; padding:0; margin:0;" class="d-inline w-100">
+            @if (Auth::user()->role === 'mahasiswa')
+              <a class="mobile-profile-link {{ request()->routeIs('mahasiswa.profil') ? 'active' : '' }}" href="{{ route('mahasiswa.profil') }}" role="menuitem">
+                <span class="mobile-profile-avatar">{{ $profileInitial }}</span>
+                <span>Profil Pengguna</span>
+              </a>
+            @endif
+            <form method="POST" action="{{ route('logout') }}" class="mobile-logout-form">
                 @csrf
-                <button type="submit" style="background:none; border:none; color:inherit; font:inherit; cursor:pointer; padding: 15px 20px; width: 100%; text-align: left;" class="nav-link">Logout</button>
+                <button type="submit" class="mobile-logout-btn" role="menuitem">
+                  <span class="mobile-profile-avatar danger"><i class="bi bi-box-arrow-right"></i></span>
+                  <span>Logout</span>
+                </button>
             </form>
         @else
             <a class="{{ request()->routeIs('login') ? 'active' : '' }}" href="{{ route('login') }}" role="menuitem">Login</a>
