@@ -76,7 +76,8 @@
                         </td>
 
                         <td class="text-center">
-                            <div class="ruangan-photo-cell {{ ($ruangan->detail_count ?? 0) == 0 ? 'justify-content-center' : '' }}">
+                            <div
+                                class="ruangan-photo-cell {{ ($ruangan->detail_count ?? 0) == 0 ? 'justify-content-center' : '' }}">
                                 @if ($ruangan->cover_foto)
                                     <img src="{{ asset('storage/uploads/ruangan/' . $ruangan->cover_foto) }}"
                                         alt="{{ $ruangan->nama_ruangan }}" class="rounded shadow-sm img-thumbnail"
@@ -101,26 +102,26 @@
                             <div class="d-flex gap-1 justify-content-center ruangan-actions">
                                 <button class="btn btn-info aksi-btn" style="min-width: 65px; font-size: 0.8rem;"
                                     data-bs-toggle="modal" data-bs-target="#modalViewDetail" onclick="viewDetail(
-                                {{ $ruangan->id }},
-                                '{{ addslashes($ruangan->nama_ruangan) }}',
-                                '{{ addslashes($ruangan->gedung ?? '') }}',
-                                '{{ addslashes($ruangan->Lantai ?? '') }}',
-                                {{ $ruangan->kapasitas ?? 0 }},
-                                '{{ addslashes($ruangan->deskripsi ?? '') }}',
-                                '{{ $ruangan->cover_foto ?? '' }}'
-                            )">
+                                    {{ $ruangan->id }},
+                                    '{{ addslashes($ruangan->nama_ruangan) }}',
+                                    '{{ addslashes($ruangan->gedung ?? '') }}',
+                                    '{{ addslashes($ruangan->Lantai ?? '') }}',
+                                    {{ $ruangan->kapasitas ?? 0 }},
+                                    '{{ addslashes($ruangan->deskripsi ?? '') }}',
+                                    '{{ $ruangan->cover_foto ?? '' }}'
+                                )">
                                     <i class="bi bi-eye-fill me-1"></i>Detail
                                 </button>
 
                                 <button class="btn btn-warning aksi-btn" style="min-width: 60px; font-size: 0.8rem;"
                                     data-bs-toggle="modal" data-bs-target="#modalEditRuangan" onclick="editRuangan(
-                                {{ $ruangan->id }},
-                                '{{ addslashes($ruangan->nama_ruangan) }}',
-                                {{ $ruangan->gedung_id ?? 0 }},
-                                {{ $ruangan->lantai_id ?? 0 }},
-                                {{ $ruangan->kapasitas ?? 0 }},
-                                '{{ addslashes($ruangan->deskripsi ?? '') }}'
-                            )">
+                                    {{ $ruangan->id }},
+                                    '{{ addslashes($ruangan->nama_ruangan) }}',
+                                    {{ $ruangan->gedung_id ?? 0 }},
+                                    {{ $ruangan->lantai_id ?? 0 }},
+                                    {{ $ruangan->kapasitas ?? 0 }},
+                                    '{{ addslashes($ruangan->deskripsi ?? '') }}'
+                                )">
                                     <i class="bi bi-pencil-fill me-1"></i>Edit
                                 </button>
 
@@ -491,314 +492,314 @@
             </x-modal-admin>
 
             @push('scripts')
-                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                    <script>
-                        const ruanganPhotos = @json($ruanganPhotos);
-                        const ruanganFasilitasMap = @json($ruanganFasilitasMap);
-                        const fasilitasNameMap = @json($fasilitasNameMap);
-                        const lantaiMapByGedung = @json($lantaiMapByGedung);
-                        const baseUrl = "{{ url('/') }}";
-                        const assetUrl = "{{ asset('storage/uploads/ruangan') }}";
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <script>
+                    const ruanganPhotos = @json($ruanganPhotos);
+                    const ruanganFasilitasMap = @json($ruanganFasilitasMap);
+                    const fasilitasNameMap = @json($fasilitasNameMap);
+                    const lantaiMapByGedung = @json($lantaiMapByGedung);
+                    const baseUrl = "{{ url('/') }}";
+                    const assetUrl = "{{ asset('storage/uploads/ruangan') }}";
 
-                        function renderLantaiOptions(selectId, gedungId, selectedLantaiId = '') {
-                            const selectEl = document.getElementById(selectId);
-                            if (!selectEl) return;
+                    function renderLantaiOptions(selectId, gedungId, selectedLantaiId = '') {
+                        const selectEl = document.getElementById(selectId);
+                        if (!selectEl) return;
 
-                            const gid = String(gedungId || '');
-                            const lantaiList = gid && lantaiMapByGedung[gid] ? lantaiMapByGedung[gid] : [];
+                        const gid = String(gedungId || '');
+                        const lantaiList = gid && lantaiMapByGedung[gid] ? lantaiMapByGedung[gid] : [];
 
-                            if (!gid) {
-                                selectEl.innerHTML = '<option value="">-- Pilih Gedung Terlebih Dahulu --</option>';
-                                selectEl.disabled = true;
-                            } else if (lantaiList.length === 0) {
-                                selectEl.innerHTML = '<option value="">-- Tidak Ada Lantai Tersedia --</option>';
-                                selectEl.disabled = true;
-                            } else {
-                                selectEl.innerHTML = '<option value="">-- Pilih Lantai --</option>';
-                                lantaiList.forEach((item) => {
-                                    const option = document.createElement('option');
-                                    option.value = String(item.id);
-                                    option.textContent = 'Lantai ' + item.nomor;
-                                    if (String(selectedLantaiId) === String(item.id)) {
-                                        option.selected = true;
-                                    }
-                                    selectEl.appendChild(option);
-                                });
-                                selectEl.disabled = false;
-                            }
-                        }
-
-                        // Initialize Bootstrap tooltips
-                        document.addEventListener('DOMContentLoaded', function () {
-                            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-                            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                                return new bootstrap.Tooltip(tooltipTriggerEl);
+                        if (!gid) {
+                            selectEl.innerHTML = '<option value="">-- Pilih Gedung Terlebih Dahulu --</option>';
+                            selectEl.disabled = true;
+                        } else if (lantaiList.length === 0) {
+                            selectEl.innerHTML = '<option value="">-- Tidak Ada Lantai Tersedia --</option>';
+                            selectEl.disabled = true;
+                        } else {
+                            selectEl.innerHTML = '<option value="">-- Pilih Lantai --</option>';
+                            lantaiList.forEach((item) => {
+                                const option = document.createElement('option');
+                                option.value = String(item.id);
+                                option.textContent = 'Lantai ' + item.nomor;
+                                if (String(selectedLantaiId) === String(item.id)) {
+                                    option.selected = true;
+                                }
+                                selectEl.appendChild(option);
                             });
+                            selectEl.disabled = false;
+                        }
+                    }
 
-                            const addGedungSelect = document.getElementById('addGedungSelect');
-                            const editGedungSelect = document.getElementById('editGedungSelect');
-
-                            if (addGedungSelect) {
-                                addGedungSelect.addEventListener('change', function () {
-                                    renderLantaiOptions('addLantaiSelect', this.value, '');
-                                });
-                                renderLantaiOptions('addLantaiSelect', addGedungSelect.value, '');
-                            }
-
-                            if (editGedungSelect) {
-                                editGedungSelect.addEventListener('change', function () {
-                                    renderLantaiOptions('editLantaiSelect', this.value, '');
-                                });
-                                renderLantaiOptions('editLantaiSelect', editGedungSelect.value, '');
-                            }
+                    // Initialize Bootstrap tooltips
+                    document.addEventListener('DOMContentLoaded', function () {
+                        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                            return new bootstrap.Tooltip(tooltipTriggerEl);
                         });
 
-                        // Search functionality
-                        const ruanganSearchInput = document.getElementById('tableRuanganSearch') || document.getElementById('searchInput');
-                        if (ruanganSearchInput) {
-                            ruanganSearchInput.addEventListener('keyup', function () {
-                                const searchValue = this.value.toLowerCase();
-                                const tableRows = document.querySelectorAll('#tableRuangan tbody tr');
+                        const addGedungSelect = document.getElementById('addGedungSelect');
+                        const editGedungSelect = document.getElementById('editGedungSelect');
 
-                                tableRows.forEach(row => {
-                                    const text = row.textContent.toLowerCase();
-                                    row.style.display = text.includes(searchValue) ? '' : 'none';
-                                });
+                        if (addGedungSelect) {
+                            addGedungSelect.addEventListener('change', function () {
+                                renderLantaiOptions('addLantaiSelect', this.value, '');
                             });
+                            renderLantaiOptions('addLantaiSelect', addGedungSelect.value, '');
                         }
 
-                        // Preview image on add modal
-                        function previewAddCover(event) {
-                            const file = event.target.files[0];
-                            if (file) {
-                                const reader = new FileReader();
-                                reader.onload = function (e) {
-                                    document.getElementById('addCoverPreview').src = e.target.result;
-                                    document.getElementById('addCoverPreviewContainer').style.display = 'block';
-                                };
-                                reader.readAsDataURL(file);
-                            }
-                        }
-
-                        // Preview image on edit modal
-                        function previewEditCover(event) {
-                            const file = event.target.files[0];
-                            if (file) {
-                                const reader = new FileReader();
-                                reader.onload = function (e) {
-                                    document.getElementById('editCoverPreview').src = e.target.result;
-                                    document.getElementById('editCoverPreviewContainer').style.display = 'block';
-                                };
-                                reader.readAsDataURL(file);
-                            }
-                        }
-
-                        function renderExistingFotos(id) {
-                            const data = ruanganPhotos[id] || { cover: [], detail: [] };
-                            const coverWrap = document.getElementById('editExistingCover');
-                            const detailWrap = document.getElementById('editExistingDetail');
-
-                            coverWrap.innerHTML = '';
-                            detailWrap.innerHTML = '';
-
-                            if (!data.cover.length) {
-                                coverWrap.innerHTML = '<div class="text-muted small">Belum ada foto sampul.</div>';
-                            } else {
-                                data.cover.forEach(item => {
-                                    coverWrap.innerHTML += `
-                            <label class="border rounded p-2 text-center" style="width:120px;">
-                                <img src="${assetUrl}/${item.nama_file}" alt="Cover" class="img-fluid rounded" style="height:70px;object-fit:cover;width:100%;">
-                                <div class="form-check mt-1">
-                                    <input class="form-check-input" type="checkbox" name="delete_foto[]" value="${item.id}">
-                                    <span class="small">hapus</span>
-                                </div>
-                            </label>
-                        `;
-                                });
-                            }
-
-                            if (!data.detail.length) {
-                                detailWrap.innerHTML = '<div class="text-muted small">Belum ada foto detail.</div>';
-                            } else {
-                                data.detail.forEach(item => {
-                                    detailWrap.innerHTML += `
-                            <label class="border rounded p-2 text-center" style="width:120px;">
-                                <img src="${assetUrl}/${item.nama_file}" alt="Detail" class="img-fluid rounded" style="height:70px;object-fit:cover;width:100%;">
-                                <div class="form-check mt-1">
-                                    <input class="form-check-input" type="checkbox" name="delete_foto[]" value="${item.id}">
-                                    <span class="small">hapus</span>
-                                </div>
-                            </label>
-                        `;
-                                });
-                            }
-                        }
-
-                        // Edit ruangan function
-                        function editRuangan(id, nama, gedungId, lantaiId, kapasitas, deskripsi) {
-                            document.getElementById('editRuanganId').value = id;
-                            document.getElementById('editNamaRuangan').value = nama;
-                            document.getElementById('editKapasitas').value = kapasitas;
-                            document.getElementById('editDeskripsi').value = deskripsi || '';
-
-                            const gedungSelect = document.getElementById('editGedungSelect');
-                            gedungSelect.value = gedungId;
-                            renderLantaiOptions('editLantaiSelect', gedungId, lantaiId);
-
-                            // Reset check fasilitas
-                            document.querySelectorAll('.edit-fasilitas-checkbox').forEach(cb => {
-                                cb.checked = false;
+                        if (editGedungSelect) {
+                            editGedungSelect.addEventListener('change', function () {
+                                renderLantaiOptions('editLantaiSelect', this.value, '');
                             });
+                            renderLantaiOptions('editLantaiSelect', editGedungSelect.value, '');
+                        }
+                    });
 
-                            // Check fasilitas per ruangan
-                            const selectedFasilitas = ruanganFasilitasMap[id] || [];
-                            selectedFasilitas.forEach(fId => {
-                                const cb = document.getElementById('editFasilitas' + fId);
-                                if (cb) cb.checked = true;
+                    // Search functionality
+                    const ruanganSearchInput = document.getElementById('tableRuanganSearch') || document.getElementById('searchInput');
+                    if (ruanganSearchInput) {
+                        ruanganSearchInput.addEventListener('keyup', function () {
+                            const searchValue = this.value.toLowerCase();
+                            const tableRows = document.querySelectorAll('#tableRuangan tbody tr');
+
+                            tableRows.forEach(row => {
+                                const text = row.textContent.toLowerCase();
+                                row.style.display = text.includes(searchValue) ? '' : 'none';
                             });
+                        });
+                    }
 
-                            // Reset image previews
-                            document.getElementById('editCoverFile').value = '';
-                            document.getElementById('editCoverPreviewContainer').style.display = 'none';
-
-                            // Render existing photos
-                            renderExistingFotos(id);
+                    // Preview image on add modal
+                    function previewAddCover(event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                document.getElementById('addCoverPreview').src = e.target.result;
+                                document.getElementById('addCoverPreviewContainer').style.display = 'block';
+                            };
+                            reader.readAsDataURL(file);
                         }
+                    }
 
-                        function escapeHtml(value) {
-                            return String(value)
-                                .replace(/&/g, '&amp;')
-                                .replace(/</g, '&lt;')
-                                .replace(/>/g, '&gt;')
-                                .replace(/"/g, '&quot;')
-                                .replace(/'/g, '&#039;');
+                    // Preview image on edit modal
+                    function previewEditCover(event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                document.getElementById('editCoverPreview').src = e.target.result;
+                                document.getElementById('editCoverPreviewContainer').style.display = 'block';
+                            };
+                            reader.readAsDataURL(file);
                         }
+                    }
 
-                        function viewDetail(id, nama, gedung, lantai, kapasitas, deskripsi, coverFoto) {
-                            document.getElementById('detailNamaRuangan').textContent = nama || '-';
-                            document.getElementById('detailGedung').textContent = gedung || '-';
-                            document.getElementById('detailKapasitas').textContent = kapasitas ? `${kapasitas} orang` : '-';
-                            document.getElementById('detailLantai').textContent = lantai || '-';
-                            document.getElementById('detailDeskripsi').textContent = deskripsi || '-';
+                    function renderExistingFotos(id) {
+                        const data = ruanganPhotos[id] || { cover: [], detail: [] };
+                        const coverWrap = document.getElementById('editExistingCover');
+                        const detailWrap = document.getElementById('editExistingDetail');
 
-                            // Render Fasilitas
-                            const fList = document.getElementById('detailFasilitasList');
-                            fList.innerHTML = '';
-                            const fIds = ruanganFasilitasMap[id] || [];
-                            if (!fIds.length) {
-                                fList.innerHTML = '<span class="text-muted small">Tidak ada fasilitas</span>';
-                            } else {
-                                fIds.forEach(fId => {
-                                    const fname = fasilitasNameMap[fId] || ('Fasilitas ' + fId);
-                                    fList.innerHTML += `
-                            <span style="display:inline-flex; align-items:center; gap:8px; padding:8px 14px; border-radius:10px; background:#18a86b; border:1px solid #18a86b; color:#ffffff !important; font-weight:700; font-size:13px; box-shadow:0 6px 14px rgba(24, 168, 107, 0.18);">
-                                <i class="bi bi-check-lg" style="color:#ffffff !important;"></i>${escapeHtml(fname)}
-                            </span>
-                        `;
-                                });
-                            }
+                        coverWrap.innerHTML = '';
+                        detailWrap.innerHTML = '';
 
-                            // Render Gallery
-                            const gallery = document.getElementById('detailGalleryContainer');
-                            const data = ruanganPhotos[id] || { cover: [], detail: [] };
-                            let countCover = data.cover.length;
-                            let countDetail = data.detail.length;
-
-                            document.getElementById('detailFotoSummary').innerHTML = `
-                    <i class="bi bi-info-circle me-1"></i>Total Foto: ${countCover} Sampul, ${countDetail} Detail
-                `;
-
-                            let html = '';
-                            if (countCover === 0 && countDetail === 0) {
-                                html = '<div class="p-3 text-muted small border rounded">Belum ada foto yang diunggah.</div>';
-                            } else {
-                                if (countCover > 0) {
-                                    html += '<div class="mb-2 fw-semibold small text-muted">Foto Sampul</div><div class="d-flex flex-wrap gap-2 mb-3">';
-                                    data.cover.forEach(f => {
-                                        html += `
-                                <img src="${assetUrl}/${f.nama_file}" 
-                                     alt="Cover" class="img-thumbnail rounded" 
-                                     style="width: 100px; height: 75px; object-fit: cover; cursor: pointer; border: 2px solid #22c55e;"
-                                     data-bs-toggle="modal" data-bs-target="#modalViewImage"
-                                     onclick="viewImage('${assetUrl}/${f.nama_file}', 'Foto Sampul - ${escapeHtml(nama)}')">
+                        if (!data.cover.length) {
+                            coverWrap.innerHTML = '<div class="text-muted small">Belum ada foto sampul.</div>';
+                        } else {
+                            data.cover.forEach(item => {
+                                coverWrap.innerHTML += `
+                                <label class="border rounded p-2 text-center" style="width:120px;">
+                                    <img src="${assetUrl}/${item.nama_file}" alt="Cover" class="img-fluid rounded" style="height:70px;object-fit:cover;width:100%;">
+                                    <div class="form-check mt-1">
+                                        <input class="form-check-input" type="checkbox" name="delete_foto[]" value="${item.id}">
+                                        <span class="small">hapus</span>
+                                    </div>
+                                </label>
                             `;
-                                    });
-                                    html += '</div>';
-                                }
-                                if (countDetail > 0) {
-                                    html += '<div class="mb-2 fw-semibold small text-muted">Foto Detail</div><div class="d-flex flex-wrap gap-2">';
-                                    data.detail.forEach(f => {
-                                        html += `
-                                <img src="${assetUrl}/${f.nama_file}" 
-                                     alt="Detail" class="img-thumbnail rounded" 
-                                     style="width: 80px; height: 60px; object-fit: cover; cursor: pointer;"
-                                     data-bs-toggle="modal" data-bs-target="#modalViewImage"
-                                     onclick="viewImage('${assetUrl}/${f.nama_file}', 'Foto Detail - ${escapeHtml(nama)}')">
+                            });
+                        }
+
+                        if (!data.detail.length) {
+                            detailWrap.innerHTML = '<div class="text-muted small">Belum ada foto detail.</div>';
+                        } else {
+                            data.detail.forEach(item => {
+                                detailWrap.innerHTML += `
+                                <label class="border rounded p-2 text-center" style="width:120px;">
+                                    <img src="${assetUrl}/${item.nama_file}" alt="Detail" class="img-fluid rounded" style="height:70px;object-fit:cover;width:100%;">
+                                    <div class="form-check mt-1">
+                                        <input class="form-check-input" type="checkbox" name="delete_foto[]" value="${item.id}">
+                                        <span class="small">hapus</span>
+                                    </div>
+                                </label>
                             `;
-                                    });
-                                    html += '</div>';
-                                }
-                            }
-                            gallery.innerHTML = html;
+                            });
+                        }
+                    }
 
-                            const modalEl = document.getElementById('modalViewDetail')
-                            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-                            modal.show();
+                    // Edit ruangan function
+                    function editRuangan(id, nama, gedungId, lantaiId, kapasitas, deskripsi) {
+                        document.getElementById('editRuanganId').value = id;
+                        document.getElementById('editNamaRuangan').value = nama;
+                        document.getElementById('editKapasitas').value = kapasitas;
+                        document.getElementById('editDeskripsi').value = deskripsi || '';
+
+                        const gedungSelect = document.getElementById('editGedungSelect');
+                        gedungSelect.value = gedungId;
+                        renderLantaiOptions('editLantaiSelect', gedungId, lantaiId);
+
+                        // Reset check fasilitas
+                        document.querySelectorAll('.edit-fasilitas-checkbox').forEach(cb => {
+                            cb.checked = false;
+                        });
+
+                        // Check fasilitas per ruangan
+                        const selectedFasilitas = ruanganFasilitasMap[id] || [];
+                        selectedFasilitas.forEach(fId => {
+                            const cb = document.getElementById('editFasilitas' + fId);
+                            if (cb) cb.checked = true;
+                        });
+
+                        // Reset image previews
+                        document.getElementById('editCoverFile').value = '';
+                        document.getElementById('editCoverPreviewContainer').style.display = 'none';
+
+                        // Render existing photos
+                        renderExistingFotos(id);
+                    }
+
+                    function escapeHtml(value) {
+                        return String(value)
+                            .replace(/&/g, '&amp;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;')
+                            .replace(/"/g, '&quot;')
+                            .replace(/'/g, '&#039;');
+                    }
+
+                    function viewDetail(id, nama, gedung, lantai, kapasitas, deskripsi, coverFoto) {
+                        document.getElementById('detailNamaRuangan').textContent = nama || '-';
+                        document.getElementById('detailGedung').textContent = gedung || '-';
+                        document.getElementById('detailKapasitas').textContent = kapasitas ? `${kapasitas} orang` : '-';
+                        document.getElementById('detailLantai').textContent = lantai || '-';
+                        document.getElementById('detailDeskripsi').textContent = deskripsi || '-';
+
+                        // Render Fasilitas
+                        const fList = document.getElementById('detailFasilitasList');
+                        fList.innerHTML = '';
+                        const fIds = ruanganFasilitasMap[id] || [];
+                        if (!fIds.length) {
+                            fList.innerHTML = '<span class="text-muted small">Tidak ada fasilitas</span>';
+                        } else {
+                            fIds.forEach(fId => {
+                                const fname = fasilitasNameMap[fId] || ('Fasilitas ' + fId);
+                                fList.innerHTML += `
+                                <span style="display:inline-flex; align-items:center; gap:8px; padding:8px 14px; border-radius:10px; background:#18a86b; border:1px solid #18a86b; color:#ffffff !important; font-weight:700; font-size:13px; box-shadow:0 6px 14px rgba(24, 168, 107, 0.18);">
+                                    <i class="bi bi-check-lg" style="color:#ffffff !important;"></i>${escapeHtml(fname)}
+                                </span>
+                            `;
+                            });
                         }
 
-                        function viewImage(src, title) {
-                            document.getElementById('viewImageSrc').src = src;
-                            const titleEl = document.getElementById('viewImageTitle');
-                            if (titleEl) {
-                                titleEl.innerHTML = `<i class="bi bi-images me-2"></i>${escapeHtml(title || 'Foto Ruangan')}`;
+                        // Render Gallery
+                        const gallery = document.getElementById('detailGalleryContainer');
+                        const data = ruanganPhotos[id] || { cover: [], detail: [] };
+                        let countCover = data.cover.length;
+                        let countDetail = data.detail.length;
+
+                        document.getElementById('detailFotoSummary').innerHTML = `
+                        <i class="bi bi-info-circle me-1"></i>Total Foto: ${countCover} Sampul, ${countDetail} Detail
+                    `;
+
+                        let html = '';
+                        if (countCover === 0 && countDetail === 0) {
+                            html = '<div class="p-3 text-muted small border rounded">Belum ada foto yang diunggah.</div>';
+                        } else {
+                            if (countCover > 0) {
+                                html += '<div class="mb-2 fw-semibold small text-muted">Foto Sampul</div><div class="d-flex flex-wrap gap-2 mb-3">';
+                                data.cover.forEach(f => {
+                                    html += `
+                                    <img src="${assetUrl}/${f.nama_file}" 
+                                         alt="Cover" class="img-thumbnail rounded" 
+                                         style="width: 100px; height: 75px; object-fit: cover; cursor: pointer; border: 2px solid #22c55e;"
+                                         data-bs-toggle="modal" data-bs-target="#modalViewImage"
+                                         onclick="viewImage('${assetUrl}/${f.nama_file}', 'Foto Sampul - ${escapeHtml(nama)}')">
+                                `;
+                                });
+                                html += '</div>';
+                            }
+                            if (countDetail > 0) {
+                                html += '<div class="mb-2 fw-semibold small text-muted">Foto Detail</div><div class="d-flex flex-wrap gap-2">';
+                                data.detail.forEach(f => {
+                                    html += `
+                                    <img src="${assetUrl}/${f.nama_file}" 
+                                         alt="Detail" class="img-thumbnail rounded" 
+                                         style="width: 80px; height: 60px; object-fit: cover; cursor: pointer;"
+                                         data-bs-toggle="modal" data-bs-target="#modalViewImage"
+                                         onclick="viewImage('${assetUrl}/${f.nama_file}', 'Foto Detail - ${escapeHtml(nama)}')">
+                                `;
+                                });
+                                html += '</div>';
                             }
                         }
+                        gallery.innerHTML = html;
 
-                        function deleteRuangan(id, namaRuangan) {
-                            Swal.fire({
-                                html: `
-                        <div style="text-align:center; padding-top: 6px;">
-                            <div style="width:64px; height:64px; margin:0 auto 18px; border-radius:999px; background:#fde8e7; color:#ef4444; display:flex; align-items:center; justify-content:center; font-size:30px;">
-                                <i class="bi bi-trash"></i>
+                        const modalEl = document.getElementById('modalViewDetail')
+                        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                        modal.show();
+                    }
+
+                    function viewImage(src, title) {
+                        document.getElementById('viewImageSrc').src = src;
+                        const titleEl = document.getElementById('viewImageTitle');
+                        if (titleEl) {
+                            titleEl.innerHTML = `<i class="bi bi-images me-2"></i>${escapeHtml(title || 'Foto Ruangan')}`;
+                        }
+                    }
+
+                    function deleteRuangan(id, namaRuangan) {
+                        Swal.fire({
+                            html: `
+                            <div style="text-align:center; padding-top: 6px;">
+                                <div style="width:64px; height:64px; margin:0 auto 18px; border-radius:999px; background:#fde8e7; color:#ef4444; display:flex; align-items:center; justify-content:center; font-size:30px;">
+                                    <i class="bi bi-trash"></i>
+                                </div>
+                                <h2 style="margin:0 0 12px; font-size:28px; font-weight:800; line-height:1.2; color:#0f172a;">Hapus Ruangan?</h2>
+                                <p style="margin:0; font-size:17px; line-height:1.6; color:#475569;">
+                                    Ruangan "${escapeHtml(namaRuangan)}" akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
+                                </p>
                             </div>
-                            <h2 style="margin:0 0 12px; font-size:28px; font-weight:800; line-height:1.2; color:#0f172a;">Hapus Ruangan?</h2>
-                            <p style="margin:0; font-size:17px; line-height:1.6; color:#475569;">
-                                Ruangan "${escapeHtml(namaRuangan)}" akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
-                            </p>
-                        </div>
-                    `,
-                                width: 390,
-                                padding: '1.4rem 1.4rem 1.25rem',
-                                showCancelButton: true,
-                                reverseButtons: true,
-                                focusCancel: true,
-                                confirmButtonColor: '#dc3545',
-                                cancelButtonColor: '#6c757d',
-                                confirmButtonText: 'Ya, Hapus',
-                                cancelButtonText: 'Batal',
-                                customClass: {
-                                    popup: 'swal-compact swal-delete-popup',
-                                    htmlContainer: 'swal-compact-text',
-                                    confirmButton: 'swal-compact-btn',
-                                    cancelButton: 'swal-compact-btn'
-                                }
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    document.getElementById('formDelete' + id).submit();
-                                }
-                            });
-                        }
-
-                        // Auto-dismiss alerts
-                        document.addEventListener('DOMContentLoaded', function () {
-                            const alertsToClose = document.querySelectorAll('.alert');
-                            alertsToClose.forEach(alert => {
-                                setTimeout(() => {
-                                    const bsAlert = new bootstrap.Alert(alert);
-                                    bsAlert.close();
-                                }, 5000);
-                            });
+                        `,
+                            width: 390,
+                            padding: '1.4rem 1.4rem 1.25rem',
+                            showCancelButton: true,
+                            reverseButtons: true,
+                            focusCancel: true,
+                            confirmButtonColor: '#dc3545',
+                            cancelButtonColor: '#6c757d',
+                            confirmButtonText: 'Ya, Hapus',
+                            cancelButtonText: 'Batal',
+                            customClass: {
+                                popup: 'swal-compact swal-delete-popup',
+                                htmlContainer: 'swal-compact-text',
+                                confirmButton: 'swal-compact-btn',
+                                cancelButton: 'swal-compact-btn'
+                            }
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                document.getElementById('formDelete' + id).submit();
+                            }
                         });
-                    </script>
+                    }
+
+                    // Auto-dismiss alerts
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const alertsToClose = document.querySelectorAll('.alert');
+                        alertsToClose.forEach(alert => {
+                            setTimeout(() => {
+                                const bsAlert = new bootstrap.Alert(alert);
+                                bsAlert.close();
+                            }, 5000);
+                        });
+                    });
+                </script>
             @endpush
 </x-layouts.admin-layout>

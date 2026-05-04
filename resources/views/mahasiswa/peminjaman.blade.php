@@ -114,7 +114,8 @@
                                 @if (!empty($p->catatan_admin))
                                     <div class="riwayat-note">
                                         <small class="text-muted riwayat-note-preview">
-                                            <span class="riwayat-note-text" data-note="{{ e($p->catatan_admin) }}">{{ $p->catatan_admin }}</span>
+                                            <span class="riwayat-note-text"
+                                                data-note="{{ e($p->catatan_admin) }}">{{ $p->catatan_admin }}</span>
                                         </small>
                                     </div>
                                 @else
@@ -211,14 +212,14 @@
                 riwayatEmptyRow.className = 'riwayat-search-empty-row';
                 riwayatEmptyRow.style.display = 'none';
                 riwayatEmptyRow.innerHTML = `
-                    <td colspan="7" class="text-center py-5">
-                        <div class="text-muted">
-                            <i class="bi bi-search display-5 d-block mb-3"></i>
-                            <p class="mb-0 fw-semibold">Belum ada riwayat peminjaman untuk ruangan ini.</p>
-                            <small>Coba gunakan kata kunci lain.</small>
-                        </div>
-                    </td>
-                `;
+                        <td colspan="7" class="text-center py-5">
+                            <div class="text-muted">
+                                <i class="bi bi-search display-5 d-block mb-3"></i>
+                                <p class="mb-0 fw-semibold">Belum ada riwayat peminjaman untuk ruangan ini.</p>
+                                <small>Coba gunakan kata kunci lain.</small>
+                            </div>
+                        </td>
+                    `;
 
                 if (riwayatTableBody) {
                     riwayatTableBody.appendChild(riwayatEmptyRow);
