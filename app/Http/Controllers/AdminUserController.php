@@ -37,13 +37,11 @@ class AdminUserController extends Controller
         return redirect()->route('admin.user.index')->with('success', 'add');
     }
 
-    public function update(Request $request)
+    public function update(Request $request, User $user)
     {
-        $id = $request->id;
         $validated = $request->validate([
-            'id' => ['required', 'exists:users,id'],
             'nama' => ['required', 'string', 'max:100'],
-            'username' => ['required', 'string', 'max:50', 'unique:users,username,' . $id],
+            'username' => ['required', 'string', 'max:50', 'unique:users,username,' . $user->getKey()],
             'password' => ['nullable', 'string', 'min:8'],
             'role' => ['required', 'in:admin,mahasiswa'],
             'prodi' => ['nullable', 'string', 'max:100'],
@@ -51,8 +49,6 @@ class AdminUserController extends Controller
             'username.unique' => 'Username sudah digunakan oleh user lain!',
         ]);
 
-        $user = User::findOrFail($validated['id']);
-        
         $data = [
             'nama' => $validated['nama'],
             'username' => $validated['username'],
@@ -69,10 +65,8 @@ class AdminUserController extends Controller
         return redirect()->route('admin.user.index')->with('success', 'edit');
     }
 
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        $user = User::findOrFail($id);
-        
         if ($user->id === auth()->id()) {
             return redirect()->route('admin.user.index')->with('error', 'Anda tidak dapat menghapus akun Anda sendiri yang sedang aktif!');
         }

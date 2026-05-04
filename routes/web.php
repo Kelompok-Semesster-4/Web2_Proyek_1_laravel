@@ -15,12 +15,13 @@ use App\Http\Controllers\AdminLaporanController;
 |--------------------------------------------------------------------------
 */
 
-// Home boleh diakses siapa pun tanpa login
-Route::get('/', [MahasiswaController::class, 'dashboard'])->name('home');
+Route::controller(MahasiswaController::class)->group(function () {
+    // Home boleh diakses siapa pun tanpa login
+    Route::get('/', 'dashboard')->name('home');
 
-// Route lama tetap disediakan agar link lama tidak error
-Route::get('/mahasiswa/dashboard', [MahasiswaController::class, 'dashboard'])
-    ->name('mahasiswa.dashboard');
+    // Route lama tetap disediakan agar link lama tidak error
+    Route::get('/mahasiswa/dashboard', 'dashboard')->name('mahasiswa.dashboard');
+});
 
 // Alias /ruangan agar tidak 404
 Route::get('/ruangan', function () {
@@ -38,20 +39,24 @@ Route::get('/peminjaman', function () {
 |--------------------------------------------------------------------------
 */
 
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::controller(AuthController::class)->group(function () {
+    Route::get('/login', 'showLoginForm')->name('login');
+    Route::post('/login', 'login');
+    Route::post('/logout', 'logout')->name('logout');
+
+    // Account Registration
+    Route::get('/register', 'registerForm')->name('register');
+    Route::post('/register', 'register');
+});
 
 // Google Login
-Route::get('/auth/google/redirect', [AuthController::class, 'redirectToGoogle'])
-    ->name('google.redirect');
-
-Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])
-    ->name('google.callback');
-
-// Account Registration
-Route::get('/register', [AuthController::class, 'registerForm'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
+Route::prefix('auth/google')
+    ->name('google.')
+    ->controller(AuthController::class)
+    ->group(function () {
+        Route::get('/redirect', 'redirectToGoogle')->name('redirect');
+        Route::get('/callback', 'handleGoogleCallback')->name('callback');
+    });
 
 /*
 |--------------------------------------------------------------------------
@@ -82,16 +87,17 @@ Route::get('/dashboard', function () {
 Route::middleware(['auth', 'role:mahasiswa,admin'])
     ->prefix('mahasiswa')
     ->name('mahasiswa.')
+    ->controller(MahasiswaController::class)
     ->group(function () {
-        Route::get('/ruangan', [MahasiswaController::class, 'ruangan'])->name('ruangan');
-        Route::get('/ruangan/{id}', [MahasiswaController::class, 'detailRuangan'])->name('ruangan.detail');
+        Route::get('/ruangan', 'ruangan')->name('ruangan');
+        Route::get('/ruangan/{ruangan}', 'detailRuangan')->name('ruangan.detail');
 
-        Route::get('/peminjaman', [MahasiswaController::class, 'peminjaman'])->name('peminjaman');
-        Route::post('/peminjaman/store', [MahasiswaController::class, 'storePeminjaman'])->name('peminjaman.store');
-        Route::post('/peminjaman/cancel', [MahasiswaController::class, 'cancelPeminjaman'])->name('peminjaman.cancel');
+        Route::get('/peminjaman', 'peminjaman')->name('peminjaman');
+        Route::post('/peminjaman/store', 'storePeminjaman')->name('peminjaman.store');
+        Route::post('/peminjaman/cancel', 'cancelPeminjaman')->name('peminjaman.cancel');
 
-        Route::get('/profil', [MahasiswaController::class, 'profil'])->name('profil');
-        Route::patch('/profil', [MahasiswaController::class, 'ubahProfil'])->name('ubahProfil');
+        Route::get('/profil', 'profil')->name('profil');
+        Route::patch('/profil', 'ubahProfil')->name('ubahProfil');
     });
 
 /*
@@ -104,25 +110,20 @@ Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        Route::controller(AdminController::class)->group(function () {
+            Route::get('/dashboard', 'dashboard')->name('dashboard');
+            Route::get('/persetujuan', 'persetujuan')->name('persetujuan');
+            Route::post('/approve', 'processApproval')->name('approve.process');
+        });
 
-        Route::get('/persetujuan', [AdminController::class, 'persetujuan'])->name('persetujuan');
-        Route::post('/approve', [AdminController::class, 'processApproval'])->name('approve.process');
+        Route::resource('ruangan', AdminRuanganController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
 
-        Route::get('/ruangan', [AdminRuanganController::class, 'index'])->name('ruangan.index');
-        Route::post('/ruangan', [AdminRuanganController::class, 'store'])->name('ruangan.store');
-        Route::put('/ruangan', [AdminRuanganController::class, 'update'])->name('ruangan.update');
-        Route::delete('/ruangan/{id}', [AdminRuanganController::class, 'destroy'])->name('ruangan.destroy');
+        Route::resource('gedung', AdminGedungController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
 
-        Route::get('/gedung', [AdminGedungController::class, 'index'])->name('gedung.index');
-        Route::post('/gedung', [AdminGedungController::class, 'store'])->name('gedung.store');
-        Route::put('/gedung', [AdminGedungController::class, 'update'])->name('gedung.update');
-        Route::delete('/gedung/{id}', [AdminGedungController::class, 'destroy'])->name('gedung.destroy');
-
-        Route::get('/user', [AdminUserController::class, 'index'])->name('user.index');
-        Route::post('/user', [AdminUserController::class, 'store'])->name('user.store');
-        Route::put('/user', [AdminUserController::class, 'update'])->name('user.update');
-        Route::delete('/user/{id}', [AdminUserController::class, 'destroy'])->name('user.destroy');
+        Route::resource('user', AdminUserController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
 
         Route::get('/laporan', [AdminLaporanController::class, 'index'])->name('laporan');
     });

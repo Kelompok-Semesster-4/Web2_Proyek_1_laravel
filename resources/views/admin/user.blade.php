@@ -191,7 +191,7 @@
             <!-- Modal Edit User -->
             <x-modal-admin id="modalEditUser" title="Edit User" icon="bi bi-pencil-square"
                 header-gradient="linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)">
-                <form action="{{ route('admin.user.update') }}" method="POST">
+                <form action="{{ route('admin.user.update', '__ID__') }}" method="POST" id="formEditUser">
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="id" id="editUserId">
@@ -330,6 +330,8 @@
 
                     // Edit user function
                     function editUser(id, nama, username, role, prodi) {
+                        document.getElementById('formEditUser').action =
+                            "{{ route('admin.user.update', '__ID__') }}".replace('__ID__', id);
                         document.getElementById('editUserId').value = id;
                         document.getElementById('editNama').value = nama;
                         document.getElementById('editUsername').value = username;
