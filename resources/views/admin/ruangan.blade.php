@@ -19,22 +19,22 @@
                         <th class="text-center" style="width: 50px; padding: 15px 10px;">
                             <i class="bi bi-hash"></i>
                         </th>
-                        <th class="text-center" style="width: 16%; padding: 15px;">
+                        <th class="text-center" style="width: 10%; padding: 12px;">
                             <i class="bi bi-door-closed me-1"></i>Nama Ruangan
                         </th>
-                        <th class="text-center" style="width: 13%; padding: 15px;">
+                        <th class="text-center" style="width: 9%; padding: 12px;">
                             <i class="bi bi-building me-1"></i>Gedung
                         </th>
-                        <th class="text-center" style="width: 10%; padding: 15px;">
+                        <th class="text-center" style="width: 6%; padding: 12px;">
                             <i class="bi bi-layers me-1"></i>Lantai
                         </th>
-                        <th class="text-center" style="width: 13%; padding: 15px;">
+                        <th class="text-center" style="width: 9%; padding: 12px;">
                             <i class="bi bi-people me-1"></i>Kapasitas
                         </th>
-                        <th class="text-center" style="width: 14%; padding: 15px;">
+                        <th class="text-center" style="width: 10%; padding: 12px;">
                             <i class="bi bi-image me-1"></i>Foto
                         </th>
-                        <th class="text-center" style="width: 230px; padding: 15px;">
+                        <th class="text-center" style="width: 140px; padding: 12px;">
                             <i class="bi bi-gear me-1"></i>Aksi
                         </th>
                     </tr>
@@ -46,13 +46,15 @@
                             <span class="badge-number">{{ $i + 1 }}</span>
                         </td>
 
-                        <td>
-                            <div class="fw-bold text-dark ruangan-name-text">
-                                {{ $ruangan->nama_ruangan }}
-                            </div>
+                        <td class="text-center">
+                            <span class="badge px-3 py-2"
+                                style="background: linear-gradient(135deg, #ec4899, #db2777); color: white; font-weight: 600; border-radius: 8px;">
+                                <i class="bi bi-door-closed-fill me-1"></i>
+                                <span class="ruangan-name">{{ $ruangan->nama_ruangan }}</span>
+                            </span>
                         </td>
 
-                        <td>
+                        <td class="text-center">
                             <span class="badge px-3 py-2"
                                 style="background: linear-gradient(135deg, #17a2b8, #138496); color: white; font-weight: 600; border-radius: 8px;">
                                 <i class="bi bi-building-fill me-1"></i>{{ $ruangan->gedung ?? '-' }}
@@ -69,12 +71,12 @@
                         <td class="text-center">
                             <span class="badge px-3 py-2"
                                 style="background: linear-gradient(135deg, #22c55e, #16a34a); color: white; font-weight: 600; border-radius: 8px;">
-                                <i class="bi bi-people-fill me-1"></i>{{ $ruangan->kapasitas ?? '0' }} orang
+                                <i class="bi bi-people-fill me-1"></i>{{ $ruangan->kapasitas ?? '0' }} org
                             </span>
                         </td>
 
                         <td class="text-center">
-                            <div class="ruangan-photo-cell">
+                            <div class="ruangan-photo-cell {{ ($ruangan->detail_count ?? 0) == 0 ? 'justify-content-center' : '' }}">
                                 @if ($ruangan->cover_foto)
                                     <img src="{{ asset('storage/uploads/ruangan/' . $ruangan->cover_foto) }}"
                                         alt="{{ $ruangan->nama_ruangan }}" class="rounded shadow-sm img-thumbnail"
@@ -87,9 +89,11 @@
                                     </span>
                                 @endif
 
-                                <div class="small text-muted ruangan-photo-meta">
-                                    Detail: {{ $ruangan->detail_count ?? 0 }} foto
-                                </div>
+                                @if (($ruangan->detail_count ?? 0) > 0)
+                                    <div class="small text-muted ruangan-photo-meta">
+                                        +{{ $ruangan->detail_count }}
+                                    </div>
+                                @endif
                             </div>
                         </td>
 

@@ -257,12 +257,12 @@
                 }
 
                 .btn-submit {
-                    background: #20c997;
+                    background: linear-gradient(180deg, #22c55e, #16a34a);
                     color: white;
                 }
 
                 .btn-submit:hover {
-                    background: #1aa179;
+                    background: linear-gradient(180deg, #16a34a, #15803d);
                 }
 
                 .alert {
@@ -321,8 +321,8 @@
 
                 <!-- Alert Messages -->
                 @if (session('success'))
-                    <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4" role="alert"
-                        style="border-left: 5px solid #28a745; background: white; margin-top: 20px;">
+                    <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-0" role="alert"
+                        style="border-left: 5px solid #28a745; background: white;">
                         <div class="d-flex align-items-center">
                             <i class="bi bi-check-circle-fill me-3 fs-4 text-success"></i>
                             <div>
@@ -335,8 +335,8 @@
                 @endif
 
                 @if ($errors->any())
-                    <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4" role="alert"
-                        style="border-left: 5px solid #dc3545; background: white; margin-top: 20px;">
+                    <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-0" role="alert"
+                        style="border-left: 5px solid #dc3545; background: white;">
                         <div class="d-flex align-items-center">
                             <i class="bi bi-exclamation-triangle-fill me-3 fs-4 text-danger"></i>
                             <div>
@@ -504,7 +504,7 @@
 
                             <!-- Tombol Aksi di Luar Card -->
                             <div class="btn-group">
-                                <button type="reset" class="btn btn-reset">Reset</button>
+                                <button type="reset" class="btn btn-reset">Batalkan</button>
                                 <button type="submit" class="btn btn-submit">
                                     <i class="bi bi-check-lg"></i> Simpan Perubahan
                                 </button>
@@ -516,6 +516,7 @@
                 @push('scripts')
                     <script>
                         document.addEventListener('DOMContentLoaded', function () {
+                            const profilForm = document.getElementById('profilForm');
                             const passwordInput = document.getElementById('password');
                             const currentPasswordGroup = document.getElementById('currentPasswordGroup');
                             const currentPasswordInput = document.getElementById('current_password');
@@ -544,6 +545,31 @@
 
                             // Initial check
                             toggleCurrentPasswordField();
+
+                            if (profilForm) {
+                                profilForm.addEventListener('reset', function () {
+                                    window.setTimeout(function () {
+                                        if (fotoInput) {
+                                            fotoInput.value = '';
+                                        }
+
+                                        if (originalAvatarUrl && avatarPreview) {
+                                            avatarPreview.src = originalAvatarUrl;
+                                            avatarPreview.classList.remove('d-none');
+                                            avatarInitial.classList.add('d-none');
+                                        } else {
+                                            avatarPreview?.classList.add('d-none');
+                                            avatarInitial?.classList.remove('d-none');
+                                        }
+
+                                        if (passwordInput) {
+                                            passwordInput.value = '';
+                                        }
+
+                                        toggleCurrentPasswordField();
+                                    }, 0);
+                                });
+                            }
 
                             if (fotoInput) {
                                 fotoInput.addEventListener('change', function () {

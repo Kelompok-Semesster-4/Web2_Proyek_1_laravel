@@ -7,10 +7,10 @@
   <title>{{ $title ?? config('app.name', 'Admin') }}</title>
 
   <link rel="preconnect" href="https://fonts.bunny.net">
-  <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}?v=10">
+  <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}?v=13">
   <link rel="shortcut icon" href="{{ asset('assets/icons/favicon.ico') }}" type="image/x-icon">
   <style>
     .admin-body,
@@ -160,6 +160,16 @@
       {{ $slot }}
     </main>
   </div>
+
+  <footer class="footer">
+    <div class="footerin">
+      <div>© {{ date('Y') }} Peminjaman Ruangan</div>
+      <div class="contact">
+        <div class="pill">☎ <span>+62 857-6941-0695</span></div>
+        <div class="pill">✉ <span>info@unsri.ac.id</span></div>
+      </div>
+    </div>
+  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   @stack('scripts')

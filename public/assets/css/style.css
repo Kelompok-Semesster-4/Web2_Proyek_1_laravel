@@ -22,7 +22,7 @@ input,
 select,
 textarea {
     font-family:
-        "Plus Jakarta Sans",
+        "Inter",
         system-ui,
         -apple-system,
         Segoe UI,
@@ -374,6 +374,29 @@ a {
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Admin footer styling */
+.admin-wrap ~ .footer {
+    width: calc(100% - 280px);
+    margin-left: 280px;
+}
+
+.admin-wrap ~ .footerin {
+    max-width: none;
+    margin: 0;
+    padding: 26px 22px;
+}
+
+@media (max-width: 992px) {
+    .admin-wrap ~ .footer {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .admin-wrap ~ .footerin {
+        padding: 18px 12px;
+    }
 }
 
 .login-stage {
@@ -835,7 +858,7 @@ label {
 
 .admin-main {
     margin-left: 280px;
-    padding: 26px 22px 90px;
+    padding: 26px 22px 50px;
     max-width: 1200px;
 }
 
@@ -948,11 +971,10 @@ label {
 }
 
 .asb-nav {
-    padding: 10px 6px 0;
+    padding: 10px 6px 50px;
     display: flex;
     flex-direction: column;
     gap: 6px;
-    padding-bottom: 90px;
 }
 
 .asb-link {
@@ -1517,20 +1539,7 @@ label {
 }
 
 #tableRuangan {
-    min-width: 1040px;
-}
-
-#tableRuangan thead th {
-    padding: 12px 10px !important;
-    vertical-align: middle;
-}
-
-#tableRuangan tbody td {
-    padding: 12px 10px;
-}
-
-#tableRuangan tbody td {
-    text-align: center;
+    min-width: auto;
 }
 
 #tableRuangan th:nth-child(2),
@@ -1561,11 +1570,6 @@ label {
 
 #tableRuangan td:nth-child(4) .badge {
     min-width: 78px;
-}
-
-#tableRuangan .badge-number {
-    width: 36px;
-    height: 36px;
 }
 
 #tableRuangan .ruangan-photo-cell {
@@ -1601,50 +1605,18 @@ label {
 #tableRuangan .ruangan-actions .aksi-btn {
     min-width: 76px !important;
     height: 36px;
-    padding: 0 10px !important;
+    padding: 0 9px !important;
     font-size: 0.8rem !important;
 }
 
-#tableRuangan thead th {
-    background: #fff !important;
-    color: #1f2937;
-    font-size: 0.88rem;
-    font-weight: 700;
-    letter-spacing: 0;
-    text-align: left;
-}
-
-#tableRuangan thead th:first-child,
-#tableRuangan thead th:nth-child(4),
-#tableRuangan thead th:nth-child(5),
-#tableRuangan thead th:nth-child(6),
-#tableRuangan thead th:last-child {
-    text-align: center;
-}
-
-#tableRuangan th,
-#tableRuangan td {
-    border-right: 0 !important;
-}
-
 #tableRuangan tbody td {
-    padding: 15px 12px;
+    padding: 15px 11px;
     border-bottom: 1px solid #eef2f7;
     background: #fff;
 }
 
 #tableRuangan tbody tr:hover td {
     background: #fafafa;
-}
-
-#tableRuangan .badge-number {
-    width: auto;
-    height: auto;
-    padding: 0;
-    background: transparent;
-    color: #6b7280;
-    font-size: 0.9rem;
-    font-weight: 500;
 }
 
 #tableRuangan td:nth-child(2) {
@@ -1758,6 +1730,31 @@ label {
 #tableRiwayat th,
 #tableRiwayat td {
     border-right: 1px solid #e5e7eb;
+    overflow-wrap: anywhere;
+}
+
+#tableRiwayat th:nth-child(2),
+#tableRiwayat td:nth-child(2) {
+    width: 180px;
+    max-width: 180px;
+}
+
+#tableRiwayat th:nth-child(3),
+#tableRiwayat td:nth-child(3) {
+    width: 145px;
+    max-width: 145px;
+}
+
+#tableRiwayat th:nth-child(4),
+#tableRiwayat td:nth-child(4) {
+    width: 180px;
+    max-width: 180px;
+}
+
+#tableRiwayat th:nth-child(5),
+#tableRiwayat td:nth-child(5) {
+    width: 125px;
+    max-width: 125px;
 }
 
 #tableRiwayat th:last-child,
@@ -1790,20 +1787,60 @@ label {
     transform: translateY(-1px);
 }
 
-#tableRiwayat td:nth-child(3) .badge {
-    min-width: 110px;
+#tableRiwayat td:nth-child(4) .badge {
+    width: fit-content;
+    max-width: 100%;
+    min-width: 0;
+    height: 34px;
+    line-height: 34px;
+    padding: 0 12px;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
-#tableRiwayat td:nth-child(4) .badge {
-    min-width: 120px;
+#tableRiwayat td:nth-child(4) .badge i {
+    flex: 0 0 auto;
+}
+
+#tableRiwayat .riwayat-kegiatan-text {
+    display: block;
+    min-width: 0;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 #tableRiwayat td:nth-child(5) .badge {
-    min-width: 100px;
+    min-width: 95px;
 }
 
-#tableRiwayat td:nth-child(6) .badge {
-    min-width: 95px;
+#tableRiwayat th:nth-child(6),
+#tableRiwayat td:nth-child(6) {
+    width: 140px;
+    max-width: 140px;
+}
+
+#tableRiwayat .riwayat-note {
+    max-width: 180px;
+}
+
+#tableRiwayat .riwayat-note-preview {
+    display: block;
+    gap: 0;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+#tableRiwayat .riwayat-note-text {
+    display: inline-block;
+    max-width: 180px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-decoration: none;
+    font-weight: 400;
+    cursor: pointer;
 }
 
 #tableRiwayat .btn {
@@ -1822,8 +1859,50 @@ label {
 }
 
 #tableRiwayat td:last-child .d-flex {
-    gap: 10px;
+    gap: 4px;
     align-items: center;
+}
+
+#tableRiwayat th:last-child,
+#tableRiwayat td:last-child {
+    width: 100px;
+    max-width: 100px;
+}
+
+#tableRiwayat .aksi-btn {
+    min-width: 0 !important;
+    width: 84px !important;
+    padding: 0 6px !important;
+}
+
+#tableRiwayat .riwayat-action-note {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 84px;
+    min-height: 32px;
+    padding: 0 6px;
+    border-radius: 8px;
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+}
+
+#tableRiwayat .riwayat-action-note.is-approved {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.peminjaman-page {
+    overflow-x: hidden;
+}
+
+.peminjaman-page .table-responsive,
+.peminjaman-page .table-scroll-area {
+    overflow-x: hidden !important;
 }
 
 #tableUser {
@@ -3014,7 +3093,7 @@ form.d-inline {
 @media (max-width: 992px) {
     .admin-main {
         margin-left: 0;
-        padding: 18px 12px 70px;
+        padding: 18px 12px 50px;
         max-width: none;
     }
 
@@ -3148,6 +3227,122 @@ form.d-inline {
 @media (max-width: 768px) {
     .detail-ruangan-page .carousel-item img {
         height: 240px;
+    }
+}
+
+@media (max-width: 768px) {
+    #tableRiwayat {
+        display: block;
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    #tableRiwayat thead {
+        display: none;
+    }
+
+    #tableRiwayat tbody,
+    #tableRiwayat tr,
+    #tableRiwayat td {
+        display: block;
+        width: 100%;
+    }
+
+    #tableRiwayat tbody {
+        padding: 12px;
+        background: #f8fafc;
+    }
+
+    #tableRiwayat tbody tr {
+        margin-bottom: 14px;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        background: #ffffff;
+        overflow: hidden;
+    }
+
+    #tableRiwayat tbody tr:last-child {
+        margin-bottom: 0;
+    }
+
+    #tableRiwayat .riwayat-search-empty-row {
+        border: 0;
+        background: transparent;
+    }
+
+    #tableRiwayat .riwayat-search-empty-row td {
+        display: block;
+        padding: 28px 16px;
+        border: 0;
+        text-align: center !important;
+    }
+
+    #tableRiwayat .riwayat-search-empty-row td::before {
+        content: none;
+    }
+
+    #tableRiwayat tbody td {
+        display: grid;
+        grid-template-columns: minmax(86px, 32%) minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+        padding: 11px 12px;
+        border-right: 0;
+        border-bottom: 1px solid #eef2f7;
+        text-align: left !important;
+    }
+
+    #tableRiwayat tbody td:last-child {
+        border-bottom: 0;
+    }
+
+    #tableRiwayat tbody td::before {
+        content: attr(data-label);
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    #tableRiwayat .badge,
+    #tableRiwayat .btn {
+        width: fit-content;
+        max-width: 100%;
+        min-width: 0;
+        height: auto;
+        min-height: 32px;
+        line-height: 1.25;
+        white-space: normal;
+    }
+
+    #tableRiwayat th:nth-child(6),
+    #tableRiwayat td:nth-child(6) {
+        width: 100%;
+        max-width: none;
+    }
+
+    #tableRiwayat .riwayat-note {
+        max-width: 100%;
+    }
+
+    #tableRiwayat .riwayat-note-preview {
+        white-space: normal;
+    }
+
+    #tableRiwayat td:last-child .d-flex {
+        justify-content: flex-start !important;
+    }
+
+    #tableRiwayat .aksi-btn {
+        width: auto !important;
+    }
+
+    #tableRiwayat tbody tr:hover td {
+        background: transparent;
+    }
+
+    .peminjaman-page .table-responsive {
+        overflow-x: hidden;
     }
 }
 .kelola-header-title {
@@ -3630,4 +3825,58 @@ form.d-inline {
 
 [x-cloak] {
     display: none !important;
+}
+
+.table-search-input:focus,
+.input-group:focus-within .input-group-text {
+    border-color: #dee2e6 !important;
+    box-shadow: none !important;
+    outline: 0 !important;
+}
+
+button,
+.btn,
+.room-btn,
+.btn-tambah,
+.room-btn-primary,
+.room-btn-secondary,
+.photo-upload-btn,
+.mobile-logout-btn,
+.profile-dropdown button,
+.swal2-actions .swal2-confirm,
+.swal2-actions .swal2-cancel,
+button:hover,
+.btn:hover,
+.room-btn:hover,
+.btn-tambah:hover,
+.room-btn-primary:hover,
+.room-btn-secondary:hover,
+.photo-upload-btn:hover,
+.mobile-logout-btn:hover,
+.profile-dropdown button:hover,
+.swal2-actions .swal2-confirm:hover,
+.swal2-actions .swal2-cancel:hover,
+button:focus,
+.btn:focus,
+.room-btn:focus,
+.btn-tambah:focus,
+.room-btn-primary:focus,
+.room-btn-secondary:focus,
+.photo-upload-btn:focus,
+.mobile-logout-btn:focus,
+.profile-dropdown button:focus,
+.swal2-actions .swal2-confirm:focus,
+.swal2-actions .swal2-cancel:focus,
+button:active,
+.btn:active,
+.room-btn:active,
+.btn-tambah:active,
+.room-btn-primary:active,
+.room-btn-secondary:active,
+.photo-upload-btn:active,
+.mobile-logout-btn:active,
+.profile-dropdown button:active,
+.swal2-actions .swal2-confirm:active,
+.swal2-actions .swal2-cancel:active {
+    box-shadow: none !important;
 }

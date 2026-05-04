@@ -308,7 +308,7 @@ class MahasiswaController extends Controller
 
         $peminjaman->update([
             'status_id' => $cancelStatusId,
-            'catatan_admin' => $peminjaman->catatan_admin ?: 'Dibatalkan oleh mahasiswa',
+            'catatan_admin' => null,
         ]);
 
         LogStatus::create([
