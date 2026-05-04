@@ -134,22 +134,29 @@ class AdminController extends Controller
         return view('admin.persetujuan', compact('pending'));
     }
 
-    public function processApproval(Request $request)
+    public function approvePeminjaman(Request $request, Peminjaman $peminjaman)
+    {
+        return $this->processApproval($request, $peminjaman, 'approve');
+    }
+
+    public function rejectPeminjaman(Request $request, Peminjaman $peminjaman)
+    {
+        return $this->processApproval($request, $peminjaman, 'reject');
+    }
+
+    private function processApproval(Request $request, Peminjaman $peminjaman, string $action)
     {
         $validated = $request->validate([
-            'action' => ['required', 'in:approve,reject'],
-            'peminjaman_id' => ['required', 'integer', 'exists:peminjaman,id'],
             'catatan_admin' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        $action = $validated['action'];
-        $id = (int) $validated['peminjaman_id'];
+        $id = $peminjaman->getKey();
         $catatan = trim($validated['catatan_admin'] ?? '');
         $adminId = Auth::id();
 
         DB::beginTransaction();
         try {
-            $target = Peminjaman::where('id', $id)->lockForUpdate()->first();
+            $target = Peminjaman::whereKey($id)->lockForUpdate()->first();
 
             if (!$target) {
                 throw new \Exception('Data peminjaman tidak ditemukan.');
