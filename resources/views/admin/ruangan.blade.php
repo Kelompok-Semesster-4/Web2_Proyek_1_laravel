@@ -269,7 +269,8 @@
             <x-modal-admin id="modalEditRuangan" title="Edit Ruangan" icon="bi bi-pencil-square"
                 header-gradient="linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)"
                 dialog-class="modal-dialog modal-dialog-centered modal-lg">
-                <form method="POST" action="{{ route('admin.ruangan.update') }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('admin.ruangan.update', '__ID__') }}" enctype="multipart/form-data"
+                    id="formEditRuangan">
                     @csrf
                     @method('PUT')
                     <div class="modal-body p-4">
@@ -632,6 +633,8 @@
 
                         // Edit ruangan function
                         function editRuangan(id, nama, gedungId, lantaiId, kapasitas, deskripsi) {
+                            document.getElementById('formEditRuangan').action =
+                                "{{ route('admin.ruangan.update', '__ID__') }}".replace('__ID__', id);
                             document.getElementById('editRuanganId').value = id;
                             document.getElementById('editNamaRuangan').value = nama;
                             document.getElementById('editKapasitas').value = kapasitas;

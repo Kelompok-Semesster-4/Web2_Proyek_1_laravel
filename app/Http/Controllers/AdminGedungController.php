@@ -57,12 +57,10 @@ class AdminGedungController extends Controller
         }
     }
 
-    public function update(Request $request)
+    public function update(Request $request, Gedung $gedung)
     {
-        $id = $request->id;
         $validated = $request->validate([
-            'id' => ['required', 'exists:gedung,id'],
-            'nama_gedung' => ['required', 'string', 'max:100', 'unique:gedung,nama_gedung,' . $id],
+            'nama_gedung' => ['required', 'string', 'max:100', 'unique:gedung,nama_gedung,' . $gedung->getKey()],
             'jumlah_lantai' => ['required', 'integer', 'min:1'],
         ], [
             'nama_gedung.unique' => 'Nama gedung sudah digunakan oleh data lain!',
@@ -70,28 +68,28 @@ class AdminGedungController extends Controller
         ]);
 
         try {
-            DB::transaction(function () use ($validated) {
-                $gedung = Gedung::findOrFail($validated['id']);
+            DB::transaction(function () use ($validated, $gedung) {
                 $gedung->update([
                     'nama_gedung' => $validated['nama_gedung']
                 ]);
 
-                $currentMaxLantai = Lantai::where('gedung_id', $validated['id'])->max('nomor') ?? 0;
+                $gedungId = $gedung->getKey();
+                $currentMaxLantai = Lantai::where('gedung_id', $gedungId)->max('nomor') ?? 0;
                 $newJumlahLantai = $validated['jumlah_lantai'];
 
                 if ($newJumlahLantai > $currentMaxLantai) {
                     for ($i = $currentMaxLantai + 1; $i <= $newJumlahLantai; $i++) {
                         Lantai::create([
-                            'gedung_id' => $validated['id'],
+                            'gedung_id' => $gedungId,
                             'nomor' => $i
                         ]);
                     }
                 } elseif ($newJumlahLantai < $currentMaxLantai) {
                     $ruanganAtasCount = Ruangan::query()
-                        ->whereIn('lantai_id', function ($query) use ($validated, $newJumlahLantai) {
+                        ->whereIn('lantai_id', function ($query) use ($gedungId, $newJumlahLantai) {
                             $query->select('id')
                                 ->from('lantai')
-                                ->where('gedung_id', $validated['id'])
+                                ->where('gedung_id', $gedungId)
                                 ->where('nomor', '>', $newJumlahLantai);
                         })->count();
 
@@ -99,7 +97,7 @@ class AdminGedungController extends Controller
                         throw new \RuntimeException('Tidak dapat mengurangi jumlah lantai karena lantai atas masih memiliki data ruangan.');
                     }
 
-                    Lantai::where('gedung_id', $validated['id'])->where('nomor', '>', $newJumlahLantai)->delete();
+                    Lantai::where('gedung_id', $gedungId)->where('nomor', '>', $newJumlahLantai)->delete();
                 }
             });
 
@@ -111,9 +109,9 @@ class AdminGedungController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy(Gedung $gedung)
     {
-        $gedung = Gedung::findOrFail($id);
+        $id = $gedung->getKey();
 
         $jumlahRuangan = Ruangan::query()
             ->from('ruangan as r')

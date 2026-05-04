@@ -132,7 +132,7 @@
             <!-- Modal Edit Gedung -->
             <x-modal-admin id="modalEditGedung" title="Edit Gedung" icon="bi bi-pencil-square"
                 header-gradient="linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)">
-                <form action="{{ route('admin.gedung.update') }}" method="POST">
+                <form action="{{ route('admin.gedung.update', '__ID__') }}" method="POST" id="formEditGedung">
                     @csrf
                     @method('PUT')
                     <div class="modal-body p-4">
@@ -225,6 +225,8 @@
 
                     // Edit gedung function
                     function editGedung(id, namaGedung, jumlahLantai) {
+                        document.getElementById('formEditGedung').action =
+                            "{{ route('admin.gedung.update', '__ID__') }}".replace('__ID__', id);
                         document.getElementById('editGedungId').value = id;
                         document.getElementById('editNamaGedung').value = namaGedung;
                         document.getElementById('editJumlahLantai').value = jumlahLantai;
