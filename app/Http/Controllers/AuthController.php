@@ -24,13 +24,13 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
-            'username' => 'required|string',
-            'password' => 'required|string',
+        $credentials = $request->validate([
+            'username' => ['required', 'string'],
+            'password' => ['required', 'string'],
         ]);
 
-        $username = $request->input('username');
-        $password = $request->input('password');
+        $username = $credentials['username'];
+        $password = $credentials['password'];
         $remember = $request->boolean('remember');
 
         $user = User::where('username', $username)->first();
@@ -158,7 +158,7 @@ class AuthController extends Controller
             return redirect()
                 ->route('login')
                 ->withErrors([
-                    'google' => 'Login Google gagal: ' . $e->getMessage(),
+                    'google' => 'Login Google gagal. Silakan coba lagi.',
                 ]);
         }
     }
@@ -183,7 +183,7 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $validated_request = $request->validate([
+        $validated = $request->validate([
             'username' => ['required', 'string', 'max:50', 'unique:users,username'],
             'email' => ['nullable', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
@@ -191,12 +191,12 @@ class AuthController extends Controller
         ]);
 
         $user = User::create([
-            'nama' => $validated_request['username'],
-            'username' => $validated_request['username'],
-            'email' => $validated_request['email'],
-            'password' => Hash::make($validated_request['password']),
+            'nama' => $validated['username'],
+            'username' => $validated['username'],
+            'email' => $validated['email'] ?? null,
+            'password' => Hash::make($validated['password']),
             'role' => 'mahasiswa',
-            'prodi' => $validated_request['prodi'],
+            'prodi' => $validated['prodi'],
         ]);
 
         Auth::login($user, false);

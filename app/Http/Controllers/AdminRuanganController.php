@@ -7,6 +7,7 @@ use App\Models\Ruangan;
 use App\Models\Lantai;
 use App\Models\Gedung;
 use App\Models\Fasilitas;
+use App\Models\Peminjaman;
 use App\Models\RuanganFoto;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -56,13 +57,10 @@ class AdminRuanganController extends Controller
             $fasilitasNameMap[$f->id] = $f->nama_fasilitas;
         }
 
-        $rfRows = DB::table('ruangan_fasilitas')->orderBy('ruangan_id')->orderBy('fasilitas_id')->get();
+        $ruangans->load('fasilitas:id');
         $ruanganFasilitasMap = [];
-        foreach ($rfRows as $row) {
-            if (!isset($ruanganFasilitasMap[$row->ruangan_id])) {
-                $ruanganFasilitasMap[$row->ruangan_id] = [];
-            }
-            $ruanganFasilitasMap[$row->ruangan_id][] = $row->fasilitas_id;
+        foreach ($ruangans as $ruangan) {
+            $ruanganFasilitasMap[$ruangan->id] = $ruangan->fasilitas->pluck('id')->all();
         }
 
         return view('admin.ruangan', compact(
@@ -78,140 +76,138 @@ class AdminRuanganController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nama_ruangan' => 'required|string|max:100',
-            'lantai_id' => 'required|exists:lantai,id',
-            'kapasitas' => 'required|integer|min:1',
-            'deskripsi' => 'nullable|string',
-            'foto_cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'foto_detail.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        $validated = $request->validate([
+            'nama_ruangan' => ['required', 'string', 'max:100'],
+            'lantai_id' => ['required', 'exists:lantai,id'],
+            'kapasitas' => ['required', 'integer', 'min:1'],
+            'deskripsi' => ['nullable', 'string'],
+            'fasilitas_ids' => ['nullable', 'array'],
+            'fasilitas_ids.*' => ['integer', 'exists:fasilitas,id'],
+            'foto_cover' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
+            'foto_detail' => ['nullable', 'array'],
+            'foto_detail.*' => ['image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
         ]);
 
-        $exists = Ruangan::where('nama_ruangan', $request->nama_ruangan)
-            ->where('lantai_id', $request->lantai_id)
+        $exists = Ruangan::where('nama_ruangan', $validated['nama_ruangan'])
+            ->where('lantai_id', $validated['lantai_id'])
             ->exists();
 
         if ($exists) {
             return redirect()->route('admin.ruangan.index')->with('error', 'Ruangan dengan nama tersebut sudah ada di lantai ini!');
         }
 
-        DB::beginTransaction();
         try {
-            $ruangan = Ruangan::create([
-                'lantai_id' => $request->lantai_id,
-                'nama_ruangan' => $request->nama_ruangan,
-                'kapasitas' => $request->kapasitas,
-                'deskripsi' => $request->deskripsi
-            ]);
-
-            if ($request->has('fasilitas_ids') && is_array($request->fasilitas_ids)) {
-                $ruangan->fasilitas()->sync($request->fasilitas_ids);
-            }
-
-            if ($request->hasFile('foto_cover')) {
-                $file = $request->file('foto_cover');
-                $filename = 'ruangan_' . $ruangan->id . '_' . time() . '_' . substr(md5(rand()), 0, 12) . '.' . $file->getClientOriginalExtension();
-                $file->storeAs('uploads/ruangan', $filename, 'public');
-                RuanganFoto::create([
-                    'ruangan_id' => $ruangan->id,
-                    'nama_file' => $filename,
-                    'tipe' => 'cover'
+            DB::transaction(function () use ($request, $validated) {
+                $ruangan = Ruangan::create([
+                    'lantai_id' => $validated['lantai_id'],
+                    'nama_ruangan' => $validated['nama_ruangan'],
+                    'kapasitas' => $validated['kapasitas'],
+                    'deskripsi' => $validated['deskripsi'] ?? null
                 ]);
-            }
 
-            if ($request->hasFile('foto_detail')) {
-                foreach ($request->file('foto_detail') as $file) {
-                    $filename = 'ruangan_' . $ruangan->id . '_' . time() . '_' . substr(md5(rand()), 0, 12) . '.' . $file->getClientOriginalExtension();
+                $ruangan->fasilitas()->sync($validated['fasilitas_ids'] ?? []);
+
+                if ($request->hasFile('foto_cover')) {
+                    $file = $request->file('foto_cover');
+                    $filename = $this->makeRuanganFilename($ruangan->id, $file->getClientOriginalExtension());
                     $file->storeAs('uploads/ruangan', $filename, 'public');
                     RuanganFoto::create([
                         'ruangan_id' => $ruangan->id,
                         'nama_file' => $filename,
-                        'tipe' => 'detail'
+                        'tipe' => 'cover'
                     ]);
                 }
-            }
 
-            DB::commit();
+                if ($request->hasFile('foto_detail')) {
+                    foreach ($request->file('foto_detail') as $file) {
+                        $filename = $this->makeRuanganFilename($ruangan->id, $file->getClientOriginalExtension());
+                        $file->storeAs('uploads/ruangan', $filename, 'public');
+                        RuanganFoto::create([
+                            'ruangan_id' => $ruangan->id,
+                            'nama_file' => $filename,
+                            'tipe' => 'detail'
+                        ]);
+                    }
+                }
+            });
+
             return redirect()->route('admin.ruangan.index')->with('success', 'add');
         } catch (\Exception $e) {
-            DB::rollback();
             return redirect()->route('admin.ruangan.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 
     public function update(Request $request)
     {
-        $request->validate([
-            'id' => 'required|exists:ruangan,id',
-            'nama_ruangan' => 'required|string|max:100',
-            'lantai_id' => 'required|exists:lantai,id',
-            'kapasitas' => 'required|integer|min:1',
-            'deskripsi' => 'nullable|string',
-            'foto_cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'foto_detail.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        $validated = $request->validate([
+            'id' => ['required', 'exists:ruangan,id'],
+            'nama_ruangan' => ['required', 'string', 'max:100'],
+            'lantai_id' => ['required', 'exists:lantai,id'],
+            'kapasitas' => ['required', 'integer', 'min:1'],
+            'deskripsi' => ['nullable', 'string'],
+            'fasilitas_ids' => ['nullable', 'array'],
+            'fasilitas_ids.*' => ['integer', 'exists:fasilitas,id'],
+            'delete_foto' => ['nullable', 'array'],
+            'delete_foto.*' => ['integer', 'exists:ruangan_foto,id'],
+            'foto_cover' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
+            'foto_detail' => ['nullable', 'array'],
+            'foto_detail.*' => ['image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
         ]);
 
-        $exists = Ruangan::where('nama_ruangan', $request->nama_ruangan)
-            ->where('lantai_id', $request->lantai_id)
-            ->where('id', '!=', $request->id)
+        $exists = Ruangan::where('nama_ruangan', $validated['nama_ruangan'])
+            ->where('lantai_id', $validated['lantai_id'])
+            ->where('id', '!=', $validated['id'])
             ->exists();
 
         if ($exists) {
             return redirect()->route('admin.ruangan.index')->with('error', 'Ruangan dengan nama tersebut sudah ada di lantai ini!');
         }
 
-        DB::beginTransaction();
         try {
-            $ruangan = Ruangan::findOrFail($request->id);
-            $ruangan->update([
-                'lantai_id' => $request->lantai_id,
-                'nama_ruangan' => $request->nama_ruangan,
-                'kapasitas' => $request->kapasitas,
-                'deskripsi' => $request->deskripsi
-            ]);
+            DB::transaction(function () use ($request, $validated) {
+                $ruangan = Ruangan::findOrFail($validated['id']);
+                $ruangan->update([
+                    'lantai_id' => $validated['lantai_id'],
+                    'nama_ruangan' => $validated['nama_ruangan'],
+                    'kapasitas' => $validated['kapasitas'],
+                    'deskripsi' => $validated['deskripsi'] ?? null
+                ]);
 
-            $fasilitasIds = $request->has('fasilitas_ids') && is_array($request->fasilitas_ids) ? $request->fasilitas_ids : [];
-            $ruangan->fasilitas()->sync($fasilitasIds);
+                $ruangan->fasilitas()->sync($validated['fasilitas_ids'] ?? []);
 
-            if ($request->has('delete_foto') && is_array($request->delete_foto)) {
-                foreach ($request->delete_foto as $fotoId) {
-                    $foto = RuanganFoto::find($fotoId);
-                    if ($foto && $foto->ruangan_id == $ruangan->id) {
-                        Storage::disk('public')->delete('uploads/ruangan/' . $foto->nama_file);
-                        $foto->delete();
+                foreach ($validated['delete_foto'] ?? [] as $fotoId) {
+                    $foto = RuanganFoto::where('ruangan_id', $ruangan->id)->find($fotoId);
+                    if ($foto) {
+                        $this->deleteRuanganFoto($foto);
                     }
                 }
-            }
 
-            if ($request->hasFile('foto_cover')) {
-                // Remove existing cover if any to maintain single cover logic? The old code allowed multiple covers if logic fails, but let's just append or replace.
-                // Old code adds new cover and orders by id DESC. Let's maintain old behavior.
-                $file = $request->file('foto_cover');
-                $filename = 'ruangan_' . $ruangan->id . '_' . time() . '_' . substr(md5(rand()), 0, 12) . '.' . $file->getClientOriginalExtension();
-                $file->storeAs('uploads/ruangan', $filename, 'public');
-                RuanganFoto::create([
-                    'ruangan_id' => $ruangan->id,
-                    'nama_file' => $filename,
-                    'tipe' => 'cover'
-                ]);
-            }
-
-            if ($request->hasFile('foto_detail')) {
-                foreach ($request->file('foto_detail') as $file) {
-                    $filename = 'ruangan_' . $ruangan->id . '_' . time() . '_' . substr(md5(rand()), 0, 12) . '.' . $file->getClientOriginalExtension();
+                if ($request->hasFile('foto_cover')) {
+                    $file = $request->file('foto_cover');
+                    $filename = $this->makeRuanganFilename($ruangan->id, $file->getClientOriginalExtension());
                     $file->storeAs('uploads/ruangan', $filename, 'public');
                     RuanganFoto::create([
                         'ruangan_id' => $ruangan->id,
                         'nama_file' => $filename,
-                        'tipe' => 'detail'
+                        'tipe' => 'cover'
                     ]);
                 }
-            }
 
-            DB::commit();
+                if ($request->hasFile('foto_detail')) {
+                    foreach ($request->file('foto_detail') as $file) {
+                        $filename = $this->makeRuanganFilename($ruangan->id, $file->getClientOriginalExtension());
+                        $file->storeAs('uploads/ruangan', $filename, 'public');
+                        RuanganFoto::create([
+                            'ruangan_id' => $ruangan->id,
+                            'nama_file' => $filename,
+                            'tipe' => 'detail'
+                        ]);
+                    }
+                }
+            });
+
             return redirect()->route('admin.ruangan.index')->with('success', 'edit');
         } catch (\Exception $e) {
-            DB::rollback();
             return redirect()->route('admin.ruangan.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
@@ -220,28 +216,37 @@ class AdminRuanganController extends Controller
     {
         $ruangan = Ruangan::findOrFail($id);
 
-        $peminjamanCount = DB::table('peminjaman')->where('ruangan_id', $id)->count();
+        $peminjamanCount = Peminjaman::where('ruangan_id', $id)->count();
 
         if ($peminjamanCount > 0) {
             return redirect()->route('admin.ruangan.index')->with('error', "Ruangan tidak dapat dihapus karena pernah dipinjam ({$peminjamanCount} transaksi).");
         }
 
-        DB::beginTransaction();
         try {
-            $fotos = RuanganFoto::where('ruangan_id', $id)->get();
-            foreach ($fotos as $foto) {
-                Storage::disk('public')->delete('uploads/ruangan/' . $foto->nama_file);
-                $foto->delete();
-            }
+            DB::transaction(function () use ($ruangan, $id) {
+                $fotos = RuanganFoto::where('ruangan_id', $id)->get();
+                foreach ($fotos as $foto) {
+                    $this->deleteRuanganFoto($foto);
+                }
 
-            $ruangan->fasilitas()->detach();
-            $ruangan->delete();
+                $ruangan->fasilitas()->detach();
+                $ruangan->delete();
+            });
 
-            DB::commit();
             return redirect()->route('admin.ruangan.index')->with('success', 'delete');
         } catch (\Exception $e) {
-            DB::rollback();
             return redirect()->route('admin.ruangan.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
+    }
+
+    private function makeRuanganFilename(int $ruanganId, string $extension): string
+    {
+        return 'ruangan_' . $ruanganId . '_' . time() . '_' . bin2hex(random_bytes(6)) . '.' . strtolower($extension);
+    }
+
+    private function deleteRuanganFoto(RuanganFoto $foto): void
+    {
+        Storage::disk('public')->delete('uploads/ruangan/' . $foto->nama_file);
+        $foto->delete();
     }
 }

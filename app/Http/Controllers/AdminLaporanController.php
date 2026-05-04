@@ -2,15 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Peminjaman;
+use App\Models\Ruangan;
+use App\Models\StatusPeminjaman;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class AdminLaporanController extends Controller
 {
     public function index(Request $request)
     {
-        $year = (int) $request->input('year', date('Y'));
-        $month = (int) $request->input('month', date('n'));
+        $validated = $request->validate([
+            'year' => ['nullable', 'integer', 'between:2000,2100'],
+            'month' => ['nullable', 'integer', 'between:1,12'],
+            'ruangan_id' => ['nullable', 'integer'],
+            'status_id' => ['nullable', 'integer'],
+            'sort_by' => ['nullable', 'string'],
+            'sort_dir' => ['nullable', 'in:asc,desc'],
+            'export' => ['nullable', 'in:csv'],
+        ]);
+
+        $year = (int) ($validated['year'] ?? date('Y'));
+        $month = (int) ($validated['month'] ?? date('n'));
         if ($year < 2000 || $year > 2100) $year = (int) date('Y');
         if ($month < 1 || $month > 12) $month = (int) date('n');
 
@@ -19,10 +32,10 @@ class AdminLaporanController extends Controller
         $yearStart = sprintf('%04d-01-01', $year);
         $yearEnd = sprintf('%04d-12-31', $year);
 
-        $ruanganId = (int) $request->input('ruangan_id', 0);
-        $statusId = (int) $request->input('status_id', 0);
-        $sortBy = (string) $request->input('sort_by', 'tanggal');
-        $sortDir = strtolower((string) $request->input('sort_dir', 'desc')) === 'asc' ? 'asc' : 'desc';
+        $ruanganId = (int) ($validated['ruangan_id'] ?? 0);
+        $statusId = (int) ($validated['status_id'] ?? 0);
+        $sortBy = (string) ($validated['sort_by'] ?? 'tanggal');
+        $sortDir = strtolower((string) ($validated['sort_dir'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
 
         $allowedSorts = [
             'tanggal' => 'p.tanggal',
@@ -38,36 +51,53 @@ class AdminLaporanController extends Controller
         }
         $sortColumn = $allowedSorts[$sortBy];
 
-        $reportWhere = 'p.tanggal BETWEEN ? AND ?';
-        $reportParams = [$startDate, $endDate];
-        if ($ruanganId > 0) {
-            $reportWhere .= ' AND p.ruangan_id = ?';
-            $reportParams[] = $ruanganId;
-        }
-        if ($statusId > 0) {
-            $reportWhere .= ' AND p.status_id = ?';
-            $reportParams[] = $statusId;
-        }
+        $reportQuery = function () use ($startDate, $endDate, $ruanganId, $statusId) {
+            return Peminjaman::query()
+                ->from('peminjaman as p')
+                ->whereBetween('p.tanggal', [$startDate, $endDate])
+                ->when($ruanganId > 0, fn ($query) => $query->where('p.ruangan_id', $ruanganId))
+                ->when($statusId > 0, fn ($query) => $query->where('p.status_id', $statusId));
+        };
 
-        $ruanganList = DB::select("
-            SELECT r.id, r.nama_ruangan, g.nama_gedung AS gedung 
-            FROM ruangan r 
-            LEFT JOIN lantai l ON l.id = r.lantai_id 
-            LEFT JOIN gedung g ON g.id = l.gedung_id 
-            ORDER BY g.nama_gedung, r.nama_ruangan
-        ");
-        $statusList = DB::select('SELECT id, nama_status FROM status_peminjaman ORDER BY id');
+        $approvedReportQuery = function () use ($reportQuery) {
+            return $reportQuery()->whereIn('p.status_id', [2, 4]);
+        };
 
-        $totalRequestsObj = collect(DB::select("SELECT COUNT(*) AS total FROM peminjaman p WHERE $reportWhere", $reportParams))->first();
-        $totalRequests = (int) ($totalRequestsObj->total ?? 0);
+        $ruanganList = Ruangan::query()
+            ->from('ruangan as r')
+            ->select('r.id', 'r.nama_ruangan', 'g.nama_gedung as gedung')
+            ->leftJoin('lantai as l', 'l.id', '=', 'r.lantai_id')
+            ->leftJoin('gedung as g', 'g.id', '=', 'l.gedung_id')
+            ->orderBy('g.nama_gedung')
+            ->orderBy('r.nama_ruangan')
+            ->get();
 
-        $statusCountsRaw = DB::select("
-            SELECT sp.id, sp.nama_status, COUNT(p.id) AS jumlah 
-            FROM status_peminjaman sp 
-            LEFT JOIN peminjaman p ON p.status_id = sp.id AND $reportWhere 
-            GROUP BY sp.id, sp.nama_status 
-            ORDER BY sp.id
-        ", $reportParams);
+        $statusList = StatusPeminjaman::query()
+            ->select('id', 'nama_status')
+            ->orderBy('id')
+            ->get();
+
+        $totalRequests = $reportQuery()->count();
+
+        $statusCountsRaw = StatusPeminjaman::query()
+            ->from('status_peminjaman as sp')
+            ->select('sp.id', 'sp.nama_status')
+            ->selectRaw('COUNT(p.id) as jumlah')
+            ->leftJoin('peminjaman as p', function ($join) use ($startDate, $endDate, $ruanganId, $statusId) {
+                $join->on('p.status_id', '=', 'sp.id')
+                    ->whereBetween('p.tanggal', [$startDate, $endDate]);
+
+                if ($ruanganId > 0) {
+                    $join->where('p.ruangan_id', $ruanganId);
+                }
+
+                if ($statusId > 0) {
+                    $join->where('p.status_id', $statusId);
+                }
+            })
+            ->groupBy('sp.id', 'sp.nama_status')
+            ->orderBy('sp.id')
+            ->get();
 
         $statusCounts = [];
         foreach ($statusCountsRaw as $row) {
@@ -79,96 +109,103 @@ class AdminLaporanController extends Controller
         $approvalRate = $totalRequests > 0 ? round(($approvedCount / $totalRequests) * 100, 1) : 0.0;
         $rejectionRate = $totalRequests > 0 ? round(($rejectedCount / $totalRequests) * 100, 1) : 0.0;
 
-        $durationWhere = $reportWhere . ' AND p.status_id IN (2,4)';
-        
-        $durasiObj = collect(DB::select("
-            SELECT COALESCE(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(p.jam_selesai, p.jam_mulai)))), '00:00:00') AS total_jam,
-                   COALESCE(SEC_TO_TIME(AVG(TIME_TO_SEC(TIMEDIFF(p.jam_selesai, p.jam_mulai)))), '00:00:00') AS avg_durasi
-            FROM peminjaman p WHERE $durationWhere
-        ", $reportParams))->first();
+        $durasiObj = $approvedReportQuery()
+            ->selectRaw("COALESCE(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(p.jam_selesai, p.jam_mulai)))), '00:00:00') as total_jam")
+            ->selectRaw("COALESCE(SEC_TO_TIME(AVG(TIME_TO_SEC(TIMEDIFF(p.jam_selesai, p.jam_mulai)))), '00:00:00') as avg_durasi")
+            ->first();
 
         $totalJam = preg_replace('/\.\d+$/', '', $durasiObj->total_jam ?? '00:00:00');
         $avgDurasi = preg_replace('/\.\d+$/', '', $durasiObj->avg_durasi ?? '00:00:00');
 
-        $dailyActivity = DB::select("
-            SELECT p.tanggal, COUNT(*) AS total_pengajuan 
-            FROM peminjaman p WHERE $reportWhere 
-            GROUP BY p.tanggal ORDER BY p.tanggal ASC
-        ", $reportParams);
+        $dailyActivity = $reportQuery()
+            ->select('p.tanggal')
+            ->selectRaw('COUNT(*) as total_pengajuan')
+            ->groupBy('p.tanggal')
+            ->orderBy('p.tanggal')
+            ->get();
 
-        $yearTrendWhere = 'p.tanggal BETWEEN ? AND ?';
-        $yearTrendParams = [$yearStart, $yearEnd];
-        if ($ruanganId > 0) {
-            $yearTrendWhere .= ' AND p.ruangan_id = ?';
-            $yearTrendParams[] = $ruanganId;
-        }
-        if ($statusId > 0) {
-            $yearTrendWhere .= ' AND p.status_id = ?';
-            $yearTrendParams[] = $statusId;
-        }
+        $yearlyTrendRaw = Peminjaman::query()
+            ->from('peminjaman as p')
+            ->selectRaw('MONTH(p.tanggal) as month_num')
+            ->selectRaw('COUNT(*) as total_pengajuan')
+            ->selectRaw('SUM(CASE WHEN p.status_id = 2 THEN 1 ELSE 0 END) as disetujui')
+            ->selectRaw('SUM(CASE WHEN p.status_id = 3 THEN 1 ELSE 0 END) as ditolak')
+            ->whereBetween('p.tanggal', [$yearStart, $yearEnd])
+            ->when($ruanganId > 0, fn ($query) => $query->where('p.ruangan_id', $ruanganId))
+            ->when($statusId > 0, fn ($query) => $query->where('p.status_id', $statusId))
+            ->groupByRaw('MONTH(p.tanggal)')
+            ->orderByRaw('MONTH(p.tanggal)')
+            ->get();
 
-        $yearlyTrendRaw = DB::select("
-            SELECT MONTH(p.tanggal) AS month_num, COUNT(*) AS total_pengajuan, 
-                   SUM(p.status_id = 2) AS disetujui, SUM(p.status_id = 3) AS ditolak 
-            FROM peminjaman p WHERE $yearTrendWhere 
-            GROUP BY MONTH(p.tanggal) ORDER BY MONTH(p.tanggal)
-        ", $yearTrendParams);
+        $monthlyVisitsRaw = Peminjaman::query()
+            ->from('peminjaman as p')
+            ->selectRaw('MONTH(p.tanggal) as month_num')
+            ->selectRaw('COUNT(DISTINCT p.user_id) as total_kunjungan')
+            ->whereBetween('p.tanggal', [$yearStart, $yearEnd])
+            ->groupByRaw('MONTH(p.tanggal)')
+            ->orderByRaw('MONTH(p.tanggal)')
+            ->get();
 
-        $monthlyVisitsRaw = DB::select("
-            SELECT MONTH(p.tanggal) AS month_num, COUNT(DISTINCT p.user_id) AS total_kunjungan 
-            FROM peminjaman p WHERE p.tanggal BETWEEN ? AND ? 
-            GROUP BY MONTH(p.tanggal) ORDER BY MONTH(p.tanggal)
-        ", [$yearStart, $yearEnd]);
-
-        $topRuangan = DB::select("
-            SELECT r.id, g.nama_gedung AS gedung, r.nama_ruangan, COUNT(p.id) AS jumlah_booking, 
-                   COALESCE(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(p.jam_selesai, p.jam_mulai)))), '00:00:00') AS total_jam 
-            FROM peminjaman p 
-            JOIN ruangan r ON r.id = p.ruangan_id 
-            LEFT JOIN lantai l ON l.id = r.lantai_id 
-            LEFT JOIN gedung g ON g.id = l.gedung_id 
-            WHERE $durationWhere 
-            GROUP BY r.id, g.nama_gedung, r.nama_ruangan 
-            ORDER BY jumlah_booking DESC LIMIT 10
-        ", $reportParams);
+        $topRuangan = $approvedReportQuery()
+            ->select('r.id', 'g.nama_gedung as gedung', 'r.nama_ruangan')
+            ->selectRaw('COUNT(p.id) as jumlah_booking')
+            ->selectRaw("COALESCE(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(p.jam_selesai, p.jam_mulai)))), '00:00:00') as total_jam")
+            ->join('ruangan as r', 'r.id', '=', 'p.ruangan_id')
+            ->leftJoin('lantai as l', 'l.id', '=', 'r.lantai_id')
+            ->leftJoin('gedung as g', 'g.id', '=', 'l.gedung_id')
+            ->groupBy('r.id', 'g.nama_gedung', 'r.nama_ruangan')
+            ->orderByDesc('jumlah_booking')
+            ->limit(10)
+            ->get();
 
         foreach ($topRuangan as &$room) {
             $room->total_jam = preg_replace('/\.\d+$/', '', $room->total_jam ?? '00:00:00');
         }
         unset($room);
 
-        $userDistributionObj = collect(DB::select("
-            SELECT SUM(role = 'admin') AS admin_total, SUM(role = 'mahasiswa') AS mahasiswa_total FROM users
-        "))->first();
+        $userDistributionObj = User::query()
+            ->selectRaw("SUM(CASE WHEN role = 'admin' THEN 1 ELSE 0 END) as admin_total")
+            ->selectRaw("SUM(CASE WHEN role = 'mahasiswa' THEN 1 ELSE 0 END) as mahasiswa_total")
+            ->first();
 
-        $hoursUsedSecondsObj = collect(DB::select("
-            SELECT COALESCE(SUM(TIME_TO_SEC(TIMEDIFF(p.jam_selesai, p.jam_mulai))), 0) AS total_detik 
-            FROM peminjaman p WHERE $durationWhere
-        ", $reportParams))->first();
+        $hoursUsedSecondsObj = $approvedReportQuery()
+            ->selectRaw('COALESCE(SUM(TIME_TO_SEC(TIMEDIFF(p.jam_selesai, p.jam_mulai))), 0) as total_detik')
+            ->first();
         $hoursUsedSeconds = (int) ($hoursUsedSecondsObj->total_detik ?? 0);
 
-        $roomCountObj = collect(DB::select('SELECT COUNT(*) AS total FROM ruangan'))->first();
-        $roomCount = $ruanganId > 0 ? 1 : (int) ($roomCountObj->total ?? 0);
+        $roomCount = $ruanganId > 0 ? 1 : Ruangan::count();
         
         $capacityHours = max(1.0, $roomCount * ((int) date('t', strtotime($startDate))) * 12.0);
         $usedHours = round($hoursUsedSeconds / 3600, 2);
         $utilizationRate = round(min(100, ($usedHours / $capacityHours) * 100), 1);
 
-        $detail = DB::select("
-            SELECT p.id, p.tanggal, p.jam_mulai, p.jam_selesai, p.nama_kegiatan, p.jumlah_peserta, p.catatan_admin, 
-                   sp.nama_status, u.nama AS nama_peminjam, u.prodi, g.nama_gedung AS gedung, r.nama_ruangan 
-            FROM peminjaman p 
-            JOIN users u ON u.id = p.user_id 
-            JOIN ruangan r ON r.id = p.ruangan_id 
-            LEFT JOIN lantai l ON l.id = r.lantai_id 
-            LEFT JOIN gedung g ON g.id = l.gedung_id 
-            JOIN status_peminjaman sp ON sp.id = p.status_id 
-            WHERE $reportWhere 
-            ORDER BY $sortColumn " . strtoupper($sortDir) . ",
-                     p.tanggal DESC, p.jam_mulai DESC, p.id DESC
-        ", $reportParams);
+        $detail = $reportQuery()
+            ->select(
+                'p.id',
+                'p.tanggal',
+                'p.jam_mulai',
+                'p.jam_selesai',
+                'p.nama_kegiatan',
+                'p.jumlah_peserta',
+                'p.catatan_admin',
+                'sp.nama_status',
+                'u.nama as nama_peminjam',
+                'u.prodi',
+                'g.nama_gedung as gedung',
+                'r.nama_ruangan'
+            )
+            ->join('users as u', 'u.id', '=', 'p.user_id')
+            ->join('ruangan as r', 'r.id', '=', 'p.ruangan_id')
+            ->leftJoin('lantai as l', 'l.id', '=', 'r.lantai_id')
+            ->leftJoin('gedung as g', 'g.id', '=', 'l.gedung_id')
+            ->join('status_peminjaman as sp', 'sp.id', '=', 'p.status_id')
+            ->orderBy($sortColumn, $sortDir)
+            ->orderByDesc('p.tanggal')
+            ->orderByDesc('p.jam_mulai')
+            ->orderByDesc('p.id')
+            ->get();
 
-        if ($request->input('export') === 'csv') {
+        if (($validated['export'] ?? null) === 'csv') {
             return response()->streamDownload(function() use ($detail) {
                 $out = fopen('php://output', 'w');
                 fputcsv($out, ['ID', 'Tanggal', 'Jam Mulai', 'Jam Selesai', 'Durasi (menit)', 'Ruangan', 'Peminjam', 'Prodi', 'Kegiatan', 'Peserta', 'Status', 'Catatan']);

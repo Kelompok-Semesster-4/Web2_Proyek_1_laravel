@@ -2,34 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Gedung;
+use App\Models\Ruangan;
+use App\Models\RuanganFoto;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        $heroImages = DB::select("
-            SELECT nama_file AS foto
-            FROM ruangan_foto
-            WHERE nama_file IS NOT NULL AND nama_file != ''
-            ORDER BY id DESC
-            LIMIT 10
-        ");
+        $validated = $request->validate([
+            'tgl_awal' => ['nullable', 'date_format:Y-m-d'],
+            'tgl_akhir' => ['nullable', 'date_format:Y-m-d', 'after_or_equal:tgl_awal'],
+            'gedung' => ['nullable', 'string', 'max:100'],
+        ]);
 
-        $tgl_awal = $request->input('tgl_awal', '');
-        $tgl_akhir = $request->input('tgl_akhir', '');
-        $gedung = $request->input('gedung', '');
+        $heroImages = RuanganFoto::query()
+            ->select('nama_file as foto')
+            ->whereNotNull('nama_file')
+            ->where('nama_file', '!=', '')
+            ->orderByDesc('id')
+            ->limit(10)
+            ->get();
 
-        $query = DB::table('ruangan as r')
+        $tgl_awal = $validated['tgl_awal'] ?? '';
+        $tgl_akhir = $validated['tgl_akhir'] ?? '';
+        $gedung = $validated['gedung'] ?? '';
+
+        $query = Ruangan::query()
+            ->from('ruangan as r')
             ->select('r.*', 'g.nama_gedung as gedung', 'l.nomor as Lantai')
-            ->addSelect(DB::raw('(
-                SELECT rf.nama_file
-                FROM ruangan_foto rf
-                WHERE rf.ruangan_id = r.id
-                ORDER BY rf.id DESC
-                LIMIT 1
-            ) as foto_utama'))
+            ->selectSub(function ($query) {
+                $query->from('ruangan_foto as rf')
+                    ->select('rf.nama_file')
+                    ->whereColumn('rf.ruangan_id', 'r.id')
+                    ->orderByDesc('rf.id')
+                    ->limit(1);
+            }, 'foto_utama')
             ->leftJoin('lantai as l', 'l.id', '=', 'r.lantai_id')
             ->leftJoin('gedung as g', 'g.id', '=', 'l.gedung_id');
 
@@ -39,7 +48,7 @@ class DashboardController extends Controller
 
         if ($tgl_awal && $tgl_akhir) {
             $query->whereNotExists(function ($query) use ($tgl_awal, $tgl_akhir) {
-                $query->select(DB::raw(1))
+                $query->selectRaw('1')
                       ->from('peminjaman')
                       ->whereColumn('peminjaman.ruangan_id', 'r.id')
                       ->whereBetween('tanggal', [$tgl_awal, $tgl_akhir]);
@@ -47,7 +56,7 @@ class DashboardController extends Controller
         }
 
         $ruangan = $query->orderBy('r.nama_ruangan')->get();
-        $gedungList = DB::table('gedung')->orderBy('id')->get();
+        $gedungList = Gedung::orderBy('id')->get();
 
         return view('dashboard', compact('heroImages', 'ruangan', 'gedungList', 'tgl_awal', 'tgl_akhir', 'gedung'));
     }
