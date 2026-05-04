@@ -480,7 +480,7 @@
                                             </label>
                                             <input type="password" name="password" id="password"
                                                 class="form-control @error('password') is-invalid @enderror"
-                                                placeholder="Min. 6 karakter">
+                                                placeholder="Min. 8 karakter">
                                             @error('password')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror

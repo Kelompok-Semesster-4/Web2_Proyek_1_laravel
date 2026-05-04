@@ -16,22 +16,22 @@ class AdminUserController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nama' => 'required|string|max:100',
-            'username' => 'required|string|max:50|unique:users,username',
-            'password' => 'required|string|min:6',
-            'role' => 'required|in:admin,mahasiswa',
-            'prodi' => 'nullable|string|max:100',
+        $validated = $request->validate([
+            'nama' => ['required', 'string', 'max:100'],
+            'username' => ['required', 'string', 'max:50', 'unique:users,username'],
+            'password' => ['required', 'string', 'min:8'],
+            'role' => ['required', 'in:admin,mahasiswa'],
+            'prodi' => ['nullable', 'string', 'max:100'],
         ], [
             'username.unique' => 'Username sudah digunakan!',
         ]);
 
         User::create([
-            'nama' => $request->nama,
-            'username' => $request->username,
-            'password' => Hash::make($request->password), // Stored as bcrypt
-            'role' => $request->role,
-            'prodi' => $request->role === 'mahasiswa' ? $request->prodi : null,
+            'nama' => $validated['nama'],
+            'username' => $validated['username'],
+            'password' => Hash::make($validated['password']),
+            'role' => $validated['role'],
+            'prodi' => $validated['role'] === 'mahasiswa' ? ($validated['prodi'] ?? null) : null,
         ]);
 
         return redirect()->route('admin.user.index')->with('success', 'add');
@@ -40,28 +40,28 @@ class AdminUserController extends Controller
     public function update(Request $request)
     {
         $id = $request->id;
-        $request->validate([
-            'id' => 'required|exists:users,id',
-            'nama' => 'required|string|max:100',
-            'username' => 'required|string|max:50|unique:users,username,' . $id,
-            'password' => 'nullable|string|min:6',
-            'role' => 'required|in:admin,mahasiswa',
-            'prodi' => 'nullable|string|max:100',
+        $validated = $request->validate([
+            'id' => ['required', 'exists:users,id'],
+            'nama' => ['required', 'string', 'max:100'],
+            'username' => ['required', 'string', 'max:50', 'unique:users,username,' . $id],
+            'password' => ['nullable', 'string', 'min:8'],
+            'role' => ['required', 'in:admin,mahasiswa'],
+            'prodi' => ['nullable', 'string', 'max:100'],
         ], [
             'username.unique' => 'Username sudah digunakan oleh user lain!',
         ]);
 
-        $user = User::findOrFail($id);
+        $user = User::findOrFail($validated['id']);
         
         $data = [
-            'nama' => $request->nama,
-            'username' => $request->username,
-            'role' => $request->role,
-            'prodi' => $request->role === 'mahasiswa' ? $request->prodi : null,
+            'nama' => $validated['nama'],
+            'username' => $validated['username'],
+            'role' => $validated['role'],
+            'prodi' => $validated['role'] === 'mahasiswa' ? ($validated['prodi'] ?? null) : null,
         ];
 
         if ($request->filled('password')) {
-            $data['password'] = Hash::make($request->password);
+            $data['password'] = Hash::make($validated['password']);
         }
 
         $user->update($data);

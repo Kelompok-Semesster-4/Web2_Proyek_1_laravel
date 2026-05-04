@@ -179,7 +179,7 @@
                 </label>
                 <input type="password" class="form-control" name="password" required
                     style="border-radius: 8px; padding: 10px 15px;">
-                <small class="text-muted">Minimal 6 karakter</small>
+                <small class="text-muted">Minimal 8 karakter</small>
             </div>
             <div class="mb-3">
                 <label class="form-label fw-semibold">
