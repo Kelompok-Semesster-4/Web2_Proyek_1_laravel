@@ -113,7 +113,8 @@ Route::middleware(['auth', 'role:admin'])
         Route::controller(AdminController::class)->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard');
             Route::get('/persetujuan', 'persetujuan')->name('persetujuan');
-            Route::post('/approve', 'processApproval')->name('approve.process');
+            Route::post('/peminjaman/{peminjaman}/approve', 'approvePeminjaman')->name('peminjaman.approve');
+            Route::post('/peminjaman/{peminjaman}/reject', 'rejectPeminjaman')->name('peminjaman.reject');
         });
 
         Route::resource('ruangan', AdminRuanganController::class)
