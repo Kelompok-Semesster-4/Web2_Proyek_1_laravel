@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Gedung;
 use App\Models\Peminjaman;
 use App\Models\Ruangan;
 use App\Models\StatusPeminjaman;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class AdminLaporanController extends Controller
 {
@@ -15,25 +17,47 @@ class AdminLaporanController extends Controller
         $validated = $request->validate([
             'year' => ['nullable', 'integer', 'between:2000,2100'],
             'month' => ['nullable', 'integer', 'between:1,12'],
+            'start_date' => ['nullable', 'date'],
+            'end_date' => ['nullable', 'date'],
+            'gedung_id' => ['nullable', 'integer'],
             'ruangan_id' => ['nullable', 'integer'],
             'status_id' => ['nullable', 'integer'],
+            'prodi' => ['nullable', 'string', 'max:100'],
+            'user_keyword' => ['nullable', 'string', 'max:100'],
+            'keyword' => ['nullable', 'string', 'max:150'],
             'sort_by' => ['nullable', 'string'],
             'sort_dir' => ['nullable', 'in:asc,desc'],
             'export' => ['nullable', 'in:csv'],
         ]);
 
-        $year = (int) ($validated['year'] ?? date('Y'));
-        $month = (int) ($validated['month'] ?? date('n'));
-        if ($year < 2000 || $year > 2100) $year = (int) date('Y');
-        if ($month < 1 || $month > 12) $month = (int) date('n');
+        $year = (int) ($validated['year'] ?? now()->year);
+        $month = (int) ($validated['month'] ?? now()->month);
+        if ($year < 2000 || $year > 2100) {
+            $year = now()->year;
+        }
+        if ($month < 1 || $month > 12) {
+            $month = now()->month;
+        }
 
-        $startDate = sprintf('%04d-%02d-01', $year, $month);
-        $endDate = date('Y-m-t', strtotime($startDate));
-        $yearStart = sprintf('%04d-01-01', $year);
-        $yearEnd = sprintf('%04d-12-31', $year);
+        $defaultStart = Carbon::create($year, $month, 1)->startOfDay();
+        $defaultEnd = $defaultStart->copy()->endOfMonth();
+        $start = !empty($validated['start_date']) ? Carbon::parse($validated['start_date'])->startOfDay() : $defaultStart;
+        $end = !empty($validated['end_date']) ? Carbon::parse($validated['end_date'])->startOfDay() : $defaultEnd;
+        if ($end->lt($start)) {
+            [$start, $end] = [$end, $start];
+        }
 
+        $startDate = $start->toDateString();
+        $endDate = $end->toDateString();
+        $yearStart = Carbon::create($year, 1, 1)->toDateString();
+        $yearEnd = Carbon::create($year, 12, 31)->toDateString();
+
+        $gedungId = (int) ($validated['gedung_id'] ?? 0);
         $ruanganId = (int) ($validated['ruangan_id'] ?? 0);
         $statusId = (int) ($validated['status_id'] ?? 0);
+        $prodi = trim((string) ($validated['prodi'] ?? ''));
+        $userKeyword = trim((string) ($validated['user_keyword'] ?? ''));
+        $keyword = trim((string) ($validated['keyword'] ?? ''));
         $sortBy = (string) ($validated['sort_by'] ?? 'tanggal');
         $sortDir = strtolower((string) ($validated['sort_dir'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
 
@@ -46,28 +70,70 @@ class AdminLaporanController extends Controller
             'peserta' => 'p.jumlah_peserta',
             'status' => 'sp.nama_status',
         ];
-        if (!array_key_exists($sortBy, $allowedSorts)) {
+        if (! array_key_exists($sortBy, $allowedSorts)) {
             $sortBy = 'tanggal';
         }
         $sortColumn = $allowedSorts[$sortBy];
 
-        $reportQuery = function () use ($startDate, $endDate, $ruanganId, $statusId) {
-            return Peminjaman::query()
-                ->from('peminjaman as p')
-                ->whereBetween('p.tanggal', [$startDate, $endDate])
-                ->when($ruanganId > 0, fn ($query) => $query->where('p.ruangan_id', $ruanganId))
-                ->when($statusId > 0, fn ($query) => $query->where('p.status_id', $statusId));
+        $withReportJoins = function ($query) {
+            return $query
+                ->join('users as u', 'u.id', '=', 'p.user_id')
+                ->join('ruangan as r', 'r.id', '=', 'p.ruangan_id')
+                ->leftJoin('lantai as l', 'l.id', '=', 'r.lantai_id')
+                ->leftJoin('gedung as g', 'g.id', '=', 'l.gedung_id')
+                ->join('status_peminjaman as sp', 'sp.id', '=', 'p.status_id');
         };
 
-        $approvedReportQuery = function () use ($reportQuery) {
-            return $reportQuery()->whereIn('p.status_id', [2, 4]);
+        $reportQuery = function () use (
+            $startDate,
+            $endDate,
+            $gedungId,
+            $ruanganId,
+            $statusId,
+            $prodi,
+            $userKeyword,
+            $keyword,
+            $withReportJoins
+        ) {
+            $query = Peminjaman::query()
+                ->from('peminjaman as p')
+                ->whereBetween('p.tanggal', [$startDate, $endDate]);
+
+            $withReportJoins($query);
+
+            return $query
+                ->when($gedungId > 0, fn ($query) => $query->where('g.id', $gedungId))
+                ->when($ruanganId > 0, fn ($query) => $query->where('p.ruangan_id', $ruanganId))
+                ->when($statusId > 0, fn ($query) => $query->where('p.status_id', $statusId))
+                ->when($prodi !== '', fn ($query) => $query->where('u.prodi', $prodi))
+                ->when($userKeyword !== '', function ($query) use ($userKeyword) {
+                    $query->where(function ($query) use ($userKeyword) {
+                        $query->where('u.nama', 'like', "%{$userKeyword}%")
+                            ->orWhere('u.username', 'like', "%{$userKeyword}%");
+                    });
+                })
+                ->when($keyword !== '', function ($query) use ($keyword) {
+                    $query->where(function ($query) use ($keyword) {
+                        $query->where('r.nama_ruangan', 'like', "%{$keyword}%")
+                            ->orWhere('p.nama_kegiatan', 'like', "%{$keyword}%")
+                            ->orWhere('p.catatan_admin', 'like', "%{$keyword}%");
+                    });
+                });
         };
+
+        $approvedReportQuery = fn () => $reportQuery()->whereIn('p.status_id', [2, 4]);
+
+        $gedungList = Gedung::query()
+            ->select('id', 'nama_gedung')
+            ->orderBy('nama_gedung')
+            ->get();
 
         $ruanganList = Ruangan::query()
             ->from('ruangan as r')
-            ->select('r.id', 'r.nama_ruangan', 'g.nama_gedung as gedung')
+            ->select('r.id', 'r.nama_ruangan', 'g.id as gedung_id', 'g.nama_gedung as gedung')
             ->leftJoin('lantai as l', 'l.id', '=', 'r.lantai_id')
             ->leftJoin('gedung as g', 'g.id', '=', 'l.gedung_id')
+            ->when($gedungId > 0, fn ($query) => $query->where('g.id', $gedungId))
             ->orderBy('g.nama_gedung')
             ->orderBy('r.nama_ruangan')
             ->get();
@@ -77,106 +143,127 @@ class AdminLaporanController extends Controller
             ->orderBy('id')
             ->get();
 
-        $totalRequests = $reportQuery()->count();
+        $prodiList = User::query()
+            ->whereNotNull('prodi')
+            ->where('prodi', '<>', '')
+            ->distinct()
+            ->orderBy('prodi')
+            ->pluck('prodi');
 
-        $statusCountsRaw = StatusPeminjaman::query()
-            ->from('status_peminjaman as sp')
+        $totalRequests = $reportQuery()->count('p.id');
+
+        $statusCountsRaw = $reportQuery()
             ->select('sp.id', 'sp.nama_status')
             ->selectRaw('COUNT(p.id) as jumlah')
-            ->leftJoin('peminjaman as p', function ($join) use ($startDate, $endDate, $ruanganId, $statusId) {
-                $join->on('p.status_id', '=', 'sp.id')
-                    ->whereBetween('p.tanggal', [$startDate, $endDate]);
-
-                if ($ruanganId > 0) {
-                    $join->where('p.ruangan_id', $ruanganId);
-                }
-
-                if ($statusId > 0) {
-                    $join->where('p.status_id', $statusId);
-                }
-            })
             ->groupBy('sp.id', 'sp.nama_status')
             ->orderBy('sp.id')
             ->get();
 
         $statusCounts = [];
+        foreach ($statusList as $status) {
+            $statusCounts[(int) $status->id] = ['nama' => $status->nama_status, 'jumlah' => 0, 'percent' => 0.0];
+        }
         foreach ($statusCountsRaw as $row) {
-            $statusCounts[(int) $row->id] = ['nama' => $row->nama_status, 'jumlah' => (int) $row->jumlah];
+            $percent = $totalRequests > 0 ? round(((int) $row->jumlah / $totalRequests) * 100, 1) : 0.0;
+            $statusCounts[(int) $row->id] = [
+                'nama' => $row->nama_status,
+                'jumlah' => (int) $row->jumlah,
+                'percent' => $percent,
+            ];
         }
 
         $approvedCount = ($statusCounts[2]['jumlah'] ?? 0) + ($statusCounts[4]['jumlah'] ?? 0);
         $rejectedCount = $statusCounts[3]['jumlah'] ?? 0;
+        $pendingCount = $statusCounts[1]['jumlah'] ?? 0;
         $approvalRate = $totalRequests > 0 ? round(($approvedCount / $totalRequests) * 100, 1) : 0.0;
         $rejectionRate = $totalRequests > 0 ? round(($rejectedCount / $totalRequests) * 100, 1) : 0.0;
 
         $durasiObj = $approvedReportQuery()
-            ->selectRaw("COALESCE(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(p.jam_selesai, p.jam_mulai)))), '00:00:00') as total_jam")
-            ->selectRaw("COALESCE(SEC_TO_TIME(AVG(TIME_TO_SEC(TIMEDIFF(p.jam_selesai, p.jam_mulai)))), '00:00:00') as avg_durasi")
+            ->selectRaw('COALESCE(SUM(TIME_TO_SEC(TIMEDIFF(p.jam_selesai, p.jam_mulai))), 0) as total_detik')
+            ->selectRaw('COALESCE(AVG(TIME_TO_SEC(TIMEDIFF(p.jam_selesai, p.jam_mulai))), 0) as avg_detik')
             ->first();
 
-        $totalJam = preg_replace('/\.\d+$/', '', $durasiObj->total_jam ?? '00:00:00');
-        $avgDurasi = preg_replace('/\.\d+$/', '', $durasiObj->avg_durasi ?? '00:00:00');
+        $totalSeconds = (int) ($durasiObj->total_detik ?? 0);
+        $avgSeconds = (int) round((float) ($durasiObj->avg_detik ?? 0));
+        $usedHours = round($totalSeconds / 3600, 2);
+        $avgDurationHours = round($avgSeconds / 3600, 1);
+        $totalJam = $this->formatDuration($totalSeconds);
+        $avgDurasi = $this->formatDuration($avgSeconds);
 
-        $dailyActivity = $reportQuery()
-            ->select('p.tanggal')
-            ->selectRaw('COUNT(*) as total_pengajuan')
-            ->groupBy('p.tanggal')
-            ->orderBy('p.tanggal')
-            ->get();
+        $totalPeserta = (int) $reportQuery()->sum('p.jumlah_peserta');
 
-        $yearlyTrendRaw = Peminjaman::query()
+        $yearlyTrendQuery = Peminjaman::query()
             ->from('peminjaman as p')
             ->selectRaw('MONTH(p.tanggal) as month_num')
             ->selectRaw('COUNT(*) as total_pengajuan')
-            ->selectRaw('SUM(CASE WHEN p.status_id = 2 THEN 1 ELSE 0 END) as disetujui')
+            ->selectRaw('SUM(CASE WHEN p.status_id IN (2, 4) THEN 1 ELSE 0 END) as disetujui')
             ->selectRaw('SUM(CASE WHEN p.status_id = 3 THEN 1 ELSE 0 END) as ditolak')
-            ->whereBetween('p.tanggal', [$yearStart, $yearEnd])
+            ->selectRaw('SUM(CASE WHEN p.status_id = 1 THEN 1 ELSE 0 END) as pending')
+            ->whereBetween('p.tanggal', [$yearStart, $yearEnd]);
+
+        $withReportJoins($yearlyTrendQuery);
+
+        $yearlyTrendRaw = $yearlyTrendQuery
+            ->when($gedungId > 0, fn ($query) => $query->where('g.id', $gedungId))
             ->when($ruanganId > 0, fn ($query) => $query->where('p.ruangan_id', $ruanganId))
             ->when($statusId > 0, fn ($query) => $query->where('p.status_id', $statusId))
+            ->when($prodi !== '', fn ($query) => $query->where('u.prodi', $prodi))
+            ->when($userKeyword !== '', function ($query) use ($userKeyword) {
+                $query->where(function ($query) use ($userKeyword) {
+                    $query->where('u.nama', 'like', "%{$userKeyword}%")
+                        ->orWhere('u.username', 'like', "%{$userKeyword}%");
+                });
+            })
+            ->when($keyword !== '', function ($query) use ($keyword) {
+                $query->where(function ($query) use ($keyword) {
+                    $query->where('r.nama_ruangan', 'like', "%{$keyword}%")
+                        ->orWhere('p.nama_kegiatan', 'like', "%{$keyword}%")
+                        ->orWhere('p.catatan_admin', 'like', "%{$keyword}%");
+                });
+            })
             ->groupByRaw('MONTH(p.tanggal)')
             ->orderByRaw('MONTH(p.tanggal)')
             ->get();
 
-        $monthlyVisitsRaw = Peminjaman::query()
-            ->from('peminjaman as p')
-            ->selectRaw('MONTH(p.tanggal) as month_num')
-            ->selectRaw('COUNT(DISTINCT p.user_id) as total_kunjungan')
-            ->whereBetween('p.tanggal', [$yearStart, $yearEnd])
-            ->groupByRaw('MONTH(p.tanggal)')
-            ->orderByRaw('MONTH(p.tanggal)')
-            ->get();
+        $prodiDistribution = $reportQuery()
+            ->selectRaw("COALESCE(NULLIF(u.prodi, ''), 'Tanpa Prodi') as nama")
+            ->selectRaw('COUNT(p.id) as jumlah')
+            ->groupByRaw("COALESCE(NULLIF(u.prodi, ''), 'Tanpa Prodi')")
+            ->orderByDesc('jumlah')
+            ->limit(6)
+            ->get()
+            ->map(function ($row) use ($totalRequests) {
+                $row->percent = $totalRequests > 0 ? round(((int) $row->jumlah / $totalRequests) * 100, 1) : 0.0;
+                return $row;
+            });
 
         $topRuangan = $approvedReportQuery()
             ->select('r.id', 'g.nama_gedung as gedung', 'r.nama_ruangan')
             ->selectRaw('COUNT(p.id) as jumlah_booking')
-            ->selectRaw("COALESCE(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(p.jam_selesai, p.jam_mulai)))), '00:00:00') as total_jam")
-            ->join('ruangan as r', 'r.id', '=', 'p.ruangan_id')
-            ->leftJoin('lantai as l', 'l.id', '=', 'r.lantai_id')
-            ->leftJoin('gedung as g', 'g.id', '=', 'l.gedung_id')
+            ->selectRaw('COALESCE(SUM(TIME_TO_SEC(TIMEDIFF(p.jam_selesai, p.jam_mulai))), 0) as total_detik')
             ->groupBy('r.id', 'g.nama_gedung', 'r.nama_ruangan')
             ->orderByDesc('jumlah_booking')
+            ->orderByDesc('total_detik')
             ->limit(10)
             ->get();
 
-        foreach ($topRuangan as &$room) {
-            $room->total_jam = preg_replace('/\.\d+$/', '', $room->total_jam ?? '00:00:00');
-        }
-        unset($room);
+        $roomCapacityHours = max(1.0, $start->daysInMonth * 12.0);
+        $topRuangan = $topRuangan->map(function ($room) use ($roomCapacityHours) {
+            $seconds = (int) ($room->total_detik ?? 0);
+            $room->used_hours = round($seconds / 3600, 1);
+            $room->total_jam = $this->formatDuration($seconds);
+            $room->capacity_hours = $roomCapacityHours;
+            $room->utilization_rate = round(min(100, ($room->used_hours / $roomCapacityHours) * 100), 1);
+            return $room;
+        });
 
         $userDistributionObj = User::query()
             ->selectRaw("SUM(CASE WHEN role = 'admin' THEN 1 ELSE 0 END) as admin_total")
             ->selectRaw("SUM(CASE WHEN role = 'mahasiswa' THEN 1 ELSE 0 END) as mahasiswa_total")
             ->first();
 
-        $hoursUsedSecondsObj = $approvedReportQuery()
-            ->selectRaw('COALESCE(SUM(TIME_TO_SEC(TIMEDIFF(p.jam_selesai, p.jam_mulai))), 0) as total_detik')
-            ->first();
-        $hoursUsedSeconds = (int) ($hoursUsedSecondsObj->total_detik ?? 0);
-
         $roomCount = $ruanganId > 0 ? 1 : Ruangan::count();
-        
-        $capacityHours = max(1.0, $roomCount * ((int) date('t', strtotime($startDate))) * 12.0);
-        $usedHours = round($hoursUsedSeconds / 3600, 2);
+        $capacityHours = max(1.0, $roomCount * $start->daysInMonth * 12.0);
         $utilizationRate = round(min(100, ($usedHours / $capacityHours) * 100), 1);
 
         $detail = $reportQuery()
@@ -190,15 +277,11 @@ class AdminLaporanController extends Controller
                 'p.catatan_admin',
                 'sp.nama_status',
                 'u.nama as nama_peminjam',
+                'u.username as username_peminjam',
                 'u.prodi',
                 'g.nama_gedung as gedung',
                 'r.nama_ruangan'
             )
-            ->join('users as u', 'u.id', '=', 'p.user_id')
-            ->join('ruangan as r', 'r.id', '=', 'p.ruangan_id')
-            ->leftJoin('lantai as l', 'l.id', '=', 'r.lantai_id')
-            ->leftJoin('gedung as g', 'g.id', '=', 'l.gedung_id')
-            ->join('status_peminjaman as sp', 'sp.id', '=', 'p.status_id')
             ->orderBy($sortColumn, $sortDir)
             ->orderByDesc('p.tanggal')
             ->orderByDesc('p.jam_mulai')
@@ -206,60 +289,118 @@ class AdminLaporanController extends Controller
             ->get();
 
         if (($validated['export'] ?? null) === 'csv') {
-            return response()->streamDownload(function() use ($detail) {
+            return response()->streamDownload(function () use ($detail) {
                 $out = fopen('php://output', 'w');
-                fputcsv($out, ['ID', 'Tanggal', 'Jam Mulai', 'Jam Selesai', 'Durasi (menit)', 'Ruangan', 'Peminjam', 'Prodi', 'Kegiatan', 'Peserta', 'Status', 'Catatan']);
+                fputcsv($out, ['ID', 'Tanggal', 'Jam Mulai', 'Jam Selesai', 'Durasi (menit)', 'Ruangan', 'Peminjam', 'Username', 'Prodi', 'Kegiatan', 'Peserta', 'Status', 'Catatan']);
                 foreach ($detail as $d) {
-                    $durMin = 0;
-                    if (!empty($d->jam_mulai) && !empty($d->jam_selesai)) {
-                        $durMin = (int) round((strtotime($d->tanggal . ' ' . $d->jam_selesai) - strtotime($d->tanggal . ' ' . $d->jam_mulai)) / 60);
-                    }
+                    $startTime = Carbon::parse($d->tanggal . ' ' . $d->jam_mulai);
+                    $endTime = Carbon::parse($d->tanggal . ' ' . $d->jam_selesai);
+                    $durMin = max(0, $startTime->diffInMinutes($endTime, false));
                     fputcsv($out, [
-                        $d->id, $d->tanggal, substr($d->jam_mulai, 0, 5), substr($d->jam_selesai, 0, 5), 
-                        $durMin, ($d->gedung ?? '-') . ' - ' . $d->nama_ruangan, $d->nama_peminjam, $d->prodi ?? '-', 
-                        $d->nama_kegiatan, $d->jumlah_peserta ?? '', $d->nama_status, $d->catatan_admin ?? ''
+                        $d->id,
+                        $d->tanggal,
+                        Carbon::parse($d->jam_mulai)->format('H:i'),
+                        Carbon::parse($d->jam_selesai)->format('H:i'),
+                        $durMin,
+                        ($d->gedung ?? '-') . ' - ' . $d->nama_ruangan,
+                        $d->nama_peminjam,
+                        $d->username_peminjam,
+                        $d->prodi ?? '-',
+                        $d->nama_kegiatan,
+                        $d->jumlah_peserta ?? '',
+                        $d->nama_status,
+                        $d->catatan_admin ?? '',
                     ]);
                 }
                 fclose($out);
-            }, 'laporan_' . $year . '_' . sprintf('%02d', $month) . '.csv', [
+            }, 'laporan_' . $start->format('Ymd') . '_' . $end->format('Ymd') . '.csv', [
                 'Content-Type' => 'text/csv; charset=utf-8',
             ]);
         }
 
         $yearlyTrendMap = [];
-        foreach ($yearlyTrendRaw as $row) $yearlyTrendMap[(int) $row->month_num] = $row;
-        $monthlyVisitMap = [];
-        foreach ($monthlyVisitsRaw as $row) $monthlyVisitMap[(int) $row->month_num] = $row;
+        foreach ($yearlyTrendRaw as $row) {
+            $yearlyTrendMap[(int) $row->month_num] = $row;
+        }
 
         $monthLabels = [];
         $trendTotalData = [];
         $trendApprovedData = [];
         $trendRejectedData = [];
-        $visitData = [];
+        $trendPendingData = [];
         for ($m = 1; $m <= 12; $m++) {
-            $monthLabels[] = date('M', mktime(0, 0, 0, $m, 1));
+            $monthLabels[] = Carbon::create($year, $m, 1)->translatedFormat('M');
             $trendRow = $yearlyTrendMap[$m] ?? null;
-            $visitRow = $monthlyVisitMap[$m] ?? null;
             $trendTotalData[] = (int) ($trendRow->total_pengajuan ?? 0);
             $trendApprovedData[] = (int) ($trendRow->disetujui ?? 0);
             $trendRejectedData[] = (int) ($trendRow->ditolak ?? 0);
-            $visitData[] = (int) ($visitRow->total_kunjungan ?? 0);
+            $trendPendingData[] = (int) ($trendRow->pending ?? 0);
         }
 
-        $dailyLabels = [];
-        $dailyTotals = [];
-        foreach ($dailyActivity as $d) {
-            $dailyLabels[] = date('d M', strtotime($d->tanggal));
-            $dailyTotals[] = (int) ($d->total_pengajuan ?? 0);
-        }
+        $exportParams = [
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'gedung_id' => $gedungId,
+            'ruangan_id' => $ruanganId,
+            'status_id' => $statusId,
+            'prodi' => $prodi,
+            'user_keyword' => $userKeyword,
+            'keyword' => $keyword,
+            'sort_by' => $sortBy,
+            'sort_dir' => $sortDir,
+            'export' => 'csv',
+        ];
 
         return view('admin.laporan', compact(
-            'year', 'month', 'startDate', 'ruanganId', 'statusId',
-            'sortBy', 'sortDir',
-            'ruanganList', 'statusList', 'totalRequests', 'approvalRate', 'rejectionRate',
-            'avgDurasi', 'totalJam', 'usedHours', 'capacityHours', 'utilizationRate',
-            'topRuangan', 'detail', 'monthLabels', 'trendTotalData', 'trendApprovedData', 'trendRejectedData',
-            'dailyLabels', 'dailyTotals', 'visitData', 'userDistributionObj'
+            'year',
+            'month',
+            'startDate',
+            'endDate',
+            'gedungId',
+            'ruanganId',
+            'statusId',
+            'prodi',
+            'userKeyword',
+            'keyword',
+            'sortBy',
+            'sortDir',
+            'gedungList',
+            'ruanganList',
+            'statusList',
+            'prodiList',
+            'totalRequests',
+            'approvedCount',
+            'rejectedCount',
+            'pendingCount',
+            'approvalRate',
+            'rejectionRate',
+            'avgDurasi',
+            'avgDurationHours',
+            'totalJam',
+            'usedHours',
+            'capacityHours',
+            'utilizationRate',
+            'totalPeserta',
+            'statusCounts',
+            'prodiDistribution',
+            'topRuangan',
+            'detail',
+            'monthLabels',
+            'trendTotalData',
+            'trendApprovedData',
+            'trendRejectedData',
+            'trendPendingData',
+            'userDistributionObj',
+            'exportParams'
         ));
+    }
+
+    private function formatDuration(int $seconds): string
+    {
+        $seconds = max(0, $seconds);
+        $hours = intdiv($seconds, 3600);
+        $minutes = intdiv($seconds % 3600, 60);
+
+        return sprintf('%02d:%02d', $hours, $minutes);
     }
 }
