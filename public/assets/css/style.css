@@ -1090,7 +1090,6 @@ label {
     }
 }
 
-
 @media (max-width: 768px) {
     .kelola-header {
         flex-direction: column;
@@ -1117,7 +1116,6 @@ label {
     .kelola-header h1 {
         font-size: 22px;
     }
-
 }
 
 /* Helper SweetAlert
