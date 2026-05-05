@@ -30,7 +30,7 @@
 
                         <div class="col-md-4">
                             <label class="form-label">Tanggal</label>
-                            <input type="date" name="tanggal" class="form-control" value="{{ old('tanggal') }}" required>
+                            <input type="date" name="tanggal" class="form-control" value="{{ old('tanggal') }}" min="{{ now('Asia/Jakarta')->toDateString() }}" required>
                         </div>
 
                         <div class="col-md-4">

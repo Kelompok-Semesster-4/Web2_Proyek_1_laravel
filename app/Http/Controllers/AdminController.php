@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LogStatus;
 use App\Models\Peminjaman;
 use App\Models\Ruangan;
+use App\Services\PeminjamanAutoRejector;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -13,8 +14,11 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-        $today = now()->toDateString();
-        $currentTime = now()->format('H:i:s');
+        app(PeminjamanAutoRejector::class)->rejectExpiredPending();
+
+        $now = now('Asia/Jakarta');
+        $today = $now->toDateString();
+        $currentTime = $now->format('H:i:s');
 
         $ruanganTerpakai = Ruangan::query()
             ->from('ruangan as r')
@@ -105,6 +109,8 @@ class AdminController extends Controller
 
     public function persetujuan()
     {
+        app(PeminjamanAutoRejector::class)->rejectExpiredPending();
+
         $pending = Peminjaman::query()
             ->from('peminjaman as p')
             ->select(
@@ -146,6 +152,8 @@ class AdminController extends Controller
 
     private function processApproval(Request $request, Peminjaman $peminjaman, string $action)
     {
+        app(PeminjamanAutoRejector::class)->rejectExpiredPending();
+
         $validated = $request->validate([
             'catatan_admin' => ['nullable', 'string', 'max:1000'],
         ]);
