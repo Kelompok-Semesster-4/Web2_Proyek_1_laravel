@@ -54,7 +54,6 @@
     }
 }
 
-
 /* Admin layout and sidebar */
 .admin-body {
     min-height: 100vh;
@@ -310,9 +309,6 @@
 .asb-logout .dot {
     background: rgba(255, 255, 255, 0.75);
 }
-
-
-
 
 /* Admin page actions */
 .btn-tambah {
@@ -778,7 +774,6 @@
     overflow-x: hidden;
 }
 
-
 /* Admin approval table */
 #tablePersetujuan {
     border-collapse: separate;
@@ -978,7 +973,6 @@
     cursor: pointer;
 }
 
-
 /* Admin room forms and modals */
 .fasilitas-grid {
     margin-top: 0.35rem;
@@ -1067,7 +1061,6 @@
     background: #f8f9fa;
 }
 
-
 .bg-primary {
     background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
 }
@@ -1091,7 +1084,6 @@
 .bg-secondary {
     background: linear-gradient(135deg, #6b7280, #4b5563) !important;
 }
-
 
 /* Admin table refinements */
 #tableGedung .aksi-btn,
@@ -1252,7 +1244,6 @@ form.d-inline {
     margin: 0 !important;
 }
 
-
 /* Admin sidebar responsive */
 @media (max-width: 992px) {
     .admin-main {
@@ -1358,7 +1349,6 @@ form.d-inline {
 .kelola-header-title h1 {
     margin: 0;
 }
-
 
 /* Admin dashboard widgets */
 .admin-dashboard .kelola-header {
