@@ -48,6 +48,8 @@
                                 id="{{ $finalSearchId }}"
                                 data-target-table="{{ $tableId }}"
                                 placeholder="{{ $searchPlaceholder }}"
+                                spellcheck="false"
+                                autocomplete="off"
                                 style="border-left: 0;">
                         </div>
                     @endif

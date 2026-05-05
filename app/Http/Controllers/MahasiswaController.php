@@ -69,7 +69,7 @@ class MahasiswaController extends Controller
             ->orderByDesc('id')
             ->get()
             ->groupBy('ruangan_id')
-            ->map(fn ($items) => $items->first()->nama_file);
+            ->map(fn($items) => $items->first()->nama_file);
 
         foreach ($ruangan as $room) {
             $room->foto_utama = $fotoMap[$room->id] ?? null;
@@ -104,7 +104,7 @@ class MahasiswaController extends Controller
             ->orderByDesc('id')
             ->get()
             ->groupBy('ruangan_id')
-            ->map(fn ($items) => $items->first()->nama_file);
+            ->map(fn($items) => $items->first()->nama_file);
 
         foreach ($ruangans as $room) {
             $room->foto_utama = $fotoMap[$room->id] ?? null;
@@ -306,7 +306,7 @@ class MahasiswaController extends Controller
 
         $peminjaman->update([
             'status_id' => $cancelStatusId,
-            'catatan_admin' => $peminjaman->catatan_admin ?: 'Dibatalkan oleh mahasiswa',
+            'catatan_admin' => null,
         ]);
 
         LogStatus::create([
