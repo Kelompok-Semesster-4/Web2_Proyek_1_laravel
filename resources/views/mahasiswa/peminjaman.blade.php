@@ -88,7 +88,7 @@
 
                             <td class="text-center" data-label="Waktu">
                                 <div class="text-dark" style="font-size: 1rem;">
-                                    {{ $p->tanggal }}
+                                    {{ date('d-m-Y', strtotime($p->tanggal)) }}
                                 </div>
                                 <small class="text-muted" style="font-size: 0.85rem;">
                                     {{ substr($p->jam_mulai, 0, 5) }} - {{ substr($p->jam_selesai, 0, 5) }}

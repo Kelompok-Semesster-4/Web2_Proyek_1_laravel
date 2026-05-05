@@ -18,19 +18,19 @@
                         <th class="text-center" style="width: 50px; padding: 15px 10px;">
                             <i class="bi bi-hash"></i>
                         </th>
-                        <th style="width: 25%; padding: 15px;">
+                        <th class="text-start" style="width: 190px; padding: 15px;">
                             <i class="bi bi-person me-1"></i>Nama
                         </th>
-                        <th style="width: 20%; padding: 15px;">
+                        <th style="width: 130px; padding: 15px;">
                             <i class="bi bi-at me-1"></i>Username
                         </th>
-                        <th class="text-center" style="width: 12%; padding: 15px;">
+                        <th class="text-center" style="width: 110px; padding: 15px;">
                             <i class="bi bi-shield-check me-1"></i>Role
                         </th>
-                        <th style="width: 18%; padding: 15px;">
+                        <th style="width: 130px; padding: 15px;">
                             <i class="bi bi-mortarboard me-1"></i>Prodi
                         </th>
-                        <th class="text-center" style="width: 280px; padding: 15px;">
+                        <th class="text-center" style="width: 190px; padding: 15px;">
                             <i class="bi bi-gear me-1"></i>Aksi
                         </th>
                     </tr>

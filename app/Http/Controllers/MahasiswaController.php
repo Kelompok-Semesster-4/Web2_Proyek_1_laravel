@@ -9,6 +9,7 @@ use App\Models\Peminjaman;
 use App\Models\Ruangan;
 use App\Models\RuanganFoto;
 use App\Models\StatusPeminjaman;
+use App\Services\PeminjamanAutoRejector;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -167,6 +168,8 @@ class MahasiswaController extends Controller
      */
     public function peminjaman(Request $request)
     {
+        app(PeminjamanAutoRejector::class)->rejectExpiredPending();
+
         $preselectRuanganId = $request->query('ruangan_id', 0);
         $userId = Auth::id();
 
@@ -198,15 +201,18 @@ class MahasiswaController extends Controller
      */
     public function storePeminjaman(Request $request)
     {
+        $today = now('Asia/Jakarta')->toDateString();
+
         $validated = $request->validate([
             'ruangan_id' => ['required', 'integer', 'exists:ruangan,id'],
             'nama_kegiatan' => ['required', 'string', 'max:255'],
-            'tanggal' => ['required', 'date_format:Y-m-d'],
+            'tanggal' => ['required', 'date_format:Y-m-d', 'after_or_equal:' . $today],
             'jam_mulai' => ['required', 'date_format:H:i'],
             'jam_selesai' => ['required', 'date_format:H:i', 'after:jam_mulai'],
             'jumlah_peserta' => ['required', 'integer', 'min:1'],
             'surat' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
         ], [
+            'tanggal.after_or_equal' => 'Tanggal peminjaman tidak boleh sebelum hari ini.',
             'jam_selesai.after' => 'Jam selesai harus lebih besar dari jam mulai.',
             'jumlah_peserta.required' => 'Jumlah peserta wajib diisi.',
             'surat.mimes' => 'Format surat harus PDF/JPG/PNG.',

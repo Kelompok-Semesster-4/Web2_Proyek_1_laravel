@@ -1386,6 +1386,48 @@ label {
     text-align: center;
 }
 
+.custom-data-table thead th {
+    vertical-align: middle;
+}
+
+.custom-data-table th,
+.custom-data-table td {
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.custom-data-table td > *,
+.custom-data-table td .d-flex,
+.custom-data-table td form,
+.custom-data-table td .badge,
+.custom-data-table td .btn,
+.custom-data-table td .text-dark,
+.custom-data-table td .fw-bold,
+.custom-data-table td small {
+    box-sizing: border-box;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.custom-data-table td .badge,
+.custom-data-table td .btn {
+    box-sizing: border-box;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.custom-data-table td .text-dark,
+.custom-data-table td .fw-bold,
+.custom-data-table td small {
+    overflow-wrap: anywhere;
+}
+
+.custom-data-table td img {
+    max-width: 100%;
+}
+
 #tableRuangan tbody td,
 #tableGedung tbody td,
 #tableLantai tbody td {
@@ -1476,6 +1518,42 @@ label {
 
 #tableGedung td:nth-child(4) .badge {
     min-width: 120px;
+}
+
+#tableGedung {
+    table-layout: fixed;
+    width: 100%;
+}
+
+#tableGedung tbody td {
+    padding: 12px 8px;
+}
+
+#tableGedung tbody tr:hover {
+    transform: none;
+}
+
+#tableGedung td:nth-child(2) .badge {
+    max-width: 100%;
+    min-width: 0;
+}
+
+#tableGedung .gedung-name {
+    display: block;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#tableGedung td:last-child .d-flex {
+    gap: 6px;
+}
+
+#tableGedung .aksi-btn {
+    min-width: 58px !important;
+    padding: 0 9px;
+    font-size: 0.76rem !important;
 }
 
 #tableLantai td:nth-child(2) .badge {
@@ -1908,6 +1986,9 @@ label {
 #tableUser {
     border-collapse: separate;
     border-spacing: 0;
+    table-layout: fixed;
+    width: 100%;
+    min-width: 0;
 }
 
 #tableUser thead th {
@@ -1937,6 +2018,10 @@ label {
 
 #tableUser tbody tr {
     transition: background 0.15s ease;
+}
+
+#tableUser tbody tr:hover {
+    transform: none;
 }
 
 #tableUser tbody tr:hover td {
@@ -1992,6 +2077,80 @@ label {
 #tableUser td:last-child .d-flex {
     gap: 10px;
     align-items: center;
+}
+
+#tableUser td:nth-child(5) {
+    text-align: center;
+}
+
+#tableUser th:nth-child(2),
+#tableUser td:nth-child(2) {
+    width: 190px;
+    max-width: 190px;
+    text-align: left;
+}
+
+#tableUser th:nth-child(3),
+#tableUser td:nth-child(3) {
+    width: 130px;
+    max-width: 130px;
+}
+
+#tableUser th:nth-child(4),
+#tableUser td:nth-child(4) {
+    width: 110px;
+    max-width: 110px;
+}
+
+#tableUser th:nth-child(5),
+#tableUser td:nth-child(5) {
+    width: 130px;
+    max-width: 130px;
+}
+
+#tableUser th:last-child,
+#tableUser td:last-child {
+    width: 190px;
+    max-width: 190px;
+}
+
+#tableUser td:nth-child(2) .fw-bold,
+#tableUser td:nth-child(3) .text-dark,
+#tableUser td:nth-child(5) .text-dark {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#tableUser td:nth-child(2) .d-flex {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+#tableUser td:nth-child(2) .avatar-circle {
+    flex: 0 0 auto;
+}
+
+#tableUser td:nth-child(2) .avatar-circle + div {
+    min-width: 0;
+    max-width: calc(100% - 57px);
+    overflow: hidden;
+}
+
+#tableUser td:nth-child(2) .avatar-circle + div .fw-bold,
+#tableUser td:nth-child(2) .avatar-circle + div small {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.table-scroll-area:has(#tableUser) {
+    overflow-x: hidden;
 }
 
 #tablePersetujuan {
@@ -2053,11 +2212,11 @@ label {
     min-width: 100px;
 }
 
-#tablePersetujuan td:nth-child(5) .badge {
+#tablePersetujuan td:nth-child(4) .badge {
     min-width: 120px;
 }
 
-#tablePersetujuan td:nth-child(7) .badge {
+#tablePersetujuan td:nth-child(6) .badge {
     min-width: 60px;
 }
 
@@ -2103,6 +2262,93 @@ label {
 #tablePersetujuan .form-control-sm {
     height: 32px;
     border-radius: 6px;
+}
+
+#tablePersetujuan th:nth-child(2),
+#tablePersetujuan td:nth-child(2) {
+    width: 140px;
+    max-width: 140px;
+}
+
+#tablePersetujuan th:nth-child(3),
+#tablePersetujuan td:nth-child(3) {
+    width: 210px;
+    max-width: 210px;
+}
+
+#tablePersetujuan th:nth-child(5),
+#tablePersetujuan td:nth-child(5) {
+    width: 110px;
+    max-width: 110px;
+}
+
+#tablePersetujuan th:nth-child(7),
+#tablePersetujuan td:nth-child(7) {
+    text-align: center;
+    vertical-align: middle !important;
+}
+
+#tablePersetujuan td:nth-child(7) .btn {
+    height: 34px;
+    min-width: 64px;
+    margin: 0 !important;
+    padding: 0 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#tablePersetujuan td:nth-child(6) .badge {
+    height: 34px;
+    min-width: 64px;
+    padding: 0 12px;
+}
+
+#tablePersetujuan .persetujuan-mahasiswa-name {
+    max-width: 116px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.35;
+}
+
+#tablePersetujuan .persetujuan-ruangan-name {
+    max-width: 186px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.35;
+    margin: 0 auto;
+    font-size: 0.8rem !important;
+}
+
+#tablePersetujuan .persetujuan-ruangan-cell small {
+    font-size: 0.74rem !important;
+}
+
+#tablePersetujuan .persetujuan-waktu {
+    text-align: center;
+    font-size: 0.8rem;
+    line-height: 1.35;
+}
+
+#tablePersetujuan .persetujuan-waktu span {
+    color: #2d3748;
+    font-size: 0.8rem !important;
+    font-weight: 700;
+}
+
+#tablePersetujuan .persetujuan-waktu span:last-child {
+    color: #6b7280;
+    font-size: 0.74rem !important;
+    font-weight: 400;
+}
+
+#tablePersetujuan .persetujuan-kegiatan-text {
+    display: inline-block;
+    max-width: 86px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
 }
 
 .fasilitas-grid {
@@ -3006,6 +3252,66 @@ label {
     border-radius: 8px !important;
     box-shadow: none !important;
     font-weight: 600 !important;
+}
+
+#tableGedung .aksi-btn,
+#tableLantai .aksi-btn,
+#tableUser .aksi-btn,
+#tablePersetujuan .aksi-btn {
+    min-width: 58px !important;
+    height: 34px;
+    padding: 0 9px !important;
+    font-size: 0.76rem !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#tableGedung td:last-child .d-flex,
+#tableLantai td:last-child .d-flex,
+#tableUser td:last-child .d-flex {
+    gap: 6px !important;
+    flex-wrap: nowrap;
+}
+
+#tablePersetujuan .aksi-btn.me-2 {
+    margin-right: 6px !important;
+}
+
+#tableRuangan tbody td,
+#tableGedung tbody td,
+#tableUser tbody td,
+#tablePersetujuan tbody td {
+    font-size: 0.86rem;
+}
+
+#tableRuangan tbody td .fw-bold,
+#tableGedung tbody td .fw-bold,
+#tableUser tbody td .fw-bold,
+#tablePersetujuan tbody td .fw-bold,
+#tableRuangan tbody td .text-dark,
+#tableGedung tbody td .text-dark,
+#tableUser tbody td .text-dark,
+#tablePersetujuan tbody td .text-dark {
+    font-size: 0.86rem !important;
+}
+
+#tableRuangan tbody td small,
+#tableGedung tbody td small,
+#tableUser tbody td small,
+#tablePersetujuan tbody td small {
+    font-size: 0.78rem !important;
+}
+
+#tableRuangan .badge,
+#tableGedung .badge,
+#tableUser .badge,
+#tablePersetujuan .badge {
+    font-size: 0.8rem !important;
+}
+
+#tableRuangan .ruangan-photo-meta {
+    font-size: 0.78rem !important;
 }
 
 form.d-inline {

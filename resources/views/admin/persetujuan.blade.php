@@ -11,24 +11,21 @@
             <x-table-card title="Daftar Persetujuan" icon="bi bi-list-ul" table-id="tablePersetujuan"
                 search-placeholder="Cari mahasiswa, ruangan, kegiatan..." :total="count($pending)"
                 total-label="pengajuan menunggu" :empty="empty($pending)" empty-title="Belum ada pengajuan menunggu"
-                empty-subtitle="Semua pengajuan telah diproses" :colspan="9" body-max-height="420px"
+                empty-subtitle="Semua pengajuan telah diproses" :colspan="8" body-max-height="420px"
                 :sticky-head="true">
                 <x-slot name="head">
                     <tr>
                         <th class="text-center" style="width: 50px; padding: 15px 10px;">
                             <i class="bi bi-hash"></i>
                         </th>
-                        <th style="width: 20%; padding: 15px;">
+                        <th style="width: 140px; padding: 15px;">
                             <i class="bi bi-person me-1"></i>Mahasiswa
                         </th>
-                        <th style="width: 15%; padding: 15px;">
+                        <th style="width: 210px; padding: 15px;">
                             <i class="bi bi-door-closed me-1"></i>Ruangan
                         </th>
-                        <th class="text-center" style="width: 10%; padding: 15px;">
-                            <i class="bi bi-calendar3 me-1"></i>Tanggal
-                        </th>
-                        <th class="text-center" style="width: 10%; padding: 15px;">
-                            <i class="bi bi-clock me-1"></i>Jam
+                        <th class="text-center" style="width: 15%; padding: 15px;">
+                            <i class="bi bi-calendar3 me-1"></i>Waktu
                         </th>
                         <th style="width: 15%; padding: 15px;">
                             <i class="bi bi-clipboard-check me-1"></i>Kegiatan
@@ -51,18 +48,14 @@
                             <span class="badge-number">{{ $i + 1 }}</span>
                         </td>
 
-                        <td>
-                            <div class="fw-bold text-dark" style="font-size: 1rem;">
+                        <td class="persetujuan-mahasiswa-cell">
+                            <div class="fw-bold text-dark persetujuan-mahasiswa-name" style="font-size: 1rem;">
                                 {{ $p->nama_user ?? '-' }}
                             </div>
-                            <small class="text-muted" style="font-size: 0.85rem;">
-                                <i class="bi bi-person-badge me-1"></i>{{ $p->username_user ?? '-' }}
-                                {{ !empty($p->prodi_user) ? ' • ' . $p->prodi_user : '' }}
-                            </small>
                         </td>
 
-                        <td>
-                            <div class="fw-bold text-dark" style="font-size: 1rem;">
+                        <td class="text-center persetujuan-ruangan-cell">
+                            <div class="fw-bold text-dark persetujuan-ruangan-name" style="font-size: 1rem;">
                                 {{ $p->nama_ruangan ?? '-' }}
                             </div>
                             <small class="text-muted" style="font-size: 0.85rem;">
@@ -71,19 +64,19 @@
                         </td>
 
                         <td class="text-center">
-                            <span class="badge" style="background: linear-gradient(135deg, #10b981, #059669);">
-                                {{ date('d M Y', strtotime($p->tanggal)) }}
-                            </span>
-                        </td>
-
-                        <td class="text-center">
-                            <span class="badge" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
-                                {{ substr($p->jam_mulai, 0, 5) . ' - ' . substr($p->jam_selesai, 0, 5) }}
-                            </span>
+                            <div class="d-inline-flex flex-column align-items-center gap-1 persetujuan-waktu">
+                                <span>
+                                    <i class="bi bi-calendar3 me-1"></i>{{ date('d M Y', strtotime($p->tanggal)) }}
+                                </span>
+                                <span>
+                                    <i class="bi bi-clock me-1"></i>{{ substr($p->jam_mulai, 0, 5) . ' - ' . substr($p->jam_selesai, 0, 5) }}
+                                </span>
+                            </div>
                         </td>
 
                         <td>
-                            <span class="text-dark">{{ $p->nama_kegiatan }}</span>
+                            <span class="text-dark persetujuan-kegiatan-text"
+                                data-kegiatan="{{ e($p->nama_kegiatan) }}">{{ $p->nama_kegiatan }}</span>
                         </td>
 
                         <td class="text-center">
@@ -215,6 +208,26 @@
                                 if (result.isConfirmed) {
                                     form.action = form.dataset.rejectUrl;
                                     form.submit();
+                                }
+                            });
+                        });
+                    });
+
+                    document.querySelectorAll('.persetujuan-kegiatan-text').forEach(function (text) {
+                        text.addEventListener('click', function () {
+                            Swal.fire({
+                                title: 'Kegiatan',
+                                text: this.dataset.kegiatan || '-',
+                                icon: 'info',
+                                width: 420,
+                                padding: '0.95rem',
+                                confirmButtonColor: '#198754',
+                                confirmButtonText: 'Tutup',
+                                customClass: {
+                                    popup: 'swal-compact',
+                                    title: 'swal-compact-title',
+                                    htmlContainer: 'swal-compact-text',
+                                    confirmButton: 'swal-compact-btn'
                                 }
                             });
                         });

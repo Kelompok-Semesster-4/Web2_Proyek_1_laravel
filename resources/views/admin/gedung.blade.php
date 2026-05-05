@@ -18,16 +18,16 @@
                         <th class="text-center" style="width: 50px; padding: 15px 10px;">
                             <i class="bi bi-hash"></i>
                         </th>
-                        <th class="text-center" style="width: 35%; padding: 15px;">
+                        <th class="text-center" style="width: 30%; padding: 12px 10px;">
                             <i class="bi bi-building me-1"></i>Nama Gedung
                         </th>
-                        <th class="text-center" style="width: 15%; padding: 15px;">
+                        <th class="text-center" style="width: 12%; padding: 12px 10px;">
                             <i class="bi bi-layers me-1"></i>Lantai
                         </th>
-                        <th class="text-center" style="width: 20%; padding: 15px;">
+                        <th class="text-center" style="width: 16%; padding: 12px 10px;">
                             <i class="bi bi-door-closed me-1"></i>Ruangan
                         </th>
-                        <th class="text-center" style="width: 280px; padding: 15px;">
+                        <th class="text-center" style="width: 210px; padding: 12px 10px;">
                             <i class="bi bi-gear me-1"></i>Aksi
                         </th>
                     </tr>
@@ -41,7 +41,7 @@
 
                         <td class="text-center">
                             <span class="badge px-3 py-2"
-                                style="background: linear-gradient(135deg, #17a2b8, #138496); color: white; font-weight: 600; border-radius: 8px;">
+                                style="background: linear-gradient(135deg, #17a2b8, #138496); color: white; font-weight: 600; border-radius: 8px; max-width: 100%;">
                                 <i class="bi bi-building-fill me-1"></i>
                                 <span class="gedung-name">{{ $gedung->nama_gedung }}</span>
                             </span>
