@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LogStatus;
 use App\Models\Peminjaman;
 use App\Models\Ruangan;
+use App\Models\User;
 use App\Services\PeminjamanAutoRejector;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,6 +20,8 @@ class AdminController extends Controller
         $now = now('Asia/Jakarta');
         $today = $now->toDateString();
         $currentTime = $now->format('H:i:s');
+        $monthStart = $now->copy()->startOfMonth()->toDateString();
+        $monthEnd = $now->copy()->endOfMonth()->toDateString();
 
         $ruanganTerpakai = Ruangan::query()
             ->from('ruangan as r')
@@ -35,12 +38,31 @@ class AdminController extends Controller
 
         $totalRuangan = Ruangan::count();
         $ruanganTersedia = max(0, $totalRuangan - $ruanganTerpakai);
+        $totalPengguna = User::count();
 
         $bookingHariIni = Peminjaman::whereDate('tanggal', $today)->count();
         $pendingHariIni = Peminjaman::whereDate('tanggal', $today)->where('status_id', 1)->count();
         $disetujuiHariIni = Peminjaman::whereDate('tanggal', $today)->where('status_id', 2)->count();
         $ditolakHariIni = Peminjaman::whereDate('tanggal', $today)->where('status_id', 3)->count();
         $pendingTotal = Peminjaman::where('status_id', 1)->count();
+        $pengajuanBulanIni = Peminjaman::whereBetween('tanggal', [$monthStart, $monthEnd])->count();
+        $disetujuiBulanIni = Peminjaman::whereBetween('tanggal', [$monthStart, $monthEnd])->where('status_id', 2)->count();
+        $ditolakBulanIni = Peminjaman::whereBetween('tanggal', [$monthStart, $monthEnd])->where('status_id', 3)->count();
+        $pendingBulanIni = Peminjaman::whereBetween('tanggal', [$monthStart, $monthEnd])->where('status_id', 1)->count();
+        $roomTotalForPercent = max($totalRuangan, 1);
+        $monthTotalForPercent = max($pengajuanBulanIni, 1);
+        $availablePercent = round(($ruanganTersedia / $roomTotalForPercent) * 100);
+        $usedPercent = round(($ruanganTerpakai / $roomTotalForPercent) * 100);
+        $approvedPercent = round(($disetujuiBulanIni / $monthTotalForPercent) * 100);
+        $rejectedPercent = round(($ditolakBulanIni / $monthTotalForPercent) * 100);
+        $waitingPercent = max(0, 100 - $approvedPercent - $rejectedPercent);
+        $statusBadgeMap = [
+            'Disetujui' => 'success',
+            'Selesai' => 'secondary',
+            'Ditolak' => 'danger',
+            'Menunggu' => 'warning',
+            'Dibatalkan' => 'secondary',
+        ];
 
         $jadwalHariIni = Peminjaman::query()
             ->from('peminjaman as p')
@@ -71,7 +93,9 @@ class AdminController extends Controller
                 'p.jam_mulai',
                 'p.jam_selesai',
                 'p.nama_kegiatan',
+                'p.jumlah_peserta',
                 'u.nama as nama_user',
+                'u.username as username_user',
                 'u.prodi',
                 'r.nama_ruangan',
                 'g.nama_gedung as gedung'
@@ -103,7 +127,10 @@ class AdminController extends Controller
         return view('admin.dashboard', compact(
             'pendingTotal', 'ruanganTerpakai', 'ruanganTersedia',
             'bookingHariIni', 'pendingHariIni', 'disetujuiHariIni', 'ditolakHariIni',
-            'jadwalHariIni', 'pendingList'
+            'jadwalHariIni', 'pendingList', 'totalRuangan', 'totalPengguna',
+            'pengajuanBulanIni', 'disetujuiBulanIni', 'ditolakBulanIni', 'pendingBulanIni',
+            'availablePercent', 'usedPercent', 'approvedPercent', 'rejectedPercent',
+            'waitingPercent', 'statusBadgeMap', 'now'
         ));
     }
 
