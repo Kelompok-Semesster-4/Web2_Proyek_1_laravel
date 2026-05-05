@@ -1,0 +1,805 @@
+/* User detail ruangan page
+ * Bagian ini khusus untuk halaman detail ruangan: kartu informasi, galeri,
+ * tombol booking, thumbnail, dan modal preview foto.
+ */
+.detail-ruangan-page .glass-card {
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.28);
+    overflow: hidden;
+}
+
+.detail-ruangan-page .glass-head {
+    padding: 18px 20px;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+    background: linear-gradient(180deg, #fff, #f8fafc);
+}
+
+.detail-ruangan-page .glass-head .title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 900;
+    color: #14532d;
+}
+
+.detail-ruangan-page .glass-head .sub {
+    margin: 6px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.detail-ruangan-page .info-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.22);
+    font-weight: 750;
+    color: #14532d;
+    font-size: 13px;
+}
+
+.detail-ruangan-page .info-pill i {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.detail-ruangan-page .facility-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: #18a86b;
+    border: 1px solid #18a86b;
+    color: #ffffff !important;
+    font-weight: 700;
+    font-size: 13px;
+    box-shadow: 0 6px 14px rgba(24, 168, 107, 0.18);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.12);
+}
+
+.detail-ruangan-page .facility-pill i {
+    font-size: 14px;
+    line-height: 1;
+    color: #ffffff !important;
+}
+
+.detail-ruangan-page .btn-green {
+    border: none;
+    border-radius: 14px;
+    padding: 11px 14px;
+    font-weight: 900;
+    background: linear-gradient(180deg, var(--accent), var(--accent2));
+    color: #fff;
+    box-shadow: 0 10px 25px rgba(34, 197, 94, 0.35);
+}
+
+.detail-ruangan-page .slide-wrap {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+    background: #fff;
+}
+
+.detail-ruangan-page .carousel-item {
+    position: relative;
+}
+
+.detail-ruangan-page .carousel-item img {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    display: block;
+}
+
+.detail-ruangan-page .zoom-overlay {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    z-index: 5;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.2s;
+}
+
+.detail-ruangan-page .zoom-overlay:hover {
+    background: rgba(34, 197, 94, 0.8);
+    transform: scale(1.05);
+}
+
+.detail-ruangan-page .thumbs {
+    display: flex;
+    gap: 10px;
+    padding: 12px;
+    overflow: auto;
+    background: #f8fafc;
+    border-top: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.detail-ruangan-page .thumb {
+    width: 92px;
+    height: 60px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    flex: 0 0 auto;
+    cursor: pointer;
+    background: #e5e7eb;
+}
+
+.detail-ruangan-page .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.detail-ruangan-page .thumb.active {
+    border-color: var(--accent);
+}
+
+.detail-ruangan-page .hero-bg-fallback {
+    background: #111827;
+}
+
+.detail-ruangan-page .desc-box {
+    background: #f8fafc;
+    border: 1px solid rgba(15, 23, 42, 0.1);
+}
+
+.img-modal .modal-content {
+    background: #0b1220;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.img-modal .modal-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.image-preview-src {
+    max-height: 80vh;
+}
+
+/* User peminjaman page
+ * Styling untuk halaman pengajuan dan riwayat peminjaman ruangan.
+ * Fokusnya pada tabel riwayat, badge status, catatan, dan tombol batal.
+ */
+.peminjaman-page {
+    padding-top: 30px;
+    padding-bottom: 30px;
+    min-height: calc(100vh - 68px);
+    overflow-x: hidden;
+}
+
+#tableRiwayat {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+#tableRiwayat thead th {
+    font-size: 12px;
+    letter-spacing: 0.6px;
+    color: #475569;
+    border-bottom: 1px solid #e5e7eb;
+    background: linear-gradient(to right, #f8fafc, #eef2f7);
+}
+
+#tableRiwayat tbody td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #eef2f7;
+    vertical-align: middle;
+}
+
+#tableRiwayat th,
+#tableRiwayat td {
+    border-right: 1px solid #e5e7eb;
+    overflow-wrap: anywhere;
+}
+
+#tableRiwayat th:nth-child(2),
+#tableRiwayat td:nth-child(2) {
+    width: 180px;
+    max-width: 180px;
+}
+
+#tableRiwayat th:nth-child(3),
+#tableRiwayat td:nth-child(3) {
+    width: 145px;
+    max-width: 145px;
+}
+
+#tableRiwayat th:nth-child(4),
+#tableRiwayat td:nth-child(4) {
+    width: 180px;
+    max-width: 180px;
+}
+
+#tableRiwayat th:nth-child(5),
+#tableRiwayat td:nth-child(5) {
+    width: 125px;
+    max-width: 125px;
+}
+
+#tableRiwayat th:last-child,
+#tableRiwayat td:last-child {
+    border-right: none;
+}
+
+#tableRiwayat tbody tr {
+    transition: background 0.15s ease;
+}
+
+#tableRiwayat tbody tr:hover td {
+    background: #f1f5f9;
+}
+
+#tableRiwayat .badge,
+#tableRiwayat .btn {
+    height: 34px;
+    line-height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+#tableRiwayat .badge {
+    transform: translateY(-1px);
+}
+
+#tableRiwayat td:nth-child(4) .badge {
+    width: fit-content;
+    max-width: 100%;
+    min-width: 0;
+    height: 34px;
+    line-height: 34px;
+    padding: 0 12px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#tableRiwayat td:nth-child(4) .badge i {
+    flex: 0 0 auto;
+}
+
+#tableRiwayat .riwayat-kegiatan-text {
+    display: block;
+    min-width: 0;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#tableRiwayat td:nth-child(5) .badge {
+    min-width: 95px;
+}
+
+#tableRiwayat th:nth-child(6),
+#tableRiwayat td:nth-child(6) {
+    width: 140px;
+    max-width: 140px;
+}
+
+#tableRiwayat .riwayat-note {
+    max-width: 180px;
+}
+
+#tableRiwayat .riwayat-note-preview {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+#tableRiwayat .riwayat-note-text {
+    display: inline-block;
+    max-width: 180px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-decoration: none;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+#tableRiwayat .btn {
+    min-width: 90px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+    transition: 0.2s;
+    color: #fff;
+}
+
+#tableRiwayat .btn-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+}
+
+#tableRiwayat .btn:hover {
+    transform: translateY(-1px);
+}
+
+#tableRiwayat td:last-child .d-flex {
+    gap: 4px;
+    align-items: center;
+}
+
+#tableRiwayat th:last-child,
+#tableRiwayat td:last-child {
+    width: 100px;
+    max-width: 100px;
+}
+
+#tableRiwayat .aksi-btn {
+    min-width: 0 !important;
+    width: 84px !important;
+    padding: 0 6px !important;
+}
+
+#tableRiwayat .riwayat-action-note {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 84px;
+    min-height: 32px;
+    padding: 0 6px;
+    border-radius: 8px;
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+}
+
+#tableRiwayat .riwayat-action-note.is-approved {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.peminjaman-page .table-responsive,
+.peminjaman-page .table-scroll-area {
+    overflow-x: hidden !important;
+}
+
+/* User profil page
+ * Mengatur layout kartu profil, avatar, form edit data, dan tombol aksi
+ * supaya halaman profil tetap rapi walau banyak field input.
+ */
+.profil-page {
+    padding-top: 0;
+    padding-bottom: 0;
+    min-height: calc(100vh - 68px);
+}
+
+.profil-container {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 30px;
+    padding: 30px 0;
+    width: 100%;
+}
+
+.profil-sidebar {
+    background: white;
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    height: fit-content;
+    align-self: start;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.avatar-container {
+    margin-bottom: 20px;
+}
+
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 40px;
+    color: white;
+    font-weight: bold;
+    overflow: hidden;
+    position: relative;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.avatar-initial {
+    line-height: 1;
+}
+
+.photo-upload-wrap {
+    margin-top: 14px;
+}
+
+.photo-upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: #0c63e4;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.photo-upload-btn:hover {
+    background: #0a58ca;
+}
+
+.photo-upload-help {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #6c757d;
+}
+
+/* Identitas pengguna di sidebar profil */
+.user-name {
+    font-size: 20px;
+    font-weight: 600;
+    color: #212529;
+    margin: 15px 0 5px 0;
+}
+
+.user-handle {
+    font-size: 14px;
+    color: #6c757d;
+    margin-bottom: 20px;
+}
+
+.user-role {
+    display: inline-block;
+    background: #20c997;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.user-info {
+    border-top: 1px solid #e9ecef;
+    padding-top: 20px;
+}
+
+/* Detail informasi akun */
+.info-item {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.info-label {
+    font-size: 12px;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+}
+
+.info-value {
+    font-size: 14px;
+    color: #212529;
+    word-break: break-all;
+}
+
+.profil-forms {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Kartu form edit profil */
+.profil-card {
+    padding: 30px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.profil-card:last-child {
+    border-bottom: none;
+}
+
+.form-section {
+    margin-bottom: 0;
+}
+
+/* Header tiap section form */
+.section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.section-icon {
+    width: 32px;
+    height: 32px;
+    background: #e7f5ff;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0c63e4;
+    font-size: 16px;
+    margin-right: 12px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #212529;
+    margin: 0;
+}
+
+.section-subtitle {
+    font-size: 13px;
+    color: #6c757d;
+    margin-top: 5px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* Label dan input form */
+.form-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.form-label .required {
+    color: #dc3545;
+}
+
+.form-control {
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #0c63e4;
+    box-shadow: 0 0 0 0.2rem rgba(12, 99, 228, 0.15);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-row.full {
+    grid-template-columns: 1fr;
+}
+
+.btn-group {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: -10px;
+}
+
+/* Tombol simpan dan reset */
+.btn {
+    padding: 10px 24px;
+    font-weight: 600;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.btn-reset {
+    background: white;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+}
+
+.btn-reset:hover {
+    background: #f8f9fa;
+    border-color: #adb5bd;
+}
+
+.btn-submit {
+    background: linear-gradient(180deg, #22c55e, #16a34a);
+    color: white;
+}
+
+.btn-submit:hover {
+    background: linear-gradient(180deg, #16a34a, #15803d);
+}
+
+.alert {
+    border-radius: 6px;
+    margin-top: 20px;
+}
+
+.invalid-feedback {
+    display: block;
+    font-size: 12px;
+    color: #dc3545;
+    margin-top: 5px;
+}
+
+/* Container form profil utama */
+#profilForm {
+    padding: 0;
+}
+
+/* Responsif halaman detail, riwayat, dan profil */
+@media (max-width: 768px) {
+    .detail-ruangan-page .carousel-item img {
+        height: 240px;
+    }
+
+    #tableRiwayat {
+        display: block;
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    #tableRiwayat thead {
+        display: none;
+    }
+
+    #tableRiwayat tbody,
+    #tableRiwayat tr,
+    #tableRiwayat td {
+        display: block;
+        width: 100%;
+    }
+
+    #tableRiwayat tbody {
+        padding: 12px;
+        background: #f8fafc;
+    }
+
+    #tableRiwayat tbody tr {
+        margin-bottom: 14px;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        background: #ffffff;
+        overflow: hidden;
+    }
+
+    #tableRiwayat tbody tr:last-child {
+        margin-bottom: 0;
+    }
+
+    #tableRiwayat .riwayat-search-empty-row {
+        border: 0;
+        background: transparent;
+    }
+
+    #tableRiwayat .riwayat-search-empty-row td {
+        display: block;
+        padding: 28px 16px;
+        border: 0;
+        text-align: center !important;
+    }
+
+    #tableRiwayat .riwayat-search-empty-row td::before {
+        content: none;
+    }
+
+    #tableRiwayat tbody td {
+        display: grid;
+        grid-template-columns: minmax(86px, 32%) minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+        padding: 11px 12px;
+        border-right: 0;
+        border-bottom: 1px solid #eef2f7;
+        text-align: left !important;
+    }
+
+    #tableRiwayat tbody td:last-child {
+        border-bottom: 0;
+    }
+
+    #tableRiwayat tbody td::before {
+        content: attr(data-label);
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    #tableRiwayat .badge,
+    #tableRiwayat .btn {
+        width: fit-content;
+        max-width: 100%;
+        min-width: 0;
+        height: auto;
+        min-height: 32px;
+        line-height: 1.25;
+        white-space: normal;
+    }
+
+    #tableRiwayat th:nth-child(6),
+    #tableRiwayat td:nth-child(6) {
+        width: 100%;
+        max-width: none;
+    }
+
+    #tableRiwayat .riwayat-note {
+        max-width: 100%;
+    }
+
+    #tableRiwayat .riwayat-note-preview {
+        white-space: normal;
+    }
+
+    #tableRiwayat td:last-child .d-flex {
+        justify-content: flex-start !important;
+    }
+
+    #tableRiwayat .aksi-btn {
+        width: auto !important;
+    }
+
+    #tableRiwayat tbody tr:hover td {
+        background: transparent;
+    }
+
+    .profil-container {
+        grid-template-columns: 1fr;
+    }
+
+    .profil-sidebar {
+        order: -1;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-group {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}

@@ -30,7 +30,7 @@
     <x-slot:title>Detail Ruangan - {{ $ruangan->nama_ruangan ?? 'Peminjaman Ruangan' }}</x-slot>
 
         @push('styles')
-            <link rel="stylesheet" href="{{ asset('assets/css/detail-ruangan.css') }}?v=1">
+            <link rel="stylesheet" href="{{ asset('assets/css/user.css') }}?v=1">
         @endpush
 
         <section class="hero-page">

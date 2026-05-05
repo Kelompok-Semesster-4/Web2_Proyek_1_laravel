@@ -2,7 +2,7 @@
     <x-slot:title>Peminjaman - Peminjaman Ruangan</x-slot>
 
         @push('styles')
-            <link rel="stylesheet" href="{{ asset('assets/css/peminjaman.css') }}?v=1">
+            <link rel="stylesheet" href="{{ asset('assets/css/user.css') }}?v=1">
         @endpush
 
         <div class="wrap peminjaman-page">
