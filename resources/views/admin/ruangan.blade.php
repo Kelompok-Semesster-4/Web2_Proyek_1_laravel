@@ -16,25 +16,25 @@
                 :sticky-head="true">
                 <x-slot name="head">
                     <tr>
-                        <th class="text-center" style="width: 50px; padding: 15px 10px;">
+                        <th class="text-center" style="width: 6%; padding: 15px 10px;">
                             <i class="bi bi-hash"></i>
                         </th>
-                        <th class="text-center" style="width: 10%; padding: 12px;">
+                        <th class="text-center" style="width: 16%; padding: 12px;">
                             <i class="bi bi-door-closed me-1"></i>Nama Ruangan
                         </th>
-                        <th class="text-center" style="width: 9%; padding: 12px;">
+                        <th class="text-center" style="width: 14%; padding: 12px;">
                             <i class="bi bi-building me-1"></i>Gedung
                         </th>
-                        <th class="text-center" style="width: 6%; padding: 12px;">
+                        <th class="text-center" style="width: 9%; padding: 12px;">
                             <i class="bi bi-layers me-1"></i>Lantai
                         </th>
-                        <th class="text-center" style="width: 9%; padding: 12px;">
+                        <th class="text-center" style="width: 12%; padding: 12px;">
                             <i class="bi bi-people me-1"></i>Kapasitas
                         </th>
-                        <th class="text-center" style="width: 10%; padding: 12px;">
+                        <th class="text-center" style="width: 14%; padding: 12px;">
                             <i class="bi bi-image me-1"></i>Foto
                         </th>
-                        <th class="text-center" style="width: 140px; padding: 12px;">
+                        <th class="text-center" style="width: 29%; padding: 12px;">
                             <i class="bi bi-gear me-1"></i>Aksi
                         </th>
                     </tr>
@@ -113,15 +113,17 @@
                                     <i class="bi bi-eye-fill me-1"></i>Detail
                                 </button>
 
-                                <button class="btn btn-warning aksi-btn" style="min-width: 60px; font-size: 0.8rem;"
-                                    data-bs-toggle="modal" data-bs-target="#modalEditRuangan" onclick="editRuangan(
-                                    {{ $ruangan->id }},
-                                    '{{ addslashes($ruangan->nama_ruangan) }}',
-                                    {{ $ruangan->gedung_id ?? 0 }},
-                                    {{ $ruangan->lantai_id ?? 0 }},
-                                    {{ $ruangan->kapasitas ?? 0 }},
-                                    '{{ addslashes($ruangan->deskripsi ?? '') }}'
-                                )">
+                                <button type="button" class="btn btn-warning aksi-btn"
+                                    style="min-width: 60px; font-size: 0.8rem;" data-bs-toggle="modal"
+                                    data-bs-target="#modalEditRuangan"
+                                    data-action="{{ route('admin.ruangan.update', $ruangan->id) }}"
+                                    data-id="{{ $ruangan->id }}"
+                                    data-nama="{{ $ruangan->nama_ruangan }}"
+                                    data-gedung-id="{{ $ruangan->gedung_id ?? 0 }}"
+                                    data-lantai-id="{{ $ruangan->lantai_id ?? 0 }}"
+                                    data-kapasitas="{{ $ruangan->kapasitas ?? 0 }}"
+                                    data-deskripsi="{{ $ruangan->deskripsi ?? '' }}"
+                                    onclick="editRuangan(this)">
                                     <i class="bi bi-pencil-fill me-1"></i>Edit
                                 </button>
 
@@ -274,8 +276,7 @@
             <x-modal-admin id="modalEditRuangan" title="Edit Ruangan" icon="bi bi-pencil-square"
                 header-gradient="linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)"
                 dialog-class="modal-dialog modal-dialog-centered modal-lg">
-                <form method="POST" action="{{ route('admin.ruangan.update', '__ID__') }}" enctype="multipart/form-data"
-                    id="formEditRuangan">
+                <form method="POST" action="#" enctype="multipart/form-data" id="formEditRuangan">
                     @csrf
                     @method('PUT')
                     <div class="modal-body p-4">
@@ -637,7 +638,18 @@
                     }
 
                     // Edit ruangan function
-                    function editRuangan(id, nama, gedungId, lantaiId, kapasitas, deskripsi) {
+                    function editRuangan(button) {
+                        const data = button.dataset;
+                        const id = data.id;
+                        const nama = data.nama || '';
+                        const gedungId = data.gedungId || 0;
+                        const lantaiId = data.lantaiId || 0;
+                        const kapasitas = data.kapasitas || 0;
+                        const deskripsi = data.deskripsi || '';
+
+                        const form = document.getElementById('formEditRuangan');
+                        form.action = data.action;
+
                         document.getElementById('editRuanganId').value = id;
                         document.getElementById('editNamaRuangan').value = nama;
                         document.getElementById('editKapasitas').value = kapasitas;

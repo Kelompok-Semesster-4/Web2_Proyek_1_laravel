@@ -2,13 +2,7 @@
     <x-slot:title>Peminjaman - Peminjaman Ruangan</x-slot>
 
         @push('styles')
-            <style>
-                .peminjaman-page {
-                    padding-top: 30px;
-                    padding-bottom: 30px;
-                    min-height: calc(100vh - 68px);
-                }
-            </style>
+            <link rel="stylesheet" href="{{ asset('assets/css/peminjaman.css') }}?v=1">
         @endpush
 
         <div class="wrap peminjaman-page">
