@@ -1,3 +1,14 @@
+/*
+ * style.css dibagi per area:
+ * 1. Variabel tema dan reset dasar
+ * 2. Navigasi atas, profil dropdown, dan menu mobile
+ * 3. Layout umum, footer, dan kartu login
+ * 4. Hero homepage, filter, dan kartu ruangan
+ * 5. Komponen halaman detail, tabel, dan helper UI
+ * 6. Penyesuaian responsif dan override akhir
+ */
+
+/* 1) Variabel tema dan reset dasar */
 :root {
     --bg1: #0b1220;
     --bg2: #101a2e;
@@ -45,6 +56,7 @@ a {
     text-decoration: none;
 }
 
+/* 2) Navigasi atas, profil dropdown, dan menu mobile */
 .topnav {
     position: sticky;
     top: 0;
@@ -256,6 +268,7 @@ a {
     font-size: 15px;
 }
 
+/* Brand dan tombol hamburger */
 .brand {
     display: flex;
     align-items: center;
@@ -335,6 +348,10 @@ a {
     background: rgba(255, 255, 255, 0.14);
 }
 
+/* 3) Layout umum, footer, dan kartu login
+ * Bagian ini mengatur area utama halaman publik: lebar konten, footer, serta
+ * panel login yang ditumpuk di atas background gelap.
+ */
 .wrap {
     max-width: 1100px;
     margin: 0 auto;
@@ -376,6 +393,10 @@ a {
     border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
+/* Area login/register di halaman auth
+ * Membentuk panel tengah, spacing, dan batas kartu supaya form login/register
+ * terasa lebih fokus dibanding halaman publik lain.
+ */
 .login-stage {
     min-height: calc(100vh - 68px - 70px);
     display: flex;
@@ -414,73 +435,6 @@ a {
     margin: 0 auto;
     position: relative;
     z-index: 1;
-}
-
-.hero {
-    border-radius: 22px;
-    padding: 30px;
-    color: #eaf2f7;
-    background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.1),
-        rgba(255, 255, 255, 0.04)
-    );
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.28);
-    overflow: hidden;
-    position: relative;
-}
-
-.hero:before {
-    content: "";
-    position: absolute;
-    inset: -2px;
-    background:
-        radial-gradient(
-            650px 260px at 18% 18%,
-            rgba(34, 197, 94, 0.24),
-            transparent 62%
-        ),
-        radial-gradient(
-            560px 260px at 78% 62%,
-            rgba(59, 130, 246, 0.18),
-            transparent 60%
-        ),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 65%);
-    pointer-events: none;
-}
-
-.hero > * {
-    position: relative;
-}
-
-.hero h1 {
-    margin: 0;
-    font-size: 34px;
-    letter-spacing: 0.2px;
-    line-height: 1.15;
-}
-
-.hero p {
-    margin: 14px 0 0;
-    color: rgba(234, 242, 247, 0.86);
-    line-height: 1.75;
-    font-size: 15px;
-    max-width: 44ch;
-}
-
-.hero .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    border-radius: 999px;
-    margin-top: 18px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    color: rgba(234, 242, 247, 0.9);
-    font-weight: 700;
-    font-size: 13px;
 }
 
 .card {
@@ -544,15 +498,6 @@ label {
     box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.14);
 }
 
-.showpw {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #334155;
-    font-size: 13px;
-    user-select: none;
-}
-
 .btn {
     width: 100%;
     margin-top: 16px;
@@ -580,13 +525,10 @@ label {
     color: var(--danger);
 }
 
-.helper {
-    margin-top: 10px;
-    color: #64748b;
-    font-size: 12px;
-    line-height: 1.5;
-}
-
+/* 4) Hero homepage, filter, dan kartu ruangan
+ * Seluruh blok ini dipakai untuk landing page mahasiswa: hero carousel,
+ * panel filter pencarian, grid ruangan, dan tombol detail ruangan.
+ */
 .hero-full {
     position: relative;
     min-height: 88vh;
@@ -718,6 +660,9 @@ label {
     text-align: left;
 }
 
+/* Kartu ruangan di halaman home
+ * Mengatur ukuran card, gambar, metadata, dan tombol aksi pada grid ruangan.
+ */
 .filter-box .btn {
     margin-top: 0;
     width: 100%;
@@ -823,6 +768,9 @@ label {
     color: #fff !important;
 }
 
+/* Hero detail halaman
+ * Dipakai pada halaman detail ruangan untuk overlay, breadcrumb, dan judul.
+ */
 .hero-overlay {
     position: absolute;
     inset: 0;
@@ -908,6 +856,10 @@ label {
     font-weight: 500;
 }
 
+/* 5) Komponen halaman detail, tabel, dan helper UI
+ * Berisi elemen yang dipakai ulang di beberapa view: header halaman,
+ * tabel, badge angka, tombol standar, dan state hover.
+ */
 .kelola-header {
     background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
     border-radius: 16px;
@@ -1057,6 +1009,10 @@ label {
     font-weight: 600 !important;
 }
 
+/* 6) Penyesuaian responsif
+ * Breakpoint ini merapikan navigasi, hero, grid ruangan, dan tabel saat
+ * dipakai di tablet atau layar ponsel.
+ */
 @media (max-width: 900px) {
     .mainmenu {
         display: none;
@@ -1164,7 +1120,10 @@ label {
 
 }
 
-
+/* Helper SweetAlert
+ * Class ini hanya dipakai oleh notifikasi konfirmasi/hapus agar ukuran popup
+ * lebih ringkas dan tidak terlalu dominan.
+ */
 .swal2-popup.swal-compact {
     border-radius: 14px;
 }
@@ -1236,6 +1195,10 @@ label {
     font-size: 0.85rem;
 }
 
+/* Override global kecil untuk konsistensi tombol dan input
+ * Menyatukan perilaku focus/hover agar komponen Bootstrap dan custom terlihat
+ * seragam saat di-interact.
+ */
 .table-search-input:focus,
 .input-group:focus-within .input-group-text {
     border-color: #dee2e6 !important;
@@ -1247,8 +1210,6 @@ button,
 .btn,
 .room-btn,
 .btn-tambah,
-.room-btn-primary,
-.room-btn-secondary,
 .photo-upload-btn,
 .mobile-logout-btn,
 .profile-dropdown button,
@@ -1258,8 +1219,6 @@ button:hover,
 .btn:hover,
 .room-btn:hover,
 .btn-tambah:hover,
-.room-btn-primary:hover,
-.room-btn-secondary:hover,
 .photo-upload-btn:hover,
 .mobile-logout-btn:hover,
 .profile-dropdown button:hover,
@@ -1269,8 +1228,6 @@ button:focus,
 .btn:focus,
 .room-btn:focus,
 .btn-tambah:focus,
-.room-btn-primary:focus,
-.room-btn-secondary:focus,
 .photo-upload-btn:focus,
 .mobile-logout-btn:focus,
 .profile-dropdown button:focus,
@@ -1280,8 +1237,6 @@ button:active,
 .btn:active,
 .room-btn:active,
 .btn-tambah:active,
-.room-btn-primary:active,
-.room-btn-secondary:active,
 .photo-upload-btn:active,
 .mobile-logout-btn:active,
 .profile-dropdown button:active,

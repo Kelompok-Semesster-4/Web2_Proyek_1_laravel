@@ -1,6 +1,16 @@
-/* Admin-only styles extracted from style.css. */
+/*
+ * Urutan isi admin.css:
+ * 1. Rule dasar admin
+ * 2. Layout utama dan sidebar
+ * 3. Penyesuaian footer khusus admin
+ * 4. Komponen umum yang dipakai berulang
+ * 5. Styling per halaman/fitur admin
+ */
 
-/* Admin scrollbar */
+/* 1) Rule dasar admin
+ * Dipakai untuk memberi tampilan dasar yang konsisten di seluruh halaman admin,
+ * misalnya scrollbar dan perilaku umum body admin.
+ */
 .admin-body,
 .admin-body * {
     scrollbar-width: thin;
@@ -30,31 +40,10 @@
     background: #f8fafc;
 }
 
-/* Admin footer override */
-/* Admin footer styling */
-.admin-wrap ~ .footer {
-    width: calc(100% - 280px);
-    margin-left: 280px;
-}
-
-.admin-wrap ~ .footerin {
-    max-width: none;
-    margin: 0;
-    padding: 26px 22px;
-}
-
-@media (max-width: 992px) {
-    .admin-wrap ~ .footer {
-        width: 100%;
-        margin-left: 0;
-    }
-
-    .admin-wrap ~ .footerin {
-        padding: 18px 12px;
-    }
-}
-
-/* Admin layout and sidebar */
+/* 2) Layout utama dan sidebar
+ * Mengatur jarak konten, posisi sidebar tetap di kiri, tombol menu mobile,
+ * dan elemen navigasi admin.
+ */
 .admin-body {
     min-height: 100vh;
 }
@@ -141,6 +130,7 @@
     opacity: 0.92;
 }
 
+/* Navigasi sidebar admin */
 .asb-nav {
     padding: 10px 6px 50px;
     display: flex;
@@ -148,6 +138,7 @@
     gap: 6px;
 }
 
+/* Link menu sidebar */
 .asb-link {
     display: flex;
     align-items: center;
@@ -187,6 +178,7 @@
     background: rgba(255, 213, 213, 0.55);
 }
 
+/* Area bawah sidebar untuk tombol aksi seperti preview dan logout */
 .asb-foot {
     position: absolute;
     left: 14px;
@@ -237,6 +229,7 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Overlay untuk sidebar saat mode mobile */
 .asb-overlay {
     display: none;
     position: fixed;
@@ -245,6 +238,7 @@
     background: rgba(0, 0, 0, 0.45);
 }
 
+/* Tombol floating untuk membuka sidebar di layar kecil */
 .asb-fab {
     display: none;
     position: fixed;
@@ -310,7 +304,36 @@
     background: rgba(255, 255, 255, 0.75);
 }
 
-/* Admin page actions */
+/* 3) Penyesuaian footer khusus admin
+ * Footer diselaraskan dengan lebar konten utama admin agar tidak terlihat
+ * loncat ke kiri atau full-width seperti halaman publik.
+ */
+.admin-wrap ~ .footer {
+    width: calc(100% - 280px);
+    margin-left: 280px;
+}
+
+.admin-wrap ~ .footerin {
+    max-width: none;
+    margin: 0;
+    padding: 26px 22px;
+}
+
+@media (max-width: 992px) {
+    .admin-wrap ~ .footer {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .admin-wrap ~ .footerin {
+        padding: 18px 12px;
+    }
+}
+
+/* 4) Komponen umum admin
+ * Bagian ini berisi styling yang dipakai lintas halaman admin: tombol aksi,
+ * avatar angka, badge, dan komponen yang tampil di banyak view.
+ */
 .btn-tambah {
     background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
     color: white;
@@ -360,7 +383,15 @@
     aspect-ratio: 1 / 1;
 }
 
-/* Admin room and building tables */
+/* 5) Styling per halaman/fitur admin
+ * Dibagi lagi per fitur supaya mudah dicari saat mengubah ruangan, user,
+ * gedung, persetujuan, dan form modal.
+ */
+
+/* Ruangan dan Gedung
+ * Mengatur tabel master ruangan dan gedung: header, padding baris, ukuran
+ * badge, tombol aksi, serta pemotongan teks agar kolom tetap rapi.
+ */
 #tableRuangan,
 #tableGedung {
     border-collapse: separate;
@@ -602,7 +633,10 @@
     box-shadow: none !important;
 }
 
-/* Admin user table */
+/* User
+ * Styling khusus tabel kelola user. Fokusnya ada pada layout kolom profil,
+ * role, email, dan tombol edit/hapus supaya tetap seragam meski datanya panjang.
+ */
 #tableUser {
     border-collapse: separate;
     border-spacing: 0;
@@ -774,7 +808,10 @@
     overflow-x: hidden;
 }
 
-/* Admin approval table */
+/* Persetujuan peminjaman
+ * Dipakai untuk halaman approval request. Komponen di sini mengatur tabel
+ * daftar pengajuan, badge status, dan tombol approve/reject.
+ */
 #tablePersetujuan {
     border-collapse: separate;
     border-spacing: 0;
@@ -828,10 +865,6 @@
 
 #tablePersetujuan .badge {
     transform: translateY(-1px);
-}
-
-#tablePersetujuan td:nth-child(4) .badge {
-    min-width: 100px;
 }
 
 #tablePersetujuan td:nth-child(4) .badge {
@@ -973,7 +1006,10 @@
     cursor: pointer;
 }
 
-/* Admin room forms and modals */
+/* Form dan modal ruangan
+ * Mengatur modal tambah/edit ruangan, checkbox fasilitas, preview foto, dan
+ * layout form supaya input tidak terlalu renggang.
+ */
 .fasilitas-grid {
     margin-top: 0.35rem;
 }
@@ -1061,6 +1097,10 @@
     background: #f8f9fa;
 }
 
+/* Utilities untuk warna Bootstrap yang disamakan
+ * Override warna dasar Bootstrap agar tetap mengikuti identitas hijau aplikasi
+ * tanpa harus mengganti class di setiap view.
+ */
 .bg-primary {
     background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
 }
@@ -1085,7 +1125,10 @@
     background: linear-gradient(135deg, #6b7280, #4b5563) !important;
 }
 
-/* Admin table refinements */
+/* Refinement tabel umum
+ * Penyempurnaan akhir untuk ukuran tombol, teks, badge, dan jarak antar aksi
+ * agar semua tabel admin terasa konsisten walau berasal dari halaman berbeda.
+ */
 #tableGedung .aksi-btn,
 #tableUser .aksi-btn,
 #tablePersetujuan .aksi-btn {

@@ -2,7 +2,7 @@
     <x-slot:title>Profil - Profil Pengguna</x-slot>
 
         @push('styles')
-            <link rel="stylesheet" href="{{ asset('assets/css/profil.css') }}?v=1">
+            <link rel="stylesheet" href="{{ asset('assets/css/user.css') }}?v=1">
         @endpush
 
         <div class="wrap profil-page">

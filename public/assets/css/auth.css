@@ -1,4 +1,11 @@
-/* --- Login Styles --- */
+/* auth.css dipakai khusus untuk halaman login/register.
+ * Fokus utamanya adalah panel tengah, ukuran form, tipografi, dan responsif
+ * agar proses masuk/daftar tetap jelas dan ringkas.
+ */
+
+/* Area utama login/register
+ * Mengatur ruang vertikal halaman dan menempatkan kartu auth di tengah.
+ */
 .login-stage {
     padding: 36px 22px 56px;
 }
@@ -46,6 +53,10 @@
     object-fit: contain;
 }
 
+/* Judul, pesan, dan form login
+ * Semua styling utama untuk teks, input, validasi, tombol submit, dan pilihan
+ * tambahan seperti remember me / Google login ada di sini.
+ */
 .login-card .title {
     font-weight: 800;
     font-size: 1.55rem;
@@ -200,6 +211,9 @@
     display: block;
 }
 
+/* Responsif login/register
+ * Menyesuaikan padding, ukuran kartu, dan tata letak opsi saat layar mengecil.
+ */
 @media (max-width: 768px) {
     .login-stage {
         padding: 24px 14px 40px;
@@ -222,26 +236,9 @@
     }
 }
 
+/* Sembunyikan elemen yang belum dirender Alpine
+ * Dipakai untuk mencegah flicker pada elemen yang dikontrol Alpine.js.
+ */
 [x-cloak] {
     display: none !important;
 }
-
-/* Auth stats */
-.login-stage .stats-left .s-card {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 92px;
-}
-
-.login-stage .stats-left .s-val {
-    font-size: 26px;
-    line-height: 1;
-}
-
-.login-stage .stats-left .s-lbl {
-    margin-top: 8px;
-}
-
