@@ -188,7 +188,7 @@
                         </div>
 
                         <form method="POST" action="{{ route('admin.peminjaman.approve', $item->id) }}"
-                            class="pending-action-form dashboard-pending-actions"
+                            class="dashboard-pending-actions"
                             data-approve-url="{{ route('admin.peminjaman.approve', $item->id) }}"
                             data-reject-url="{{ route('admin.peminjaman.reject', $item->id) }}">
                             @csrf
