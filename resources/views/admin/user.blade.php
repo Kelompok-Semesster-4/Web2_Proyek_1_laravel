@@ -18,7 +18,7 @@
                         <th class="text-center" style="width: 50px; padding: 15px 10px;">
                             <i class="bi bi-hash"></i>
                         </th>
-                        <th class="text-start" style="width: 190px; padding: 15px;">
+                        <th class="text-center" style="width: 190px; padding: 15px;">
                             <i class="bi bi-person me-1"></i>Nama
                         </th>
                         <th style="width: 130px; padding: 15px;">

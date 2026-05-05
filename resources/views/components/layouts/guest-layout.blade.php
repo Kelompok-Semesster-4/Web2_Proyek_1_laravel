@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>{{ config('app.name', 'Peminjaman Ruangan') }}</title>
+  <title>{{ $title ?? config('app.name', 'Peminjaman Ruangan') }}</title>
 
   <link rel="preconnect" href="https://fonts.bunny.net">
   <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet" />
@@ -18,7 +18,6 @@
 </head>
 
 <body>
-  <title>{{ $title ?? config('app.name', 'Peminjaman Ruangan') }}</title>
   <div class="topnav">
     <div class="topnavin">
       <a class="brand" href="{{ url('/') }}">
