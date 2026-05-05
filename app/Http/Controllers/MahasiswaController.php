@@ -116,19 +116,17 @@ class MahasiswaController extends Controller
     /**
      * Halaman Detail Ruangan
      */
-    public function detailRuangan($id)
+    public function detailRuangan(Ruangan $ruangan)
     {
+        $id = $ruangan->getKey();
+
         $ruangan = Ruangan::query()
             ->from('ruangan as r')
             ->select('r.*', 'g.nama_gedung as gedung', 'l.nomor as Lantai')
             ->leftJoin('lantai as l', 'l.id', '=', 'r.lantai_id')
             ->leftJoin('gedung as g', 'g.id', '=', 'l.gedung_id')
             ->where('r.id', $id)
-            ->first();
-
-        if (!$ruangan) {
-            abort(404, 'Ruangan tidak ditemukan');
-        }
+            ->firstOrFail();
 
         $cover = RuanganFoto::query()
             ->where('ruangan_id', $id)

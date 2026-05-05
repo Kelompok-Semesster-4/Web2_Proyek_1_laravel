@@ -104,11 +104,11 @@
                         </td>
 
                         <td>
-                            <form method="POST" action="{{ route('admin.approve.process') }}"
-                                class="d-flex flex-column gap-2" style="padding: 0.5rem;">
+                            <form method="POST" action="{{ route('admin.peminjaman.approve', $p->id) }}"
+                                class="d-flex flex-column gap-2" style="padding: 0.5rem;"
+                                data-approve-url="{{ route('admin.peminjaman.approve', $p->id) }}"
+                                data-reject-url="{{ route('admin.peminjaman.reject', $p->id) }}">
                                 @csrf
-
-                                <input type="hidden" name="peminjaman_id" value="{{ $p->id }}">
 
                                 <input type="text" name="catatan_admin" class="form-control form-control-sm"
                                     placeholder="Catatan / alasan (opsional)" style="font-size: 0.875rem;">
@@ -182,12 +182,7 @@
                                 }
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    form.querySelector('input[name="action"]')?.remove();
-                                    const actionInput = document.createElement('input');
-                                    actionInput.type = 'hidden';
-                                    actionInput.name = 'action';
-                                    actionInput.value = 'approve';
-                                    form.appendChild(actionInput);
+                                    form.action = form.dataset.approveUrl;
                                     form.submit();
                                 }
                             });
@@ -218,12 +213,7 @@
                                 }
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    form.querySelector('input[name="action"]')?.remove();
-                                    const actionInput = document.createElement('input');
-                                    actionInput.type = 'hidden';
-                                    actionInput.name = 'action';
-                                    actionInput.value = 'reject';
-                                    form.appendChild(actionInput);
+                                    form.action = form.dataset.rejectUrl;
                                     form.submit();
                                 }
                             });

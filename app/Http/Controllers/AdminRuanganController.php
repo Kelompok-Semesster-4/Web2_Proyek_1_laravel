@@ -137,10 +137,9 @@ class AdminRuanganController extends Controller
         }
     }
 
-    public function update(Request $request)
+    public function update(Request $request, Ruangan $ruangan)
     {
         $validated = $request->validate([
-            'id' => ['required', 'exists:ruangan,id'],
             'nama_ruangan' => ['required', 'string', 'max:100'],
             'lantai_id' => ['required', 'exists:lantai,id'],
             'kapasitas' => ['required', 'integer', 'min:1'],
@@ -156,7 +155,7 @@ class AdminRuanganController extends Controller
 
         $exists = Ruangan::where('nama_ruangan', $validated['nama_ruangan'])
             ->where('lantai_id', $validated['lantai_id'])
-            ->where('id', '!=', $validated['id'])
+            ->whereKeyNot($ruangan->getKey())
             ->exists();
 
         if ($exists) {
@@ -164,8 +163,7 @@ class AdminRuanganController extends Controller
         }
 
         try {
-            DB::transaction(function () use ($request, $validated) {
-                $ruangan = Ruangan::findOrFail($validated['id']);
+            DB::transaction(function () use ($request, $validated, $ruangan) {
                 $ruangan->update([
                     'lantai_id' => $validated['lantai_id'],
                     'nama_ruangan' => $validated['nama_ruangan'],
@@ -212,9 +210,9 @@ class AdminRuanganController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy(Ruangan $ruangan)
     {
-        $ruangan = Ruangan::findOrFail($id);
+        $id = $ruangan->getKey();
 
         $peminjamanCount = Peminjaman::where('ruangan_id', $id)->count();
 
