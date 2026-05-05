@@ -29,6 +29,10 @@
 <x-layouts.mahasiswa-layout>
     <x-slot:title>Detail Ruangan - {{ $ruangan->nama_ruangan ?? 'Peminjaman Ruangan' }}</x-slot>
 
+        @push('styles')
+            <link rel="stylesheet" href="{{ asset('assets/css/detail-ruangan.css') }}?v=1">
+        @endpush
+
         <section class="hero-page">
             @if (!empty($images[0]))
                 <img class="hero-bg" src="{{ $images[0] }}" alt="{{ $ruangan->nama_ruangan }}">
