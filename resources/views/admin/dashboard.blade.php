@@ -181,7 +181,7 @@
                             </div>
                             <div class="dashboard-pending-meta">
                                 <span><i class="bi bi-door-open me-1"></i>{{ $item->nama_ruangan }} - {{ $item->gedung ?? '-' }}</span>
-                                <span><i class="bi bi-calendar3 me-1"></i>{{ \Illuminate\Support\Carbon::parse($item->tanggal)->format('Y-m-d') }}, {{ \Illuminate\Support\Carbon::parse($item->jam_mulai)->format('H:i') }}-{{ \Illuminate\Support\Carbon::parse($item->jam_selesai)->format('H:i') }}</span>
+                                <span><i class="bi bi-calendar3 me-1"></i>{{ \Illuminate\Support\Carbon::parse($item->tanggal)->format('d-m-Y') }}, {{ \Illuminate\Support\Carbon::parse($item->jam_mulai)->format('H:i') }}-{{ \Illuminate\Support\Carbon::parse($item->jam_selesai)->format('H:i') }}</span>
                                 <span><i class="bi bi-file-earmark-text me-1"></i>{{ $item->nama_kegiatan }}</span>
                                 <span><i class="bi bi-people me-1"></i>{{ $item->jumlah_peserta ?? 0 }} peserta</span>
                             </div>
@@ -221,7 +221,7 @@
                 </h5>
                 <div class="text-end dashboard-schedule-current">
                     <strong>{{ $now->format('H:i') }}</strong>
-                    <small class="text-muted d-block">{{ $now->translatedFormat('l, d F Y') }}</small>
+                    <small class="text-muted d-block">{{ $now->format('d-m-Y') }}</small>
                 </div>
             </div>
 

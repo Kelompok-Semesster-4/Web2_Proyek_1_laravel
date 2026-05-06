@@ -127,7 +127,7 @@
                 </small>
 
                 <small class="text-muted">
-                    <i class="bi bi-calendar-check me-1"></i>{{ date('d F Y') }}
+                    <i class="bi bi-calendar-check me-1"></i>{{ date('d-m-Y') }}
                 </small>
             </div>
         </div>
