@@ -30,7 +30,7 @@
     <x-slot:title>Detail Ruangan - {{ $ruangan->nama_ruangan ?? 'Peminjaman Ruangan' }}</x-slot>
 
         @push('styles')
-            <link rel="stylesheet" href="{{ asset('assets/css/user.css') }}?v=1">
+            <link rel="stylesheet" href="{{ asset('assets/css/user.css') }}?v=4">
         @endpush
 
         <section class="hero-page">
@@ -95,7 +95,7 @@
                                     <a class="btn btn-green w-100"
                                         href="{{ route('mahasiswa.peminjaman', ['ruangan_id' => $ruangan->id]) }}">Booking
                                         Sekarang</a>
-                                    <a class="btn btn-outline-secondary w-100"
+                                    <a class="btn btn-gray w-100"
                                         href="{{ route('mahasiswa.ruangan') }}">Kembali</a>
                                 </div>
                             </div>
