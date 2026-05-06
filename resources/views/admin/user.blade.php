@@ -45,7 +45,22 @@
                         <td>
                             <div class="d-flex align-items-center">
                                 <div class="avatar-circle me-3">
-                                    {{ strtoupper(substr($user->nama, 0, 1)) }}
+                                    @php
+                                        $photoUrl = '';
+                                        if (!empty($user->foto_profil)) {
+                                            if (filter_var($user->foto_profil, FILTER_VALIDATE_URL)) {
+                                                $photoUrl = $user->foto_profil;
+                                            } else {
+                                                $photoUrl = asset('storage/uploads/profil/' . $user->foto_profil);
+                                            }
+                                        }
+                                    @endphp
+
+                                    @if ($photoUrl)
+                                        <img src="{{ $photoUrl }}" alt="{{ $user->nama }}" />
+                                    @else
+                                        {{ strtoupper(substr($user->nama, 0, 1)) }}
+                                    @endif
                                 </div>
 
                                 <div>
@@ -54,7 +69,7 @@
                                     </div>
                                     <small class="text-muted">
                                         <i class="bi bi-calendar3 me-1"></i>
-                                        {{ date('d M Y', strtotime($user->created_at)) }}
+                                        {{ date('d-m-Y', strtotime($user->created_at)) }}
                                     </small>
                                 </div>
                             </div>
@@ -96,7 +111,7 @@
                                 '{{ addslashes($user->username) }}',
                                 '{{ $user->role }}',
                                 '{{ addslashes($user->prodi ?? '') }}',
-                                '{{ date('d M Y', strtotime($user->created_at)) }}'
+                                '{{ date('d-m-Y', strtotime($user->created_at)) }}'
                             )">
                                     <i class="bi bi-eye-fill me-1"></i>Detail
                                 </button>

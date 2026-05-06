@@ -461,7 +461,7 @@
                         </td>
                         <td>
                             <div class="fw-semibold">
-                                {{ \Illuminate\Support\Carbon::parse($d->tanggal)->translatedFormat('d M Y') }}</div>
+                                {{ \Illuminate\Support\Carbon::parse($d->tanggal)->format('d-m-Y') }}</div>
                             <div class="text-muted">
                                 {{ \Illuminate\Support\Carbon::parse($d->jam_mulai)->format('H:i') }}-{{ \Illuminate\Support\Carbon::parse($d->jam_selesai)->format('H:i') }}
                             </div>

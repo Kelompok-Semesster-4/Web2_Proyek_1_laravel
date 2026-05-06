@@ -85,7 +85,7 @@
                                 <div class="info-item">
                                     <div class="info-label">Bergabung</div>
                                     <div class="info-value">
-                                        {{ $user->created_at->locale('id')->format('F Y') ?? 'N/A' }}
+                                        {{ $user->created_at ? $user->created_at->format('d-m-Y') : 'N/A' }}
                                     </div>
                                 </div>
                             </div>

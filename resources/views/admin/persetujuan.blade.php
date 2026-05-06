@@ -66,7 +66,7 @@
                         <td class="text-center">
                             <div class="d-inline-flex flex-column align-items-center gap-1 persetujuan-waktu">
                                 <span>
-                                    <i class="bi bi-calendar3 me-1"></i>{{ date('d M Y', strtotime($p->tanggal)) }}
+                                    <i class="bi bi-calendar3 me-1"></i>{{ date('d-m-Y', strtotime($p->tanggal)) }}
                                 </span>
                                 <span>
                                     <i class="bi bi-clock me-1"></i>{{ substr($p->jam_mulai, 0, 5) . ' - ' . substr($p->jam_selesai, 0, 5) }}
