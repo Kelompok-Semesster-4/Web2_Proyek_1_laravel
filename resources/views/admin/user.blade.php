@@ -106,24 +106,24 @@
                         <td>
                             <div class="d-flex justify-content-center gap-1">
                                 <button class="btn btn-info aksi-btn" style="min-width: 65px; font-size: 0.8rem;" onclick="viewDetail(
-                                {{ $user->id }},
-                                '{{ addslashes($user->nama) }}',
-                                '{{ addslashes($user->username) }}',
-                                '{{ $user->role }}',
-                                '{{ addslashes($user->prodi ?? '') }}',
-                                '{{ date('d-m-Y', strtotime($user->created_at)) }}'
-                            )">
+                                    {{ $user->id }},
+                                    '{{ addslashes($user->nama) }}',
+                                    '{{ addslashes($user->username) }}',
+                                    '{{ $user->role }}',
+                                    '{{ addslashes($user->prodi ?? '') }}',
+                                    '{{ date('d-m-Y', strtotime($user->created_at)) }}'
+                                )">
                                     <i class="bi bi-eye-fill me-1"></i>Detail
                                 </button>
 
                                 <button class="btn btn-warning aksi-btn" style="min-width: 60px; font-size: 0.8rem;"
                                     data-bs-toggle="modal" data-bs-target="#modalEditUser" onclick="editUser(
-                                {{ $user->id }},
-                                '{{ addslashes($user->nama) }}',
-                                '{{ addslashes($user->username) }}',
-                                '{{ $user->role }}',
-                                '{{ addslashes($user->prodi ?? '') }}'
-                            )">
+                                    {{ $user->id }},
+                                    '{{ addslashes($user->nama) }}',
+                                    '{{ addslashes($user->username) }}',
+                                    '{{ $user->role }}',
+                                    '{{ addslashes($user->prodi ?? '') }}'
+                                )">
                                     <i class="bi bi-pencil-fill me-1"></i>Edit
                                 </button>
 
@@ -381,16 +381,16 @@
                     function deleteUser(id, nama) {
                         Swal.fire({
                             html: `
-                    <div style="text-align:center; padding-top: 6px;">
-                        <div style="width:64px; height:64px; margin:0 auto 18px; border-radius:999px; background:#fde8e7; color:#ef4444; display:flex; align-items:center; justify-content:center; font-size:30px;">
-                            <i class="bi bi-trash"></i>
+                        <div style="text-align:center; padding-top: 6px;">
+                            <div style="width:64px; height:64px; margin:0 auto 18px; border-radius:999px; background:#fde8e7; color:#ef4444; display:flex; align-items:center; justify-content:center; font-size:30px;">
+                                <i class="bi bi-trash"></i>
+                            </div>
+                            <h2 style="margin:0 0 12px; font-size:28px; font-weight:800; line-height:1.2; color:#0f172a;">Hapus User?</h2>
+                            <p style="margin:0; font-size:17px; line-height:1.6; color:#475569;">
+                                User "${escapeHtml(nama)}" akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
+                            </p>
                         </div>
-                        <h2 style="margin:0 0 12px; font-size:28px; font-weight:800; line-height:1.2; color:#0f172a;">Hapus User?</h2>
-                        <p style="margin:0; font-size:17px; line-height:1.6; color:#475569;">
-                            User "${escapeHtml(nama)}" akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
-                        </p>
-                    </div>
-                `,
+                    `,
                             width: 390,
                             padding: '1.4rem 1.4rem 1.25rem',
                             showCancelButton: true,
