@@ -9,7 +9,7 @@ use App\Models\Ruangan;
 use Illuminate\Support\Facades\DB;
 
 class AdminGedungController extends Controller
-{
+{ 
     public function index()
     {
         $gedungs = Gedung::query()
