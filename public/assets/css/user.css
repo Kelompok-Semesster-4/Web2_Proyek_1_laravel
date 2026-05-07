@@ -357,21 +357,23 @@
 
 #tableRiwayat th:last-child,
 #tableRiwayat td:last-child {
-    width: 100px;
-    max-width: 100px;
+    width: 160px;
+    max-width: 160px;
+    text-align: center;
 }
 
 #tableRiwayat .aksi-btn {
     min-width: 0 !important;
-    width: 84px !important;
-    padding: 0 6px !important;
+    width: 126px !important;
+    padding: 0 12px !important;
+    white-space: nowrap;
 }
 
 #tableRiwayat .riwayat-action-note {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 84px;
+    width: 126px;
     min-height: 32px;
     padding: 0 6px;
     border-radius: 8px;

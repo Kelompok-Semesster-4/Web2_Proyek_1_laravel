@@ -2,7 +2,7 @@
     <x-slot:title>Peminjaman - Peminjaman Ruangan</x-slot>
 
         @push('styles')
-            <link rel="stylesheet" href="{{ asset('assets/css/user.css') }}?v=1">
+            <link rel="stylesheet" href="{{ asset('assets/css/user.css') }}?v=3">
         @endpush
 
         <div class="wrap peminjaman-page">
@@ -41,7 +41,7 @@
                             <th class="text-center" style="width: 180px; padding: 15px;">
                                 <i class="bi bi-chat-left-text me-1"></i>Catatan
                             </th>
-                            <th class="text-center" style="width: 100px; padding: 15px 8px; white-space: nowrap;">
+                            <th class="text-center" style="width: 160px; padding: 15px 8px; white-space: nowrap;">
                                 <i class="bi bi-gear me-1"></i>Aksi
                             </th>
                         </tr>
